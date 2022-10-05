@@ -6,7 +6,7 @@
 /*   By: cleticia <cleticia@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 16:48:25 by cleticia          #+#    #+#             */
-/*   Updated: 2022/10/04 11:38:18 by cleticia         ###   ########.fr       */
+/*   Updated: 2022/10/05 16:20:38 by cleticia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,86 @@ redesenhar com novos valores function move_player();
 //	**
 //	*/
 //}
+
+/*
+
+
+
+*/
+
+char	*dec_to_hexa(int color)
+{
+	char	*hexa_dec;
+	char	*hex_code;
+	int		cnt_digit;
+	int		index;
+	int		temp;
+	int		number;
+
+	hex_code = "";
+	cnt_digit = 0;
+	index = 0;
+	temp = 0;
+	number = color;
+	while (number)
+	{
+		number /= 10;
+		cnt_digit++;	
+	}
+	while (color != 0)
+	{
+		temp = color % 16;
+		if (temp < 10)
+		{
+			hexa_dec[index] = temp + 48; //digito 0
+			index++;
+		}
+		else
+		{
+			hexa_dec[index] = temp + 55;
+			index++;
+		}
+		color = (color / 16);
+	}
+	if (index == 2)
+		hex_code = ft_strjoin(hex_code, hexa_dec);
+	else if (index == 1)
+	{
+		hex_code = "0";
+		hex_code = ft_strjoin(hex_code, hexa_dec);//hex_code = hex_code + hexa_dec[0];
+	}
+	else if (index == 0)
+	hex_code = "00";
+	return(hex_code);
+}
+
+char	*rgb_to_hexa(t_map *map)
+{
+	int		red;
+	int		green;
+	int		blue;
+	int		index;
+	char	**rgb;
+	char	*hex_code;
+	char	*rgb_value;
+
+	red = 0;
+	green = 0;
+	blue = 0;
+	index = -1;
+	rgb = ft_split(rgb_value, ',');
+	if (rgb_value[index])
+	{
+		red = ft_atoi(rgb[0]);
+		green = ft_atoi(rgb[1]);
+		blue = ft_atoi(rgb[2]);
+	}
+	hex_code = 0;
+	hex_code += *dec_to_hexa(red);
+    hex_code += *dec_to_hexa(green);
+    hex_code += *dec_to_hexa(blue);
+	return(hex_code);
+}
 
 void	render_minimap(t_map *map)
 {
@@ -335,3 +415,5 @@ void	game_loop(t_map *map)
 		mlx_loop(map->mlx.mlx_ptr);
 	}
 }
+
+
