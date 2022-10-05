@@ -6,7 +6,7 @@
 /*   By: cleticia <cleticia@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 18:15:32 by cleticia          #+#    #+#             */
-/*   Updated: 2022/10/04 11:47:52 by cleticia         ###   ########.fr       */
+/*   Updated: 2022/10/05 16:43:42 by cleticia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,8 @@ enum e_keycode
 };
 
 /* Functions */
+char	*dec_to_hexa(int color);
+char	*rgb_to_hexa(t_map *map);
 void	render_minimap(t_map *map);
 void	get_rays(t_map *map);
 void	*open_img(t_map *map, char *path);
