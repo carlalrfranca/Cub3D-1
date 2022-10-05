@@ -6,7 +6,7 @@
 /*   By: cleticia <cleticia@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 16:48:18 by cleticia          #+#    #+#             */
-/*   Updated: 2022/09/23 11:36:51 by cleticia         ###   ########.fr       */
+/*   Updated: 2022/10/05 03:39:28 by cleticia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,12 +88,12 @@ void	measure_height(char **line, t_map *map)
 			if (texture == 4)
 				monitoring = 4;
 		}
-		else if (ft_strchr(*line, ',')) //floor e ceilling
+		else if (ft_strchr(*line, ','))//floor e ceilling
 		{
 			rgb++;
 			if(rgb == 2)
 			{
-				monitoring = 2; //significa que passou pelo rgb e que so restao mapa
+				monitoring = 2;//significa que passou pelo rgb e que so restao mapa
 				free(*line);
 				continue;
 			}
