@@ -6,12 +6,14 @@
 /*   By: cleticia <cleticia@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 16:48:25 by cleticia          #+#    #+#             */
-/*   Updated: 2022/10/05 16:20:38 by cleticia         ###   ########.fr       */
+/*   Updated: 2022/10/07 14:22:28 by cleticia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/cub3d.h"
+#include <stdint.h>
 #include <sys/time.h>
+#define COLOR 0XFF0000
 
 /*
 render_mini_map()
@@ -83,7 +85,7 @@ char	*dec_to_hexa(int color)
 		temp = color % 16;
 		if (temp < 10)
 		{
-			hexa_dec[index] = temp + 48; //digito 0
+			hexa_dec[index] = temp + 48;
 			index++;
 		}
 		else
@@ -98,13 +100,14 @@ char	*dec_to_hexa(int color)
 	else if (index == 1)
 	{
 		hex_code = "0";
-		hex_code = ft_strjoin(hex_code, hexa_dec);//hex_code = hex_code + hexa_dec[0];
+		hex_code = ft_strjoin(hex_code, hexa_dec);
 	}
 	else if (index == 0)
 	hex_code = "00";
 	return(hex_code);
 }
 
+//parametro *map nao usado
 char	*rgb_to_hexa(t_map *map)
 {
 	int		red;
@@ -127,13 +130,38 @@ char	*rgb_to_hexa(t_map *map)
 		blue = ft_atoi(rgb[2]);
 	}
 	hex_code = 0;
-	hex_code += *dec_to_hexa(red);
-    hex_code += *dec_to_hexa(green);
-    hex_code += *dec_to_hexa(blue);
+	hex_code = ft_strjoin(hex_code, dec_to_hexa(red));
+    hex_code = ft_strjoin(hex_code, dec_to_hexa(green));
+    hex_code = ft_strjoin(hex_code, dec_to_hexa(blue));
 	return(hex_code);
 }
 
-void	render_minimap(t_map *map)
+int *array_to_int(char *rgb_value)
+{
+	char	**rgb;
+	int		red;
+	int		*int_array;
+	int		green;
+	int		blue;
+	int		index;
+
+	int_array = malloc(sizeof 3);
+	rgb = ft_split(rgb_value, ',');
+	if (rgb_value[index])
+	{
+		red = ft_atoi(rgb[0]);
+		green = ft_atoi(rgb[1]);
+		blue = ft_atoi(rgb[2]);
+	}
+	return(int_array);
+}
+
+int	encode_rgb(uint8_t red, uint8_t green, uint8_t blue)
+{
+	return (red << 16 | green << 8 | blue);
+}
+
+void	render_minimap(t_map *map) //continuar funcao
 {
 
 	map->north = 0;
@@ -167,6 +195,8 @@ void	get_rays(t_map *map)
     int side;
 	int line_height;
 	int draw_start;
+	int	color;
+
 
 	dir_x = -1;
 	dir_y = 0;
@@ -179,6 +209,7 @@ void	get_rays(t_map *map)
 	map_x = pos_x;
 	map_y = pos_y;
 	delta_dist_y = ray_dir_y;
+	
 	while( x < SCREEN_WIDTH) //calcula a posição e direção do raio
 	{
 		camera_x = (2 * x) / (SCREEN_HEIGHT - 1); //coordenada no espaço da camera
@@ -232,11 +263,11 @@ void	get_rays(t_map *map)
 			perp_wall_dist = (side_dist_x - delta_dist_x);
     	else
 		  	perp_wall_dist = (side_dist_y - delta_dist_y);
-		line_height = (int)(h / perp_wall_dist); //Calculate height of line to draw on screen
-		draw_start = -line_height / 2 + h / 2;
+		line_height = (int)(SCREEN_HEIGHT / perp_wall_dist); //Calculate height of line to draw on screen
+		draw_start = -line_height / 2 + SCREEN_HEIGHT / 2;
     	  if(draw_start < 0) draw_start = 0;
-    	  int drawEnd = line_height / 2 + h / 2;
-    	  if(drawEnd >= h) drawEnd = h - 1;
+    	  int drawEnd = line_height / 2 + SCREEN_HEIGHT / 2;
+    	  if(drawEnd >= SCREEN_HEIGHT) drawEnd = SCREEN_HEIGHT - 1;
 
 		//choose wall color
 		if(map->map[map_x][map_y] == 1)
@@ -257,12 +288,15 @@ void	get_rays(t_map *map)
 		// para do draw_start ao drawEnd?
 		int drawStartTemp = draw_start;
 		int	count_pixel_square;
+
+		int *rgb = array_to_int("255, 0, 0");
+		int color = encode_rgb(rgb[0], rgb[1], rgb[2]);
 		while(drawStartTemp < drawEnd)
 		{
 			count_pixel_square = 0;
 			while (count_pixel_square < 32)
 			{
-				mlx_pixel_put(map->mlx.mlx_ptr, map->mlx.win, (x * 32 + count_pixel_square), drawStartTemp, #color);
+				mlx_pixel_put(map->mlx.mlx_ptr, map->mlx.win, (x * 32 + count_pixel_square), drawStartTemp, color);  //<<
 				count_pixel_square++;
 			}
 			drawStartTemp++;
@@ -289,7 +323,6 @@ void	get_rays(t_map *map)
    de x e y e direcionados cada um para as variaveis 
    pos_x e pos_y na estrutura
 */
-
 
 void	*open_img(t_map *map, char *path)
 {
