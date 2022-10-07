@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   store_map.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cleticia <cleticia@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 16:48:18 by cleticia          #+#    #+#             */
-/*   Updated: 2022/10/05 03:39:28 by cleticia         ###   ########.fr       */
+/*   Updated: 2022/10/07 19:39:00 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@ void	store_map(char **line, t_map *map, char *filename)
 
 	content = 0;
 	ret = 1;
-	map->map = (char **)malloc(sizeof(char *) * (map->height + 1));
+	map->map = malloc(sizeof(char *) * (map->height + 1));
+	map->map[map->height] = NULL;
 	map->fd = open(filename, O_RDONLY);
 	while (ret)
 	{
@@ -28,13 +29,13 @@ void	store_map(char **line, t_map *map, char *filename)
 		if (ret == 0 && map->height == 0)
 			file_error();
 		if (ft_strncmp("NO ./", *line, 5) == 0)
-			map->img.north_wall = ft_strchr(*line, '.');		
+			map->textures.north_wall = ft_strchr(*line, '.');		
 		else if (ft_strncmp("SO ./", *line, 5) == 0)
-			map->img.south_wall = ft_strchr(*line, '.');	
+			map->textures.south_wall = ft_strchr(*line, '.');	
 		else if (ft_strncmp("WE ./", *line, 5) == 0)
-			map->img.west_wall = ft_strchr(*line, '.');	
+			map->textures.west_wall = ft_strchr(*line, '.');	
 		else if (ft_strncmp("EA ./", *line, 5) == 0)
-			map->img.east_wall = ft_strchr(*line, '.');	
+			map->textures.east_wall = ft_strchr(*line, '.');	
 		else if (ft_strncmp("F", *line, 1) == 0)
 		{
 			map->floor = ft_strchr(*line, ' ');
@@ -110,14 +111,15 @@ void	measure_height(char **line, t_map *map)
 			if(size > map->width)
 				map->width = size;
 		}	
-	}//printf("height: %d\n", map->height);
+	}
+	// printf("height: %d\n", map->height);
 	if (map->height == 0)
 	{
 		close(map->fd);
 		file_error();
 	}//printf("***AQUI O TAMANHO DO HEIGHT %d\n", map->height);
 	map->monitoring = monitoring;
-	printf("o tamanho da linha na width: %d\n", map->width);
+	// printf("o tamanho da linha na width: %d\n", map->width);
 }
 
 t_map	*prepare_to_store(char *filename)
@@ -126,10 +128,22 @@ t_map	*prepare_to_store(char *filename)
 	char	*line;
 
 	line = 0;
-	map = (t_map *)malloc(sizeof(t_map));
+	map = malloc(sizeof(t_map));
 	map->fd = open(filename, O_RDONLY);
 	measure_height(&line, map);
 	store_map(&line, map, filename);
+	// int i = 0;
+	// int j = 0;
+	// while (map->map[i])
+	// {
+	// 	j = 0;
+	// 	while(map->map[i][j]) {
+	// 		printf("%c", map->map[i][j]);
+	// 		j++;
+	// 	}
+	// 	printf("\n");
+	// 	i++;
+	// }
 	close(map->fd);
 	return (map);
 }

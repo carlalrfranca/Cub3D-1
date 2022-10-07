@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   validate_map.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cleticia <cleticia@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 16:48:36 by cleticia          #+#    #+#             */
-/*   Updated: 2022/09/28 12:53:28 by cleticia         ###   ########.fr       */
+/*   Updated: 2022/10/07 19:05:52 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ void	validate_rgb(char *rgb_value)
 		rgb = ft_atoi(split_values[i]);		
 		if (rgb < 0 || rgb > 255)
 			file_error();
-		printf("%d ", rgb);
+		// printf("%d ", rgb);
 	}
 	printf("\n");
 	if(i != 3)
@@ -79,8 +79,8 @@ void	validate_rgb(char *rgb_value)
 
 void	validate_texture(t_map *map)
 {
-	if(map->img.north_wall == 0 || map->img.south_wall == 0
-		|| map->img.west_wall == 0 || map->img.east_wall == 0)
+	if(map->textures.north_wall == 0 || map->textures.south_wall == 0
+		|| map->textures.west_wall == 0 || map->textures.east_wall == 0)
 		map_error(map); //printf("%s\n", map->north_wall);
 }
 
@@ -92,19 +92,27 @@ void verif_char(t_map *map)
 
 	i = 0;
 	j = 0;
-	while(map->map[i][j])
+	while(map->map[i])
 	{
-		letter = map->map[i][j];
-		if (letter != '0' && letter != ' ' && letter != '1'
-			&& letter != 'N' && letter != 'S' &&letter != 'E' && letter != 'W')
+		j = 0;
+		while(map->map[i][j])
 		{
-			map_error(map);
-			printf("na verif_char %c\n",letter);
+			// printf("%c", map->map[i][j]);
+			letter = map->map[i][j];
+			if (letter != '0' && letter != ' ' && letter != '1'
+				&& letter != 'N' && letter != 'S' &&letter != 'E' && letter != 'W')
+			{
+				printf("erro na verif_char %c\n",letter);
+				map_error(map);
+			}
+			if (letter == 'S' || letter == 'N' || letter == 'E'
+				|| letter == 'W')
+				map->spawing = letter;
+			j++;
 		}
-		if (letter == 'S' || letter == 'N' || letter == 'O'
-			|| letter == 'W')
-			map->spawing = letter;
-	}	
+		// printf("\n");
+		i++;
+	}
 }
 
 int	validate_map(t_map *map)

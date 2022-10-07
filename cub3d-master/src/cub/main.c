@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cleticia <cleticia@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 15:11:59 by cleticia          #+#    #+#             */
-/*   Updated: 2022/09/29 09:20:23 by cleticia         ###   ########.fr       */
+/*   Updated: 2022/10/07 17:44:03 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,11 @@ int main(int argc, char **argv)
 	char	*filename;
 	t_map	*map;
 
+	if (argc != 2)
+		file_error();
 	filename = argv[1];
 	extension = &filename[ft_strlen(filename) - 4];
-	if (argc != 2 || ft_strncmp(".cub", extension, 4))
+	if (ft_strncmp(".cub", extension, 4))
 		file_error();
 	map = prepare_to_store(filename);
 	validate_map(map);
