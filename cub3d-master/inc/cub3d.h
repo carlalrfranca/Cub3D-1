@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cleticia <cleticia@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 18:15:32 by cleticia          #+#    #+#             */
-/*   Updated: 2022/10/05 16:55:48 by cleticia         ###   ########.fr       */
+/*   Updated: 2022/10/07 19:09:42 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,25 +53,26 @@ typedef struct s_mlx
 
 typedef	struct s_image
 {
+	// abaixo: as texturas das paredes e os numeros rgb
 	void			*north_wall;
 	void			*south_wall;
 	void			*west_wall;
 	void			*east_wall;
-	void			*floor;
-	void			*ceilling;
+	// void			*floor;
+	// void			*ceilling;
 }	t_image;
 
 typedef struct s_map //principal
 {
 	t_mlx			mlx;
-	t_image			img;
+	t_image			textures;
 	t_background	back;
 	t_ray			rays;
 	char			**map;
-	char			*north;
-	char			*south;
-	char			*west;
-	char			*east;
+	// char			*north;
+	// char			*south;
+	// char			*west;
+	// char			*east;
 	char			*floor;
 	char			*ceilling;
 	int				monitoring;
@@ -79,8 +80,8 @@ typedef struct s_map //principal
 	int				width;
 	int				fd;
 	char			spawing;
-	int				pos_x;
-	int				pos_y;
+	double			pos_x;
+	double			pos_y;
 }	t_map;
 
 enum e_keycode
@@ -108,24 +109,24 @@ void	color_background(t_map *map, int width, int height);
 void	move_player(t_map *map, int x, int y);
 void	free_map(t_map *map);
 void	*open_img(t_map *map, char *path);
-int event_key(int keycode, t_map *map);
+int		event_key(int keycode, t_map *map);
 void	path_img(t_map *map);
 void	clear_screen(t_map *map);
 void	render_scenes(t_map *map);
 void	*open_img(t_map *map, char *path);
 void	path_image(t_map *map);
 void	free_pointers(t_map *map);
-int	end_program(t_map *map);
-int	minimize_window(t_map *map);
+int		end_program(t_map *map);
+int		minimize_window(t_map *map);
 void	render_minimap(t_map *map);
 void	get_rays(t_map *map);
-void game_loop(t_map *map);
+void 	game_loop(t_map *map);
 void	validate_floor(t_map *map);
 void	validate_ceilling(t_map	*map);
 void	validate_texture(t_map *map);
 //void verif_char(t_map *map);
-int	validate_map(t_map *map);
-int	measure_width(char	**line, t_map *map);
+int		validate_map(t_map *map);
+int		measure_width(char	**line, t_map *map);
 void	measure_height(char **line, t_map *map);
 void	store_map(char **line, t_map *map, char *filename);
 t_map	*prepare_to_store(char *filename);
