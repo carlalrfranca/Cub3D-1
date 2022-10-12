@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   validate_map.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: cleticia <cleticia@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 16:48:36 by cleticia          #+#    #+#             */
-/*   Updated: 2022/10/07 19:05:52 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/10/11 17:17:03 by cleticia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,6 +117,7 @@ void verif_char(t_map *map)
 
 int	validate_map(t_map *map)
 {
+	//printf("floor: %s\n", map->floor);
 	validate_rgb(map->floor);
 	validate_rgb(map->ceilling);
 	validate_texture(map);

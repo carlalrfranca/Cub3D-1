@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   store_map.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: cleticia <cleticia@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 16:48:18 by cleticia          #+#    #+#             */
-/*   Updated: 2022/10/07 19:39:00 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/10/11 17:11:11 by cleticia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,6 +129,7 @@ t_map	*prepare_to_store(char *filename)
 
 	line = 0;
 	map = malloc(sizeof(t_map));
+	//map->rays = malloc(sizeof(t_ray));
 	map->fd = open(filename, O_RDONLY);
 	measure_height(&line, map);
 	store_map(&line, map, filename);
