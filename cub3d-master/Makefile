@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+         #
+#    By: cleticia <cleticia@student.42sp.org.br>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/08/10 18:12:04 by cleticia          #+#    #+#              #
-#    Updated: 2022/10/07 20:00:20 by lfranca-         ###   ########.fr        #
+#    Updated: 2022/10/10 13:46:54 by cleticia         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,7 @@ RM = rm -rf
 
 INC = -I ./inc/ -I /src/lib/ -I ./src/mlx/minilibx-linux
 
-FLAGS =	-Werror -Wall -Wextra
+FLAGS =	-Werror -Wall -Wextra -g
 
 SRC = src/cub/main.c\
 	src/cub/store_map.c\

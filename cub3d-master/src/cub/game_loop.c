@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   game_loop.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: cleticia <cleticia@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 16:48:25 by cleticia          #+#    #+#             */
-/*   Updated: 2022/10/07 19:55:10 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/10/12 11:00:31 by cleticia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 #include <sys/time.h>
 
 /*
+valgrind --leak-check=full --show-leak-kinds=all ./cub3d ./maps/map.cub
+
 render_mini_map()
 E precisaremos deles na funcao renderMiniMap(0,0,0.75,rays) esta funcao recebe a posição X e Y, a escala 0.75 e a lista de rays
 
@@ -42,97 +44,31 @@ pinta a janela function render_scenes() com os valores do mapa recebido
 redesenhar com novos valores function move_player();
 */
 
-//void	free_map(t_map *map)
-//{
-//
-//}
-
-//void event_key()
-//{
-//	/*
-//	**
-//	*/
-//}
-
 /*
-
-
-
+int	event_key(int keycode, t_map *map)
+{
+	if (keycode == KEY_ESC)
+	{
+		write (1, "You typed the ESC key. Game closed!\n", 36);
+		end_program(map);
+	}
+	if (keycode == KEY_A)
+		move_gammer(map, map->x, map->y - 1);
+	if (keycode == KEY_D)
+		move_gammer(map, map->x, map->y + 1);
+	if (keycode == KEY_S)
+		move_gammer(map, map->x + 1, map->y);
+	if (keycode == KEY_W)
+		move_gammer(map, map->x - 1, map->y);
+	return (0);
+}
 */
 
-// char	*dec_to_hexa(int color)
+// void	render_minimap(t_map *map) //continuar funcao
 // {
-// 	char	*hexa_dec;
-// 	char	*hex_code;
-// 	int		cnt_digit;
-// 	int		index;
-// 	int		temp;
-// 	int		number;
 
-// 	hex_code = "";
-// 	cnt_digit = 0;
-// 	index = 0;
-// 	temp = 0;
-// 	number = color;
-// 	while (number)
-// 	{
-// 		number /= 10;
-// 		cnt_digit++;	
-// 	}
-// 	while (color != 0)
-// 	{
-// 		temp = color % 16;
-// 		if (temp < 10)
-// 		{
-// 			hexa_dec[index] = temp + 48;
-// 			index++;
-// 		}
-// 		else
-// 		{
-// 			hexa_dec[index] = temp + 55;
-// 			index++;
-// 		}
-// 		color = (color / 16);
-// 	}
-// 	if (index == 2)
-// 		hex_code = ft_strjoin(hex_code, hexa_dec);
-// 	else if (index == 1)
-// 	{
-// 		hex_code = "0";
-// 		hex_code = ft_strjoin(hex_code, hexa_dec);
-// 	}
-// 	else if (index == 0)
-// 	hex_code = "00";
-// 	return(hex_code);
-// }
-
-//parametro *map nao usado
-// char	*rgb_to_hexa(t_map *map)
-// {
-// 	int		red;
-// 	int		green;
-// 	int		blue;
-// 	int		index;
-// 	char	**rgb;
-// 	char	*hex_code;
-// 	char	*rgb_value;
-
-// 	red = 0;
-// 	green = 0;
-// 	blue = 0;
-// 	index = -1;
-// 	rgb = ft_split(rgb_value, ',');
-// 	if (rgb_value[index])
-// 	{
-// 		red = ft_atoi(rgb[0]);
-// 		green = ft_atoi(rgb[1]);
-// 		blue = ft_atoi(rgb[2]);
-// 	}
-// 	hex_code = 0;
-// 	hex_code = ft_strjoin(hex_code, dec_to_hexa(red));
-//     hex_code = ft_strjoin(hex_code, dec_to_hexa(green));
-//     hex_code = ft_strjoin(hex_code, dec_to_hexa(blue));
-// 	return(hex_code);
+// 	map->north = 0;
+// 	printf("na render mini map");
 // }
 
 int *array_to_int(char *rgb_value)
@@ -153,132 +89,141 @@ int	encode_rgb(uint8_t red, uint8_t green, uint8_t blue)
 	return (red << 16 | green << 8 | blue);
 }
 
-// void	render_minimap(t_map *map) //continuar funcao
-// {
 
-// 	map->north = 0;
-// 	printf("na render mini map");
-// }
+void	check_color(t_map *map)
+{
+	map->rays.rgb = array_to_int("255, 0, 0");
+	if (map->rays.side != 1)
+		map->rays.color = encode_rgb(map->rays.rgb[0], map->rays.rgb[1], map->rays.rgb[2]);
+	else
+		map->rays.color = encode_rgb(110, 9, 9);
+}
+
+void	draw_stripe(t_map *map)
+{
+	map->rays.draw_start_temp = map->rays.draw_start;
+	check_color(map);
+	while(map->rays.draw_start_temp < map->rays.draw_end)
+	{
+		map->rays.count_pixel_square = 0;
+		while (map->rays.count_pixel_square < 32)
+		{
+			mlx_pixel_put(map->mlx.mlx_ptr, map->mlx.win, (map->rays.x + map->rays.count_pixel_square), map->rays.draw_start_temp, map->rays.color);
+			map->rays.count_pixel_square++;
+		}
+		map->rays.draw_start_temp++;
+	}
+}
+
+void	check_distance_height_pixel(t_map *map)
+{
+	if(map->rays.side == 0)
+		map->rays.perp_wall_dist = (map->rays.side_dist_x - map->rays.delta_dist_x);
+	else
+	  	map->rays.perp_wall_dist = (map->rays.side_dist_y - map->rays.delta_dist_y);
+	//calcula altura da linha para desenhar na tela
+	map->rays.line_height = (int)(SCREEN_HEIGHT / map->rays.perp_wall_dist); //calcula altura da linha desenhada na tela
+	//calcula pixel mais baixo e mais alto para preencher faixa atual
+	map->rays.draw_start = -map->rays.line_height / 2 + SCREEN_HEIGHT / 2;
+	printf("Começo da parede: %d\n", map->rays.draw_start);
+	if(map->rays.draw_start < 0)
+		map->rays.draw_start = 0;
+	map->rays.draw_end = map->rays.line_height / 2 + SCREEN_HEIGHT / 2;
+	if(map->rays.draw_end >= SCREEN_HEIGHT)
+		map->rays.draw_end = SCREEN_HEIGHT - 1;
+}
+
+void	check_ray_hit_wall(t_map *map)
+{
+	while(map->rays.hit == 0)
+	{
+		if(map->rays.side_dist_x < map->rays.side_dist_y) //vai para a proxima celula x ou y
+	    {
+	      map->rays.side_dist_x += map->rays.delta_dist_x;
+	      map->rays.map_x += map->rays.step_x;
+	      map->rays.side = 0;
+	    }
+	    else
+	    {
+	      map->rays.side_dist_y += map->rays.delta_dist_y;
+	      map->rays.map_y += map->rays.step_y;
+	      map->rays.side = 1;
+	    }//Check if ray has hit a wall
+		if(map->map[map->rays.map_x][map->rays.map_y] == '1')
+			map->rays.hit = 1;
+	}
+}
+
+void	calculate_initial_step_x(t_map *map)
+{
+	if (map->rays.ray_dir_x < 0)
+	{
+		map->rays.step_x = -1;
+	    map->rays.side_dist_x = (map->rays.pos_x - map->rays.map_x) * map->rays.delta_dist_x;
+	}
+	else
+	{
+		map->rays.step_x = 1;
+	    map->rays.side_dist_x = (map->rays.map_x + 1.0 - map->rays.pos_x) * map->rays.delta_dist_x;
+	}
+}
+	
+void	calculate_initial_step_y(t_map *map)
+{
+	if(map->rays.ray_dir_y < 0)
+	{
+		map->rays.step_y = -1;
+	    map->rays.side_dist_y = (map->rays.pos_y - map->rays.map_y) * map->rays.delta_dist_y;
+	}
+	else
+	{
+	    map->rays.step_y = 1;
+	    map->rays.side_dist_y = (map->rays.map_y + 1.0 - map->rays.pos_y) * map->rays.delta_dist_y;
+	}
+}
+
+void	calculate_ray_length(t_map *map)
+{//comprimento do raio de um lado x ou y para o proximo lado correspondente
+	if((int)map->rays.ray_dir_x == 0)
+		map->rays.delta_dist_x = 1e30;
+	else 
+		map->rays.delta_dist_x = abs(1 / (int)map->rays.ray_dir_x);
+	if((int)map->rays.ray_dir_y == 0)
+		map->rays.delta_dist_y = 1e30;
+	else
+		map->rays.delta_dist_y = abs(1 / (int)map->rays.ray_dir_y);
+}
+
+void	calculate_init_ray(t_map *map)
+{
+	map->rays.camera_x = 2 * map->rays.x / SCREEN_HEIGHT - 1; //coordenada no espaço da camera
+	map->rays.ray_dir_x = map->rays.dir_x + map->rays.plane_x * map->rays.camera_x;
+	map->rays.ray_dir_y = map->rays.dir_y + map->rays.plane_y * map->rays.camera_x;
+	map->rays.map_x = (int)map->rays.pos_x;
+	map->rays.map_y = (int)map->rays.pos_y;
+}
 
 void	get_rays(t_map *map)
 {
-	double dir_x; //vetor de direcao inicial
-	double dir_y;
-	double plane_x; // versao 2d raycaster do plano de camera
-	double plane_y;
-	// double time; //tempo do quadro atual
-	// double old_time; //tempo do frame anterior
-	double camera_x;
-	double ray_dir_x;
-	double ray_dir_y;
-	int		x;
-	int	map_x; //posicao atual na celula
-	int	map_y;
-	double	pos_x; //posicao
-	double	pos_y;
-	double	side_dist_x;
-	double	side_dist_y;
-	double	delta_dist_x;
-	double	delta_dist_y;
-	double	perp_wall_dist;
-    int step_x;
-    int step_y;
-    int hit;
-    int side;
-	int line_height;
-	int draw_start;
-	int	color;
-
-
-	dir_x = -1;
-	dir_y = 0;
-	plane_x = 0;
-	plane_y = 0.66;
-	// time = 0;
-	// old_time =0;
-	x = 0;
-	map->pos_x = 12.0;
-	map->pos_y = 2.0;
-	// printf("Posicao atual em x: %f e em %d\n", map->pos_x, (int)map->pos_x);
-	// printf("Posicao atual em y: %f\n", map->pos_y);
-	pos_x = map->pos_x;
-	pos_y = map->pos_y;
-	
-	while(x < SCREEN_WIDTH) //calcula a posição e direção do raio
+	map->rays.dir_x = -1;
+	map->rays.dir_y = 0;
+	map->rays.plane_x = 0;
+	map->rays.plane_y = 0.66;
+	// map->rays.time = 0;
+	// map->rays.old_time =0;
+	map->rays.x = 0;
+	map->rays.pos_x = 12.0;
+	map->rays.pos_y = 2.0;
+	while(map->rays.x < SCREEN_WIDTH) //calcula a posição e direção do raio
 	{
-		camera_x = 2 * x / SCREEN_HEIGHT - 1; //coordenada no espaço da camera
-		ray_dir_x = dir_x + plane_x * camera_x;
-		ray_dir_y = dir_y + plane_y * camera_x;
-		map_x = (int)pos_x;
-		map_y = (int)pos_y;
-		hit = 0;
-		// printf("rayDirx: %f \trayDiry: %f\n", ray_dir_x, ray_dir_y);
-		// printf("Calculo: %i\n", abs(1/(int)ray_dir_y));
-		// printf("rayDirx inteiro: %d\t rayDiry inteiro: %d\n", (int)ray_dir_x, (int)ray_dir_y);
-		if((int)ray_dir_x == 0)
-			delta_dist_x = 1e30;
-		else 
-			delta_dist_x = abs(1 / (int)ray_dir_x);
-		if((int)ray_dir_y == 0)
-			delta_dist_y = 1e30;
-		else
-			delta_dist_y = abs(1 / (int)ray_dir_y);
-		if (ray_dir_x < 0)
-		{
-			step_x = -1;
-    	    side_dist_x = (pos_x - map_x) * delta_dist_x;
-		}
-		else
-		{
-			step_x = 1;
-    	    side_dist_x = (map_x + 1.0 - pos_x) * delta_dist_x;
-		}
-    	if(ray_dir_y < 0)
-    	{
-			step_y = -1;
-    	    side_dist_y = (pos_y - map_y) * delta_dist_y;
-    	}
-		else
-    	{
-    	    step_y = 1;
-    	    side_dist_y = (map_y + 1.0 - pos_y) * delta_dist_y;
-    	}
-    	while(hit == 0)
-    	{
-			if(side_dist_x < side_dist_y)
-    	    {
-    	      side_dist_x += delta_dist_x;
-    	      map_x += step_x;
-    	      side = 0;
-    	    }
-    	    else
-    	    {
-    	      side_dist_y += delta_dist_y;
-    	      map_y += step_y;
-    	      side = 1;
-    	    }//Check if ray has hit a wall
-			// printf("Mapa em: %c\n", map->map[map_x][map_y]);
-			// printf("map_x: %d\n", map_x);
-			// printf("map_y: %d\n", map_y);
-			if(map->map[map_x][map_y] == '1')
-				hit = 1;
-    	}
-		// printf("Side é igual a: %d\n", side);
-		if(side == 0)
-			perp_wall_dist = (side_dist_x - delta_dist_x);
-    	else
-		  	perp_wall_dist = (side_dist_y - delta_dist_y);
-		line_height = (int)(SCREEN_HEIGHT / perp_wall_dist); //Calculate height of line to draw on screen
-		printf("Altura da linha é: %d\n", line_height);
-		draw_start = -line_height / 2 + SCREEN_HEIGHT / 2;
-		printf("Começo da parede: %d\n", draw_start);
-    	if(draw_start < 0)
-			draw_start = 0;
-    	int drawEnd = line_height / 2 + SCREEN_HEIGHT / 2;
-    	if(drawEnd >= SCREEN_HEIGHT)
-			drawEnd = SCREEN_HEIGHT - 1;
-
-		//choose wall color
+		calculate_init_ray(map);
+		map->rays.hit = 0;
+		calculate_ray_length(map);
+		calculate_initial_step_x(map);
+		calculate_initial_step_y(map);
+		check_ray_hit_wall(map);
+		check_distance_height_pixel(map);//calcula distancia perpendicular
+		//escolhe cor da parede
 		//dar aos lados x e y diferentes brilhos
 		// if (side == 1)
 		// {
@@ -292,26 +237,8 @@ void	get_rays(t_map *map)
 			pra desenhar os pixels de toda a coluna, vai ter que ter um while\
 			para do draw_start ao drawEnd?
 		*/ 
-		int drawStartTemp = draw_start;
-		int	count_pixel_square;
-
-		int *rgb = array_to_int("255, 0, 0");
-		if (side != 1)
-			color = encode_rgb(rgb[0], rgb[1], rgb[2]);
-		else
-			color = encode_rgb(110, 9, 9);
-		while(drawStartTemp < drawEnd)
-		{
-			count_pixel_square = 0;
-			while (count_pixel_square < 32)
-			{
-				mlx_pixel_put(map->mlx.mlx_ptr, map->mlx.win, (x + count_pixel_square), drawStartTemp, color);  //<<
-				count_pixel_square++;
-			}
-			drawStartTemp++;
-		}
-		printf("mano que\n");
-		x++;
+		draw_stripe(map);
+		map->rays.x++;
 	}
 	//timing pra input e contador de FPS
 	// old_time = time;
@@ -327,9 +254,8 @@ void	get_rays(t_map *map)
 	//ao final, dar o equivalente ao cls(), que deve ser
 	// destroy_image()	
 }
-
-
-/* abrir uma funcao para tratamento do
+/*
+ abrir uma funcao para tratamento do
    spawing. Onde sera recvebido os valores iniciais
    de x e y e direcionados cada um para as variaveis 
    pos_x e pos_y na estrutura

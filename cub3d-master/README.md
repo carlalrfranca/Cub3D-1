@@ -83,8 +83,8 @@ git clone https://github.com/carlalrfranca/cub3D
 | --leak-check=full     | <sub> retorna o detalhamento dos vazamentos </sub>         |
 | --show-leak-kinds=all | <sub> relatório completo dos vazamentos </sub>             |
 
-- `valgrind --leak-check=full --show-leak-kinds=all ./cub3d ./maps/map1.olar` <br>
-- `valgrind --leak-check=full --show-leak-kinds=all ./cub3d ./maps/map1.cub` <br>
+- `valgrind --leak-check=full --show-leak-kinds=all ./cub3d ./maps/map.olar` <br>
+- `valgrind --leak-check=full --show-leak-kinds=all ./cub3d ./maps/map.cub` <br>
 
 ## Miscelanea
 
