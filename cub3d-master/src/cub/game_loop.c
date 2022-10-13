@@ -6,7 +6,7 @@
 /*   By: cleticia <cleticia@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 16:48:25 by cleticia          #+#    #+#             */
-/*   Updated: 2022/10/12 11:00:31 by cleticia         ###   ########.fr       */
+/*   Updated: 2022/10/12 17:19:11 by cleticia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,25 +44,6 @@ pinta a janela function render_scenes() com os valores do mapa recebido
 redesenhar com novos valores function move_player();
 */
 
-/*
-int	event_key(int keycode, t_map *map)
-{
-	if (keycode == KEY_ESC)
-	{
-		write (1, "You typed the ESC key. Game closed!\n", 36);
-		end_program(map);
-	}
-	if (keycode == KEY_A)
-		move_gammer(map, map->x, map->y - 1);
-	if (keycode == KEY_D)
-		move_gammer(map, map->x, map->y + 1);
-	if (keycode == KEY_S)
-		move_gammer(map, map->x + 1, map->y);
-	if (keycode == KEY_W)
-		move_gammer(map, map->x - 1, map->y);
-	return (0);
-}
-*/
 
 // void	render_minimap(t_map *map) //continuar funcao
 // {
