@@ -6,7 +6,7 @@
 /*   By: cleticia <cleticia@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 18:15:32 by cleticia          #+#    #+#             */
-/*   Updated: 2022/10/12 02:08:57 by cleticia         ###   ########.fr       */
+/*   Updated: 2022/10/13 16:01:22 by cleticia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,13 @@ typedef struct s_background
 	int		endian;
 }	t_background;
 
+typedef	struct s_rotation
+{
+	int	right;
+	int	left;
+
+}	t_rotation;
+
 typedef struct s_mlx
 {
 	void			*win;
@@ -97,6 +104,7 @@ typedef struct s_map //principal
 	t_mlx			mlx;
 	t_image			textures;
 	t_background	back;
+	t_rotation		rotation;
 	t_ray			rays;
 	char			**map;
 	// char			*north;
@@ -120,6 +128,8 @@ enum e_keycode
 	KEY_S				= 115,
 	KEY_D				= 100,
 	KEY_ESC				= 65307,
+	ROTATE_LEFT			= 123,
+	ROTATE_RIGHT		= 124,
 	X_EVENT_KEY_EXIT	= 17,
 	X_EVENT_KEY_PRESS	= 2
 };
