@@ -6,7 +6,7 @@
 /*   By: cleticia <cleticia@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 18:15:32 by cleticia          #+#    #+#             */
-/*   Updated: 2022/10/13 16:30:55 by cleticia         ###   ########.fr       */
+/*   Updated: 2022/11/04 00:53:00 by cleticia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 # define CUB3D_H
 # define FT_ERROR 1
 # define FT_SUCCESS 0
-# define SCREEN_WIDTH 640
-# define SCREEN_HEIGHT 440
+# define SCREEN_WIDTH 1200
+# define SCREEN_HEIGHT 800
 
 # include <math.h>
 # include <stdio.h>
@@ -28,59 +28,49 @@
 # include "../inc/libft.h"
 # include "../src/mlx/minilibx-linux/mlx.h"
 
+#define map_s 32 //map cube size
+#define PI 3.1415926535
+#define P2 PI/2
+#define P3 3 * PI/2
+#define DR 0.0174533 //um degrau em radiano
+
 typedef struct s_ray
 {
 	char	*rays; //orientacao
-	char*	pov;
 	int		index;
-	/* init*/
-	double dir_x; //vetor de direcao inicial eixo x
-	double dir_y; //vetor de direcao inicial eixo y
-	double plane_x; // versao 2d raycaster do plano de camera
-	double plane_y;
-	// double time; //tempo do quadro atual
-	// double old_time; //tempo do frame anterior
-	double camera_x;
-	double ray_dir_x;
-	double ray_dir_y;
-	double	pos_x;  //posicao inicial
-	double	pos_y;
-	double	side_dist_x;
-	double	side_dist_y;
-	double	delta_dist_x;
-	double	delta_dist_y;
-	double	perp_wall_dist;
+	double	dir_x; //vetor de direcao inicial eixo x
+	double	dir_y; //vetor de direcao inicial eixo y
+	double 	ray_x; //posiciao inicial do raio rx e ry
+	double 	ray_y;
+	float	pos_x; //px
+	float	pos_y; //py
+	float	gamer_angle; //pa
+	float	deltax;//pdx; //delta x
+	float 	deltay;//pdy; //delta y
 	int		x;
-	int	map_x; //posicao atual
-	int	map_y;
-    int step_x;
-    int step_y;
-    int hit;
-    int side;
-	int line_height;
-	int draw_start;
-	int	color;
-	int		draw_end;
-	int		draw_start_temp;
-	int		count_pixel_square;
+	int		map_x; //posicao atual
+	int		map_y;
+    int 	step_x; //comprimento inicial interno da celula xo
+    int 	step_y; //comprimento final interno da celula yo
 	int		*rgb;
+	int		depth_of_field; //dof
+	float	ray_angle;
+	float 	neg_tan; //ntan negativo da tangente
+	float 	neg_inv_tan; //atan negativo do inverso
+	float 	dist_horizontal; //dish;
+	float 	dist_vertical; //disv;
+
+
 }	t_ray;
 
 typedef struct s_background
 {
-	void	*ptr_img;
+	void	*ptr_img; //ptr_map
 	int		*data;
 	int		line_size;
 	int		bpp;
 	int		endian;
 }	t_background;
-
-typedef	struct s_rotation
-{
-	int	right;
-	int	left;
-
-}	t_rotation;
 
 typedef struct s_mlx
 {
@@ -95,8 +85,6 @@ typedef	struct s_image
 	void			*south_wall;
 	void			*west_wall;
 	void			*east_wall;
-	// void			*floor;
-	// void			*ceilling;
 }	t_image;
 
 typedef struct s_map //principal
@@ -104,18 +92,15 @@ typedef struct s_map //principal
 	t_mlx			mlx;
 	t_image			textures;
 	t_background	back;
-	t_rotation		rotation;
+	t_background	map2d;
+	t_background	gamer;
 	t_ray			rays;
 	char			**map;
-	// char			*north;
-	// char			*south;
-	// char			*west;
-	// char			*east;
 	char			*floor;
 	char			*ceilling;
 	int				monitoring;
-	int				height;
-	int				width;
+	int				height; //map_y -altura
+	int				width; //map_x -largura
 	int				fd;
 	char			spawing;
 }	t_map;
@@ -134,7 +119,14 @@ enum e_keycode
 	X_EVENT_KEY_PRESS	= 2
 };
 
-/* Functions */
+float dist (float ax, float ay, float bx, float by);
+int		minimize_window(t_map *map);
+int		end_program(t_map *map);
+
+int		draw_line(t_map *map, int color);
+void	draw_rays(t_map *map);
+void	paint_gamer(t_map *map);
+void	paint_map(t_map *map);
 int		event_key(int keycode, t_map *map);
 void	move_player(t_map *map, int x, int y);
 void	draw_stripe(t_map *map);
@@ -153,14 +145,13 @@ void	*open_img(t_map *map, char *path);
 void	path_img(t_map *map);
 void	free_pointers(t_map *map);
 int		end_program(t_map *map);
-void	color_background(t_map *map, int width, int height);
 void	move_player(t_map *map, int x, int y);
 void	free_map(t_map *map);
 void	*open_img(t_map *map, char *path);
 int		event_key(int keycode, t_map *map);
 void	path_img(t_map *map);
 void	clear_screen(t_map *map);
-void	render_scenes(t_map *map);
+void	color_background(t_map *map);
 void	*open_img(t_map *map, char *path);
 void	path_image(t_map *map);
 void	free_pointers(t_map *map);
@@ -172,7 +163,6 @@ void 	game_loop(t_map *map);
 void	validate_floor(t_map *map);
 void	validate_ceilling(t_map	*map);
 void	validate_texture(t_map *map);
-//void verif_char(t_map *map);
 int		validate_map(t_map *map);
 int		measure_width(char	**line, t_map *map);
 void	measure_height(char **line, t_map *map);

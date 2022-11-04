@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: cleticia <cleticia@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 15:11:59 by cleticia          #+#    #+#             */
-/*   Updated: 2022/10/07 17:44:03 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/11/03 00:25:22 by cleticia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,6 @@ void	file_error(void)
 	write(2, "Error: Invalid Map\n", 19);
 	exit(1);
 }
-/*
-	verifica numero de argumentos
-	se for != 2 ou se a extensão for != .cub
-	segue para funcnao de erro e exita
-	se nao starta a funcao para armazenar mapa
-	depois starta a funcao para validar mapa se tudo ok retorna
-	para startar o loop princimake repal onde inicia  a minilibX e a renderizacao
-*/
 
 int main(int argc, char **argv)
 {
@@ -47,28 +39,7 @@ int main(int argc, char **argv)
 }
 
 /*
-ou dessa forma
-int main(int argc, char **argv)
-{
-	char	*extension;
-	char	*filename;
-
-	filename = argv[1];
-	printf("*** cheguei aqui na main 1 ***\n");
-	printf("argc: %d\n", argc);
-	extension = ft_strrchr(filename, '.');
-	if (argc != 2 || ft_strncmp(extension, ".cub", 4) != 0)
-		filename_error();
-	prepare_to_store(filename);
-	//validate_map();
-	//game_loop();
-	return (0);
-}
-*/
-
-/*
-
-valgrind --leak-check=full ./cub3d ./src/maps/map.cub
+./cub3d ./src/maps/map.cub
 valgrind --leak-check=full ./cub3d ./src/maps/map.cub
 
 */
