@@ -6,7 +6,7 @@
 /*   By: cleticia <cleticia@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/12 11:42:11 by cleticia          #+#    #+#             */
-/*   Updated: 2022/10/13 16:32:04 by cleticia         ###   ########.fr       */
+/*   Updated: 2022/11/02 20:46:04 by cleticia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,11 @@ int	event_key(int keycode, t_map *map)
 		move_player(map, map->rays.pos_x + 1, map->rays.pos_y);
 	if (keycode == KEY_W)
 		move_player(map, map->rays.pos_x - 1, map->rays.pos_y);
-	if (keycode == ROTATE_LEFT)
-		move_player(map, map->rotation.left, map->rays.pos_y);
-	if (keycode == ROTATE_RIGHT)
-		move_player(map, map->rotation.right, map->rays.pos_y);
-	if (keycode == KEY_W && keycode == KEY_A)
+	//if (keycode == ROTATE_LEFT)
+	//	move_player(map, map->rotation.left, map->rays.pos_y);
+	//if (keycode == ROTATE_RIGHT)
+	//	move_player(map, map->rotation.right, map->rays.pos_y);
+	//if (keycode == KEY_W && keycode == KEY_A)
 		move_player(map, map->rays.pos_x - 1, map->rays.pos_y - 1);
 	if (keycode == KEY_W && keycode == KEY_D)
 		move_player(map, map->rays.pos_x - 1, map->rays.pos_y + 1);
@@ -67,3 +67,6 @@ void	move_player(t_map *map, int x, int y)
 		}
 	}
 }
+/*
+./cub3d ./src/maps/map.cub
+*/

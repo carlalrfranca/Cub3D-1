@@ -6,7 +6,7 @@
 #    By: cleticia <cleticia@student.42sp.org.br>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/08/10 18:12:04 by cleticia          #+#    #+#              #
-#    Updated: 2022/10/10 13:46:54 by cleticia         ###   ########.fr        #
+#    Updated: 2022/11/04 00:07:29 by cleticia         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,7 +25,7 @@ FLAGS =	-Werror -Wall -Wextra -g
 SRC = src/cub/main.c\
 	src/cub/store_map.c\
     src/cub/validate_map.c\
-    src/cub/game_loop.c\
+	src/cub/game_loop.c\
 	src/gnl/get_next_line.c\
 
 OBJS = $(SRC:.c=.o)
