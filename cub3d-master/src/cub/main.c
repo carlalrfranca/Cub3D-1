@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cleticia <cleticia@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 15:11:59 by cleticia          #+#    #+#             */
-/*   Updated: 2022/11/03 00:25:22 by cleticia         ###   ########.fr       */
+/*   Updated: 2022/11/07 19:47:05 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int main(int argc, char **argv)
 		file_error();
 	map = prepare_to_store(filename);
 	validate_map(map);
-	game_loop(map);
+	// game_loop(map);
 	return (0);
 }
 

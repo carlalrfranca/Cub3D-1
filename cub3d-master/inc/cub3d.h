@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cleticia <cleticia@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 18:15:32 by cleticia          #+#    #+#             */
-/*   Updated: 2022/11/04 00:53:00 by cleticia         ###   ########.fr       */
+/*   Updated: 2022/11/07 16:43:52 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,8 @@ typedef struct s_ray
 	int		index;
 	double	dir_x; //vetor de direcao inicial eixo x
 	double	dir_y; //vetor de direcao inicial eixo y
-	double 	ray_x; //posiciao inicial do raio rx e ry
-	double 	ray_y;
+	float 	ray_x; //posiciao inicial do raio rx e ry
+	float 	ray_y;
 	float	pos_x; //px
 	float	pos_y; //py
 	float	gamer_angle; //pa
@@ -50,8 +50,8 @@ typedef struct s_ray
 	int		x;
 	int		map_x; //posicao atual
 	int		map_y;
-    int 	step_x; //comprimento inicial interno da celula xo
-    int 	step_y; //comprimento final interno da celula yo
+    float 	step_x; //comprimento inicial interno da celula xo
+    float 	step_y; //comprimento final interno da celula yo
 	int		*rgb;
 	int		depth_of_field; //dof
 	float	ray_angle;

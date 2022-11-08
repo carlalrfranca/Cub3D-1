@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   game_loop.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cleticia <cleticia@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 16:48:25 by cleticia          #+#    #+#             */
-/*   Updated: 2022/11/04 01:34:11 by cleticia         ###   ########.fr       */
+/*   Updated: 2022/11/07 19:45:17 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,14 +87,14 @@ void draw_rays(t_map *map)
 	
 	int mx;
 	int my;
-	int mp;
+	// int mp;
 	float hx;
 	float hy;
 	float vx;
 	float vy;
 
-	map->rays.ray_angle = map->rays.gamer_angle; //angulo do raio
-	//map->rays.ray_angle = map->rays.gamer_angle - DR * 30;
+	map->rays.ray_angle = map->rays.gamer_angle - DR; //angulo do raio
+	// map->rays.ray_angle = map->rays.gamer_angle - DR * 30;
 	if (map->rays.ray_angle < 0)
 		map->rays.ray_angle += 2 * PI;
 	if (map->rays.ray_angle > 2 * PI)
@@ -109,14 +109,14 @@ void draw_rays(t_map *map)
 		map->rays.neg_inv_tan = -1/tan(map->rays.ray_angle);
 		if(map->rays.ray_angle > PI) //se tiver olhando para cima
 		{
-			map->rays.ray_y = (((int)map->rays.pos_y >> 5) << 5) -0.0001;
+			map->rays.ray_y = (((int)map->rays.pos_y>>5)<<5) - 0.0001;
 			map->rays.ray_x = (map->rays.pos_y - map->rays.ray_y) * map->rays.neg_inv_tan + map->rays.pos_x;
 			map->rays.step_y = -32;
-			map->rays.step_x =-map->rays.step_y * map->rays.neg_inv_tan;
+			map->rays.step_x = -map->rays.step_y * map->rays.neg_inv_tan;
 		}
-		else if(map->rays.ray_angle<PI)//se tiver olhando pra baixo
+		else if(map->rays.ray_angle < PI)//se tiver olhando pra baixo
 		{
-			map->rays.ray_y = (((int)map->rays.pos_y >> 5) << 5) + 32;
+			map->rays.ray_y = (((int)map->rays.pos_y>>5)<<5) + 32;
 			map->rays.ray_x = (map->rays.pos_y - map->rays.ray_y) * map->rays.neg_inv_tan + map->rays.pos_x;
 			map->rays.step_y = 32;
 			map->rays.step_x = -map->rays.step_y * map->rays.neg_inv_tan;
@@ -131,8 +131,8 @@ void draw_rays(t_map *map)
 		{
 			mx = (int)map->rays.ray_x >> 5;
 			my = (int)map->rays.ray_y >> 5;
-			mp = my * map->rays.map_x + mx;
-			if((mp > 0 && mp < (map->rays.map_x * map->rays.map_y)) && map->map[my][mx] == 1) //se bateu na parede entao para o loop
+			// mp = my * map->rays.map_x + mx;
+			if((mx >= 0 && mx < map->width) && (my >= 0 && my < map->height) && map->map[my][mx] == '1') //se bateu na parede entao para o loop //mp > 0 && mp < (map->rays.map_x * map->rays.map_y) && 
 			{
 				hx = map->rays.ray_x;
 				hy = map->rays.ray_y;
@@ -146,7 +146,7 @@ void draw_rays(t_map *map)
 				map->rays.depth_of_field += 1;
 			}		
 		}
-		draw_line(map, 0xFFCC00);
+		// draw_line(map, 0xFFCC00);
 
 		//linhas verticais
 		map->rays.depth_of_field = 0; //triangulacao calculo de tirar inverso da tangente etc
@@ -180,8 +180,8 @@ void draw_rays(t_map *map)
 		{
 			mx = (int)(map->rays.ray_x)>>5;
 			my = (int)(map->rays.ray_y)>>5;
-			mp = my * map->rays.map_x + mx;
-			if(mp > 0 && mp < map->rays.map_x * map->rays.map_y && map->map[my][mx] == '1') //se bateu na parede entao para o loop
+			// mp = my * map->rays.map_x + mx;
+			if((mx >= 0 && mx < map->width) && (my >= 0 && my < map->height) && map->map[my][mx] == '1') //se bateu na parede entao para o loop //mp > 0 && mp < (map->rays.map_x * map->rays.map_y) &&
 			{
 				vx = map->rays.ray_x;
 				vy = map->rays.ray_y;
@@ -213,9 +213,6 @@ void draw_rays(t_map *map)
 			map->rays.ray_angle -= 2 * PI;
 	}
 }
-
-
-
 
 void	paint_gamer(t_map *map)
 {
@@ -265,8 +262,10 @@ void	paint_map(t_map *map)
 					//printf("cell_h: %d e cell_v: %d\n", cell_horizontal, cell_vertical);
 					if(map->map[cell_vertical][cell_horizontal] == '1')
 						map->map2d.data[px_begin_vertical * (map->width * 32) + px_begin_horizontal] = 0x000000;
-					else
+					else if (map->map[cell_vertical][cell_horizontal] == '0')
 						map->map2d.data[px_begin_vertical * (map->width * 32) + px_begin_horizontal] = 0xFFFFFF;
+					else
+						map->map2d.data[px_begin_vertical * (map->width * 32) + px_begin_horizontal] = 0x2C2F36;
 					px_begin_vertical++;
 				}
 				px_begin_horizontal++;
@@ -336,9 +335,9 @@ int	event_key(int keycode, t_map *map)
 		if (map->rays.pos_y < 0)
 			map->rays.pos_y = 1;
  	}
-	mlx_destroy_image (map->mlx.mlx_ptr, map->back.ptr_img);
-	mlx_destroy_image (map->mlx.mlx_ptr, map->map2d.ptr_img);
 	mlx_destroy_image (map->mlx.mlx_ptr, map->gamer.ptr_img);
+	mlx_destroy_image (map->mlx.mlx_ptr, map->map2d.ptr_img);
+	mlx_destroy_image (map->mlx.mlx_ptr, map->back.ptr_img);
 	color_background(map);
 	paint_map(map);
 	paint_gamer(map);
@@ -351,9 +350,13 @@ void	game_loop(t_map *map)
 	// int	y;
 	// x = map->width * 32;
 	// y = map->height * 32;
-	map->rays.pos_x = 10;
-	map->rays.pos_y = 10;
-	printf("coordenadas player: %f e %f\n", map->rays.pos_x, map->rays.pos_y);
+	map->rays.pos_x = 40;
+	map->rays.pos_y = 80;
+	// printf("coordenadas player: %f e %f\n", map->rays.pos_x, map->rays.pos_y);
+	map->rays.map_x = map->width;
+	map->rays.map_y = map->height;
+	map->rays.gamer_angle = PI;
+	// map_x e map_y é pra ser a largura e altura do mapa em celulas? (width e height, entao?)
 	map->rays.deltax = cos(map->rays.gamer_angle) * 5;
 	map->rays.deltay = sin(map->rays.gamer_angle) * 5;
 	map->mlx.mlx_ptr = mlx_init();

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   store_map.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cleticia <cleticia@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 16:48:18 by cleticia          #+#    #+#             */
-/*   Updated: 2022/11/02 20:42:37 by cleticia         ###   ########.fr       */
+/*   Updated: 2022/11/07 21:48:09 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,6 +146,9 @@ t_map	*prepare_to_store(char *filename)
 	// 	i++;
 	// }
 	close(map->fd);
+	// printf("Dimensões do mapa -> H: %d e W: %d\n", map->height, map->width);
+	// printf("letra da ultima coluna linha 2: %c\n", map->map[2][34]);
+	// printf("tamanho da linha 2: %ld\n", ft_strlen(map->map[2]));
 	return (map);
 }
 

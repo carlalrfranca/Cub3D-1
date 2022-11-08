@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   validate_map.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cleticia <cleticia@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 16:48:36 by cleticia          #+#    #+#             */
-/*   Updated: 2022/11/02 20:53:43 by cleticia         ###   ########.fr       */
+/*   Updated: 2022/11/08 00:26:38 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,11 +103,76 @@ void verif_char(t_map *map)
 			}
 			if (letter == 'S' || letter == 'N' || letter == 'E'
 				|| letter == 'W')
+			{
 				map->spawing = letter;
+				map->rays.pos_x = j;
+				map->rays.pos_y = i;
+			}
 			j++;
 		}
 		i++;
 	}
+}
+
+int validate_row(char **map, int pos_x, int pos_y, char to_skip)
+{
+	int x;
+
+	x = pos_x;
+	if (x > 0 && map[pos_y][x - 1] != '1')
+		return (-30);
+	while (map[pos_y][x] && map[pos_y][x] == to_skip)
+		x++;
+	if (map[pos_y][pos_x] == ' ' && map[pos_y][x] == '\0' && map[pos_y][pos_x - 1] == '1')
+	{
+		return (x - 1); //nesse caso, é o caracter nulo e vai precisar compensar pra la fora
+		// nao acessarmos espaço indevido na string
+	}
+	else if (map[pos_y][x] != '1')
+	{
+		printf("%d e %d\n", pos_y, x); //ta dando erro pq ta pegando o caracter do gamer.. podemos
+		// salvar sua posicao em x e y e substitui-lo por 0 pra nao ter problema?
+		return (-30);
+	}
+	else
+		return (x);
+}
+
+int is_map_open(t_map *map)
+{
+	int x_axis;
+	int y_axis;
+	int	skip_spaces;
+
+	y_axis = 0;
+	while(map->map[y_axis])
+	{
+		x_axis = 0;
+		while (map->map[y_axis][x_axis])
+		{
+			if(map->map[y_axis][x_axis] == ' ')
+			{
+				// rodar até encontrar '1' (e atualizar a pos_x), senao dá erro
+				skip_spaces = validate_row(map->map, x_axis, y_axis, ' ');
+				if (skip_spaces < 0)
+					return (skip_spaces);
+				else
+					x_axis += (skip_spaces - x_axis); //atualizar a posicao em x
+			}
+			else if (map->map[y_axis][x_axis] == '0')
+			{
+				// printf("Encontrou zero: %d e %d\n", y_axis, x_axis);
+				skip_spaces = validate_row(map->map, x_axis, y_axis, '0');
+				if (skip_spaces < 0)
+					return (skip_spaces);
+				else
+					x_axis += (skip_spaces - x_axis);
+			}
+			x_axis++;
+		}
+		y_axis++;
+	}
+	return (0);
 }
 
 int	validate_map(t_map *map)
@@ -116,6 +181,11 @@ int	validate_map(t_map *map)
 	validate_rgb(map->ceilling);
 	validate_texture(map);
 	verif_char(map);
+	if (is_map_open(map) < 0)
+	{
+		printf("Erro\nSeu mapa não está fechado!");
+		exit(-30);
+	}
 	return (0);
 }
 /*
