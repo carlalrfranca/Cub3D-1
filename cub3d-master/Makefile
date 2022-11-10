@@ -23,8 +23,8 @@ INC = -I ./inc/ -I /src/lib/ -I ./src/mlx/minilibx-linux
 FLAGS =	-Werror -Wall -Wextra -g
 
 SRC = src/cub/main.c\
-	src/cub/store_map.c\
-    src/cub/validate_map.c\
+	src/cub/map_validation/store_map.c\
+    src/cub/map_validation/validate_map.c\
 	src/cub/game_loop.c\
 	src/gnl/get_next_line.c\
 
