@@ -28,6 +28,10 @@
 # include "../inc/libft.h"
 # include "../src/mlx/minilibx-linux/mlx.h"
 
+// macros para monitorar o tipo de conteudo que foi extraído do mapa
+#define TEXTURES_DONE 4
+#define	RGB_DONE 2
+
 #define map_s 32 //map cube size
 #define PI 3.1415926535
 #define P2 PI/2
@@ -159,6 +163,7 @@ int		end_program(t_map *map);
 int		minimize_window(t_map *map);
 void	render_minimap(t_map *map);
 void	get_rays(t_map *map);
+void	rays_struct_init(t_map *map);
 void 	game_loop(t_map *map);
 void	validate_floor(t_map *map);
 void	validate_ceilling(t_map	*map);
