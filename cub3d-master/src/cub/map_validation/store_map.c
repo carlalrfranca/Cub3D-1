@@ -84,13 +84,13 @@ void	measure_height(char **line, t_map *map)
 		if (ft_strchr(*line, '.')) //texturas
 		{
 			texture++;
-			if (texture == 4) //precisa juntar ao caso de se o rgb vier ANTES (algum calculo com os valores?)
+			if (texture == TEXTURES_DONE) //precisa juntar ao caso de se o rgb vier ANTES (algum calculo com os valores?)
 				monitoring += 4;
 		}
 		else if (ft_strchr(*line, ','))//floor e ceilling
 		{
 			rgb++;
-			if(rgb == 2)
+			if(rgb == RGB_DONE)
 			{
 				monitoring += 2;//significa que passou pelo rgb
 				free(*line);
