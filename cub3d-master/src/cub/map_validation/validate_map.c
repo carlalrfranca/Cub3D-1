@@ -6,7 +6,7 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 16:48:36 by cleticia          #+#    #+#             */
-/*   Updated: 2022/11/11 00:22:21 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/11/11 00:28:46 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,11 @@ void	free_map(t_map *map)
 	while (++index < map->height)
 		free(map->map[index]);
 	free(map->map);
+	if(map->floor)
+		free(map->floor);
+	if(map->ceilling)
+		free(map->ceilling);
+	free(map);
 }
 
 void	map_error(t_map *map)
