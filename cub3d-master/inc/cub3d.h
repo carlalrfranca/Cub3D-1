@@ -6,7 +6,7 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 18:15:32 by cleticia          #+#    #+#             */
-/*   Updated: 2022/11/11 00:01:54 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/11/11 00:38:17 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,6 +168,14 @@ void	render_minimap(t_map *map);
 void	get_rays(t_map *map);
 void	rays_struct_init(t_map *map);
 void 	game_loop(t_map *map);
+int		is_wall(char *map_line);
+int		is_valid_char(char map_char);
+void	store_player_info(t_map *map, char spawn, int row, int column);
+int		is_single_gamer(t_map *map, char spawn, int row, int column);
+int		ft_is_space(char letter);
+int		check_is_closed(char **map_line, int char_counter);
+int		check_map_interior(t_map *map, char **map_line, int row);
+int		is_map_open(t_map *map);
 void	validate_floor(t_map *map);
 void	validate_ceilling(t_map	*map);
 void	validate_texture(t_map *map);

@@ -6,7 +6,7 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 16:48:36 by cleticia          #+#    #+#             */
-/*   Updated: 2022/11/11 00:28:46 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/11/11 00:47:26 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -302,19 +302,21 @@ int	check_map_interior(t_map *map, char **map_line, int row)
 	// MAS TAMBÉM (&&) se são os caracteres válidos INTERNOS (0NSWE)
 	// se algum deles NEM VÁLIDO EM GERAL FOR (sei la, vai que alguem digite '3' ou 'z'),
 	// retorna erro
-	while(*map_line[char_counter])
+	// printf("map interior: %s\n", map_line[0]);
+	// printf("map interior primeiro char: %c\n", map_line[0][char_counter + 2]);
+	while(map_line[0][char_counter])
 	{
-		if(!is_valid_char(*map_line[char_counter]))
+		if(!is_valid_char(map_line[0][char_counter]))
 			return(0);
 		else
 		{
 			// se for o caracter de spawning, a gente grava a letra e as coordenadas na struct...
-			if(ft_strchr(GAMER, *map_line[char_counter])
-				&& !is_single_gamer(map, *map_line[char_counter], row, char_counter))
+			if(ft_strchr(GAMER, map_line[0][char_counter])
+				&& !is_single_gamer(map, map_line[0][char_counter], row, char_counter))
 				return(0);
 			// ou seja: é um caracter interno (0NSEW) mas NÃO ESTÁ cercado (tem espaço ou null ao redor)
 			// daí dá erro, 
-			if(ft_strchr(INTERNAL_CHAR, *map_line[char_counter]) && !check_is_closed(map_line, char_counter))
+			if(ft_strchr(INTERNAL_CHAR, map_line[0][char_counter]) && !check_is_closed(map_line, char_counter))
 				return(0);
 		}
 		char_counter++;
@@ -338,7 +340,9 @@ int is_map_open(t_map *map)
 			if (!check_map_interior(map, &map->map[counter_string], counter_string))
 				map_error(map); //passar um numero especifico para o erro para personalizar a mensagem?
 		}
+		counter_string++;
 	}
+	return(1);
 }
 
 
@@ -384,12 +388,14 @@ int	validate_map(t_map *map)
 	validate_rgb(map->floor);
 	validate_rgb(map->ceilling);
 	validate_texture(map);
-	verif_char(map);
-	if (is_map_open(map) < 0)
-	{
-		printf("Erro\nSeu mapa não está fechado!");
-		exit(-30);
-	}
+	// verif_char(map);
+	is_map_open(map);
+	// if (is_map_open(map) < 0)
+	// {
+	// 	printf("Erro\nSeu mapa não está fechado!");
+	// 	exit(-30);
+	// }
+	printf("Aparentemente deu tudo certo\n");
 	return (0);
 }
 /*

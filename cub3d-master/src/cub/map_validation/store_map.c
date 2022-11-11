@@ -6,7 +6,7 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 16:48:18 by cleticia          #+#    #+#             */
-/*   Updated: 2022/11/07 21:48:09 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/11/11 00:34:28 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,6 +114,7 @@ void	measure_height(char **line, t_map *map)
 	{
 		close(map->fd);
 		file_error();
+	}
 	map->monitoring = monitoring;
 }
 
