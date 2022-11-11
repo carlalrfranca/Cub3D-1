@@ -6,7 +6,7 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 18:15:32 by cleticia          #+#    #+#             */
-/*   Updated: 2022/11/07 16:43:52 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/11/11 00:01:54 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,9 @@
 // macros para monitorar o tipo de conteudo que foi extraído do mapa
 #define TEXTURES_DONE 4
 #define	RGB_DONE 2
+
+#define INTERNAL_CHAR "0NSWE"
+#define GAMER "NSWE"
 
 #define map_s 32 //map cube size
 #define PI 3.1415926535
@@ -123,7 +126,7 @@ enum e_keycode
 	X_EVENT_KEY_PRESS	= 2
 };
 
-float dist (float ax, float ay, float bx, float by);
+float	measure_ray_dist(float beginX, float beginY, float endX, float endY);
 int		minimize_window(t_map *map);
 int		end_program(t_map *map);
 
