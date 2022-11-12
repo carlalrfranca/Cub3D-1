@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   event_key.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cleticia <cleticia@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/12 11:42:11 by cleticia          #+#    #+#             */
-/*   Updated: 2022/11/02 20:46:04 by cleticia         ###   ########.fr       */
+/*   Updated: 2022/11/12 19:54:55 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 atualiza valores - move o player com eventos do teclado
 get_rays dentro da logica dos eventos
 depois de atualizar as posicoes x e y do player
-
 incluir rotacao left e right struct para movimento
 move.right
 move.left

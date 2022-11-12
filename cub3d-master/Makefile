@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: cleticia <cleticia@student.42sp.org.br>    +#+  +:+       +#+         #
+#    By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/08/10 18:12:04 by cleticia          #+#    #+#              #
-#    Updated: 2022/11/04 00:07:29 by cleticia         ###   ########.fr        #
+#    Updated: 2022/11/12 20:14:00 by lfranca-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,10 +22,16 @@ INC = -I ./inc/ -I /src/lib/ -I ./src/mlx/minilibx-linux
 
 FLAGS =	-Werror -Wall -Wextra -g
 
+OBJDIR = obj
+
 SRC = src/cub/main.c\
 	src/cub/map_validation/store_map.c\
     src/cub/map_validation/validate_map.c\
 	src/cub/game_loop.c\
+	src/cub/paint_frame/color_bg.c\
+	src/cub/paint_frame/paint_scene.c\
+	src/cub/end_and_minimize/end_minimize.c\
+	src/cub/cast_rays/cast_rays.c\
 	src/gnl/get_next_line.c\
 
 OBJS = $(SRC:.c=.o)

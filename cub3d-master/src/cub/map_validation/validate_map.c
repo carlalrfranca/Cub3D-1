@@ -6,7 +6,7 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 16:48:36 by cleticia          #+#    #+#             */
-/*   Updated: 2022/11/11 00:47:26 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/11/11 01:02:15 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,8 @@ void	free_map(t_map *map)
 void	map_error(t_map *map)
 {
 	free_map(map);
-	write(2, "Error : Invalid Map\n", 20);
-	exit(1);
+	write(2, "Error\nInvalid Map\n", 18);
+	exit(-1);
 }
 
 int	is_two_commas(char *rgb_value)
@@ -87,113 +87,40 @@ void	validate_texture(t_map *map)
 		map_error(map);
 }
 
-void verif_char(t_map *map)
-{
-	char	letter;
-	int		i;
-	int		j;
-
-	i = 0;
-	j = 0;
-	while(map->map[i])
-	{
-		j = 0;
-		while(map->map[i][j])
-		{
-			letter = map->map[i][j];
-			if (letter != '0' && letter != ' ' && letter != '1'
-				&& letter != 'N' && letter != 'S' &&letter != 'E' && letter != 'W') //substituir por ft_strncmp()
-				map_error(map);
-			if (letter == 'S' || letter == 'N' || letter == 'E'
-				|| letter == 'W')
-			{
-				map->spawing = letter;
-				map->rays.pos_x = j;
-				map->rays.pos_y = i;
-			}
-			j++;
-		}
-		i++;
-	}
-}
-
-
-
-// int validate_row(char **map, int pos_x, int pos_y, char to_skip)
+// void verif_char(t_map *map)
 // {
-// 	int x;
+// 	char	letter;
+// 	int		i;
+// 	int		j;
 
-// 	x = pos_x;
-// 	if (x > 0 && map[pos_y][x - 1] != '1')
-// 		return (-30);
-// 	while (map[pos_y][x] && map[pos_y][x] == to_skip)
-// 		x++;
-// 	if (map[pos_y][pos_x] == ' ' && map[pos_y][x] == '\0' && map[pos_y][pos_x - 1] == '1')
+// 	i = 0;
+// 	j = 0;
+// 	while(map->map[i])
 // 	{
-// 		return (x - 1); //nesse caso, é o caracter nulo e vai precisar compensar pra la fora
-// 		// nao acessarmos espaço indevido na string
-// 	}
-// 	else if (map[pos_y][x] != '1')
-// 	{
-// 		printf("%d e %d\n", pos_y, x); //ta dando erro pq ta pegando o caracter do gamer.. podemos
-// 		// salvar sua posicao em x e y e substitui-lo por 0 pra nao ter problema?
-// 		return (-30);
-// 	}
-// 	else
-// 		return (x);
-// }
-
-// int validate_columns(t_map *map)
-// {
-// 	int x_axis;
-// 	int y_axis;
-// 	int	skip_spaces;
-
-// 	// a ideia é percorrer verticalmente (ou seja, o y A CADA ITERAÇÃO)
-// 	y_axis = 0;
-// 	x_axis = 0;
-// 	while (x_axis < map->width)
-// 	{
-// 		y_axis = 0;
-// 		while (y_axis < map->height)
+// 		j = 0;
+// 		while(map->map[i][j])
 // 		{
-// 			if (map->map[y_axis][x_axis] == ' ')
+// 			letter = map->map[i][j];
+// 			if (letter != '0' && letter != ' ' && letter != '1'
+// 				&& letter != 'N' && letter != 'S' &&letter != 'E' && letter != 'W') //substituir por ft_strncmp()
+// 				map_error(map);
+// 			if (letter == 'S' || letter == 'N' || letter == 'E'
+// 				|| letter == 'W')
 // 			{
-
+// 				map->spawing = letter;
+// 				map->rays.pos_x = j;
+// 				map->rays.pos_y = i;
 // 			}
-// 			else if (map->map[y_axis][x_axis] == '0')
-// 			{
-				
-// 			}
-// 			// if(map->map[y_axis][x_axis] == ' ')
-// 			// {
-// 			// 	// rodar até encontrar '1' (e atualizar a pos_x), senao dá erro
-// 			// 	skip_spaces = validate_row(map->map, x_axis, y_axis, ' ');
-// 			// 	if (skip_spaces < 0)
-// 			// 		return (skip_spaces);
-// 			// 	else
-// 			// 		x_axis += (skip_spaces - x_axis); //atualizar a posicao em x
-// 			// }
-// 			// else if (map->map[y_axis][x_axis] == '0')
-// 			// {
-// 			// 	// printf("Encontrou zero: %d e %d\n", y_axis, x_axis);
-// 			// 	skip_spaces = validate_row(map->map, x_axis, y_axis, '0');
-// 			// 	if (skip_spaces < 0)
-// 			// 		return (skip_spaces);
-// 			// 	else
-// 			// 		x_axis += (skip_spaces - x_axis);
-// 			// }
-// 			y_axis++;
+// 			j++;
 // 		}
-// 		x_axis++;
+// 		i++;
 // 	}
 // }
 
-
+// ----------------------------------------------------------------------------------
 // acho que em vem da função acima, a gente pode criar uma função para verificar
 // que o caracter enviado é aceitável
 // e daí dentro do loop verificar cada char (substitui a verify_char)
-
 
 // loop principal pra verificar o mapa:
 /*
@@ -345,44 +272,6 @@ int is_map_open(t_map *map)
 	return(1);
 }
 
-
-// int is_map_open(t_map *map)
-// {
-// 	int x_axis;
-// 	int y_axis;
-// 	int	skip_spaces;
-
-// 	y_axis = 0;
-// 	while(map->map[y_axis])
-// 	{
-// 		x_axis = 0;
-// 		while (map->map[y_axis][x_axis])
-// 		{
-// 			if(map->map[y_axis][x_axis] == ' ')
-// 			{
-// 				// rodar até encontrar '1' (e atualizar a pos_x), senao dá erro
-// 				skip_spaces = validate_row(map->map, x_axis, y_axis, ' ');
-// 				if (skip_spaces < 0)
-// 					return (skip_spaces);
-// 				else
-// 					x_axis += (skip_spaces - x_axis); //atualizar a posicao em x
-// 			}
-// 			else if (map->map[y_axis][x_axis] == '0')
-// 			{
-// 				// printf("Encontrou zero: %d e %d\n", y_axis, x_axis);
-// 				skip_spaces = validate_row(map->map, x_axis, y_axis, '0');
-// 				if (skip_spaces < 0)
-// 					return (skip_spaces);
-// 				else
-// 					x_axis += (skip_spaces - x_axis);
-// 			}
-// 			x_axis++;
-// 		}
-// 		y_axis++;
-// 	}
-// 	return (0);
-// }
-
 int	validate_map(t_map *map)
 {
 	validate_rgb(map->floor);
@@ -390,11 +279,6 @@ int	validate_map(t_map *map)
 	validate_texture(map);
 	// verif_char(map);
 	is_map_open(map);
-	// if (is_map_open(map) < 0)
-	// {
-	// 	printf("Erro\nSeu mapa não está fechado!");
-	// 	exit(-30);
-	// }
 	printf("Aparentemente deu tudo certo\n");
 	return (0);
 }

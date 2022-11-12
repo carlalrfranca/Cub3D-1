@@ -6,7 +6,7 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 18:15:32 by cleticia          #+#    #+#             */
-/*   Updated: 2022/11/11 00:38:17 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/11/12 20:10:02 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@
 # include "../inc/gnl.h"
 # include "../inc/libft.h"
 # include "../src/mlx/minilibx-linux/mlx.h"
+# include <stdint.h>
+# include <sys/time.h>
 
 // macros para monitorar o tipo de conteudo que foi extraído do mapa
 #define TEXTURES_DONE 4
