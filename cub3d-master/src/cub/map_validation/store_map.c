@@ -6,11 +6,11 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 16:48:18 by cleticia          #+#    #+#             */
-/*   Updated: 2022/11/07 21:48:09 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/11/11 00:34:28 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/cub3d.h"
+#include "../../../inc/cub3d.h"
 
 void	store_map(char **line, t_map *map, char *filename)
 {
@@ -48,8 +48,7 @@ void	store_map(char **line, t_map *map, char *filename)
 			to_trim = map->ceilling;
 			map->ceilling = ft_strtrim(to_trim, " ");	
 		}
-		else if(ft_strlen(*line) == 0 && (map->monitoring == 4 ||
-			 map->monitoring == 2)) //ignorar linha vazia
+		else if(ft_strlen(*line) == 0 && (map->monitoring == 6)) //ignorar linha vazia
 		{
 			free(*line);
 			continue;
@@ -65,7 +64,7 @@ void	store_map(char **line, t_map *map, char *filename)
 
 void	measure_height(char **line, t_map *map)
 {
-	int	size;
+	int		size;
 	int		ret;
 	int		texture;
 	int		rgb;
@@ -77,7 +76,6 @@ void	measure_height(char **line, t_map *map)
 	rgb = 0;
 	texture = 0;
 	monitoring = 0;
-	//size = 0;
 	while (ret)
 	{
 		ret = get_next_line(map->fd, line);
@@ -86,15 +84,15 @@ void	measure_height(char **line, t_map *map)
 		if (ft_strchr(*line, '.')) //texturas
 		{
 			texture++;
-			if (texture == 4)
-				monitoring = 4;
+			if (texture == TEXTURES_DONE) //precisa juntar ao caso de se o rgb vier ANTES (algum calculo com os valores?)
+				monitoring += 4;
 		}
 		else if (ft_strchr(*line, ','))//floor e ceilling
 		{
 			rgb++;
-			if(rgb == 2)
+			if(rgb == RGB_DONE)
 			{
-				monitoring = 2;//significa que passou pelo rgb e que so restao mapa
+				monitoring += 2;//significa que passou pelo rgb
 				free(*line);
 				continue;
 			}
@@ -104,7 +102,7 @@ void	measure_height(char **line, t_map *map)
 			free(*line);
 			continue;
 		}
-		else if (monitoring == 2)
+		else if (monitoring == 6) //significa que ja passamos tanto pelas texturas quanto pelo rgb e só resta o mapa
 		{
 			map->height++;
 			size = ft_strlen(*line);
@@ -112,14 +110,12 @@ void	measure_height(char **line, t_map *map)
 				map->width = size;
 		}	
 	}
-	// printf("height: %d\n", map->height);
 	if (map->height == 0)
 	{
 		close(map->fd);
 		file_error();
-	}//printf("***AQUI O TAMANHO DO HEIGHT %d\n", map->height);
+	}
 	map->monitoring = monitoring;
-	// printf("o tamanho da linha na width: %d\n", map->width);
 }
 
 t_map	*prepare_to_store(char *filename)
@@ -129,7 +125,6 @@ t_map	*prepare_to_store(char *filename)
 
 	line = 0;
 	map = malloc(sizeof(t_map));
-	//map->rays = malloc(sizeof(t_ray));
 	map->fd = open(filename, O_RDONLY);
 	measure_height(&line, map);
 	store_map(&line, map, filename);
@@ -146,9 +141,6 @@ t_map	*prepare_to_store(char *filename)
 	// 	i++;
 	// }
 	close(map->fd);
-	// printf("Dimensões do mapa -> H: %d e W: %d\n", map->height, map->width);
-	// printf("letra da ultima coluna linha 2: %c\n", map->map[2][34]);
-	// printf("tamanho da linha 2: %ld\n", ft_strlen(map->map[2]));
 	return (map);
 }
 

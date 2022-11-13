@@ -6,7 +6,7 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 18:15:32 by cleticia          #+#    #+#             */
-/*   Updated: 2022/11/07 16:43:52 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/11/12 20:10:02 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,15 @@
 # include "../inc/gnl.h"
 # include "../inc/libft.h"
 # include "../src/mlx/minilibx-linux/mlx.h"
+# include <stdint.h>
+# include <sys/time.h>
+
+// macros para monitorar o tipo de conteudo que foi extraído do mapa
+#define TEXTURES_DONE 4
+#define	RGB_DONE 2
+
+#define INTERNAL_CHAR "0NSWE"
+#define GAMER "NSWE"
 
 #define map_s 32 //map cube size
 #define PI 3.1415926535
@@ -119,7 +128,7 @@ enum e_keycode
 	X_EVENT_KEY_PRESS	= 2
 };
 
-float dist (float ax, float ay, float bx, float by);
+float	measure_ray_dist(float beginX, float beginY, float endX, float endY);
 int		minimize_window(t_map *map);
 int		end_program(t_map *map);
 
@@ -159,7 +168,16 @@ int		end_program(t_map *map);
 int		minimize_window(t_map *map);
 void	render_minimap(t_map *map);
 void	get_rays(t_map *map);
+void	rays_struct_init(t_map *map);
 void 	game_loop(t_map *map);
+int		is_wall(char *map_line);
+int		is_valid_char(char map_char);
+void	store_player_info(t_map *map, char spawn, int row, int column);
+int		is_single_gamer(t_map *map, char spawn, int row, int column);
+int		ft_is_space(char letter);
+int		check_is_closed(char **map_line, int char_counter);
+int		check_map_interior(t_map *map, char **map_line, int row);
+int		is_map_open(t_map *map);
 void	validate_floor(t_map *map);
 void	validate_ceilling(t_map	*map);
 void	validate_texture(t_map *map);
