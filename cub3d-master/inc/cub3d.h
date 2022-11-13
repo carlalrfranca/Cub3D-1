@@ -6,7 +6,7 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 18:15:32 by cleticia          #+#    #+#             */
-/*   Updated: 2022/11/12 20:10:02 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/11/12 21:28:44 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ typedef struct s_ray
 	float 	neg_inv_tan; //atan negativo do inverso
 	float 	dist_horizontal; //dish;
 	float 	dist_vertical; //disv;
-
+	float	dist_final;
 
 }	t_ray;
 

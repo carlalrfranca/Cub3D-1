@@ -6,7 +6,7 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 20:08:08 by lfranca-          #+#    #+#             */
-/*   Updated: 2022/11/12 21:03:10 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/11/12 22:06:41 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,11 @@ float measure_ray_dist(float beginX, float beginY, float endX, float endY)
 	
 // }
 
+static int	encode_rgb(uint8_t red, uint8_t green, uint8_t blue)
+{
+	return (red << 16 | green << 8 | blue);
+}
+
 void draw_rays(t_map *map)
 {
 	int ct_rays; //r;
@@ -75,14 +80,14 @@ void draw_rays(t_map *map)
 	float vy;
 
 	// printf("Profundidade de campo na horizontal: %d e vertical: %d\n", map->width, map->height);
-	map->rays.ray_angle = map->rays.gamer_angle - DR * 10; //angulo do raio
+	map->rays.ray_angle = map->rays.gamer_angle - DR * 30; //angulo do raio
 	// map->rays.ray_angle = map->rays.gamer_angle - DR * 30;
 	if (map->rays.ray_angle < 0)
 		map->rays.ray_angle += 2*PI;
 	if (map->rays.ray_angle > 2*PI)
 		map->rays.ray_angle -= 2*PI;
 	ct_rays = -1;
-	while(++ct_rays < 1)
+	while(++ct_rays < 120)
 	{//linhas horizontais
 		map->rays.depth_of_field = 0;
 		map->rays.dist_horizontal = 1000000;
@@ -177,18 +182,58 @@ void draw_rays(t_map *map)
 				map->rays.depth_of_field += 1; //próxima linha
 			}			
 		}
+		int color;
 		if (map->rays.dist_vertical < map->rays.dist_horizontal)
 		{
 			map->rays.ray_x = vx;
 			map->rays.ray_y = vy;
+			map->rays.dist_final = map->rays.dist_vertical;
+			color = encode_rgb(138, 131, 66);
 		}
 		else if (map->rays.dist_horizontal < map->rays.dist_vertical)
 		{
 			map->rays.ray_x = hx;
 			map->rays.ray_y = hy;
+			map->rays.dist_final = map->rays.dist_horizontal;
+			color = encode_rgb(102, 77, 41);
 		}
-		draw_line(map, 0xFFCC00);
-		map->rays.ray_angle += DR;
+		draw_line(map, color);
+
+		// --------------- Desenhar paredes 3D -----------
+		// 1- consertar efeito olho de peixe
+		float gamerToRayAngle = map->rays.gamer_angle - map->rays.ray_angle;
+		if(gamerToRayAngle < 0)
+			gamerToRayAngle += 2*PI;
+		else if (gamerToRayAngle > 2*PI)
+			gamerToRayAngle -= 2*PI;
+		map->rays.dist_final = map->rays.dist_final * cos(gamerToRayAngle);
+
+		// 2- tirar a altura da coluna/tira de parede a ser desenhada
+		float lineHeight = (map_s * 320/map->rays.dist_final);
+		if(lineHeight > 320)
+			lineHeight = 320 - 1;
+		// precisamos centralizar a imagem (desenhar a tira da parede a partir de metade abaixo do total da altura da tela)
+		float centeredVision = 160 - lineHeight/2;
+		float currHeight = centeredVision; //começará a ser desenhado abaixo da metade pra ficar centralizado
+		
+		// pra desenhar a tira com uma determinada largura...
+		int initialLineWidth;
+		int totalLineWidth = 8;
+		int finalLineWidth;
+		while(currHeight < (lineHeight + centeredVision))
+		{
+			initialLineWidth = ct_rays * totalLineWidth;
+			finalLineWidth = initialLineWidth + totalLineWidth;
+			while(initialLineWidth < finalLineWidth)
+			{
+				mlx_pixel_put(map->mlx.mlx_ptr, map->mlx.win, 450+initialLineWidth, currHeight, color);
+				initialLineWidth++;
+			}
+			currHeight++;
+		}
+
+		// incrementa angulo para o próximo raio
+		map->rays.ray_angle += DR/2;
 		if (map->rays.ray_angle < 0)
 			map->rays.ray_angle += 2 * PI;
 		if (map->rays.ray_angle > 2 * PI)
