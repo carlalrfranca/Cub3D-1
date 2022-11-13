@@ -6,7 +6,7 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 20:08:08 by lfranca-          #+#    #+#             */
-/*   Updated: 2022/11/12 20:51:56 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/11/12 21:03:10 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ void draw_rays(t_map *map)
 	if (map->rays.ray_angle > 2*PI)
 		map->rays.ray_angle -= 2*PI;
 	ct_rays = -1;
-	while(++ct_rays < 30)
+	while(++ct_rays < 1)
 	{//linhas horizontais
 		map->rays.depth_of_field = 0;
 		map->rays.dist_horizontal = 1000000;
