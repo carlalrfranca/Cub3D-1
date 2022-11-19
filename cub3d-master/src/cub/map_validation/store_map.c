@@ -6,7 +6,7 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 16:48:18 by cleticia          #+#    #+#             */
-/*   Updated: 2022/11/11 00:34:28 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/11/17 02:54:18 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,12 +41,14 @@ void	store_map(char **line, t_map *map, char *filename)
 			map->floor = ft_strchr(*line, ' ');
 			to_trim = map->floor;
 			map->floor = ft_strtrim(to_trim, " ");
+			to_trim = NULL;
 		}
 		else if (ft_strncmp("C", *line, 1) == 0)
 		{
 			map->ceilling = ft_strchr(*line, ' ');
 			to_trim = map->ceilling;
-			map->ceilling = ft_strtrim(to_trim, " ");	
+			map->ceilling = ft_strtrim(to_trim, " ");
+			to_trim = NULL;
 		}
 		else if(ft_strlen(*line) == 0 && (map->monitoring == 6)) //ignorar linha vazia
 		{
@@ -60,6 +62,7 @@ void	store_map(char **line, t_map *map, char *filename)
 			content++;
 		}
 	}
+	*line = NULL;
 }
 
 void	measure_height(char **line, t_map *map)
@@ -110,6 +113,11 @@ void	measure_height(char **line, t_map *map)
 				map->width = size;
 		}	
 	}
+	if(*line)
+	{
+		free(*line);
+		*line = NULL;
+	}
 	if (map->height == 0)
 	{
 		close(map->fd);
@@ -123,8 +131,9 @@ t_map	*prepare_to_store(char *filename)
 	t_map	*map;
 	char	*line;
 
-	line = 0;
+	line = NULL;
 	map = malloc(sizeof(t_map));
+	map->spawing = 0;
 	map->fd = open(filename, O_RDONLY);
 	measure_height(&line, map);
 	store_map(&line, map, filename);

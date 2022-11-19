@@ -6,7 +6,7 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 20:06:54 by lfranca-          #+#    #+#             */
-/*   Updated: 2022/11/12 20:07:16 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/11/17 03:11:12 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,19 @@
 
 int	end_program(t_map *map)
 {
+
 	mlx_destroy_image (map->mlx.mlx_ptr, map->back.ptr_img);
 	mlx_destroy_image (map->mlx.mlx_ptr, map->map2d.ptr_img);
 	mlx_destroy_image (map->mlx.mlx_ptr, map->gamer.ptr_img);
 	mlx_destroy_window(map->mlx.mlx_ptr, map->mlx.win);
 	mlx_destroy_display(map->mlx.mlx_ptr);
+	free_matrix(map->map);
+	free(map->map);
+	map->map = NULL;
+	if(map->ceilling)
+		free(map->ceilling);
+	if(map->floor)
+		free(map->floor);
 	exit (0);
 }
 
