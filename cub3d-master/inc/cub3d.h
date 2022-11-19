@@ -6,7 +6,7 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 18:15:32 by cleticia          #+#    #+#             */
-/*   Updated: 2022/11/12 21:28:44 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/11/17 03:11:59 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,10 +90,10 @@ typedef struct s_mlx
 typedef	struct s_image
 {
 	// abaixo: as texturas das paredes e os numeros rgb
-	void			*north_wall;
-	void			*south_wall;
-	void			*west_wall;
-	void			*east_wall;
+	char			*north_wall;
+	char			*south_wall;
+	char			*west_wall;
+	char			*east_wall;
 }	t_image;
 
 typedef struct s_map //principal
@@ -133,7 +133,7 @@ int		minimize_window(t_map *map);
 int		end_program(t_map *map);
 
 int		draw_line(t_map *map, int color);
-void	draw_rays(t_map *map);
+void	cast_rays(t_map *map);
 void	paint_gamer(t_map *map);
 void	paint_map(t_map *map);
 int		event_key(int keycode, t_map *map);
@@ -153,7 +153,6 @@ void	get_rays(t_map *map);
 void	*open_img(t_map *map, char *path);
 void	path_img(t_map *map);
 void	free_pointers(t_map *map);
-int		end_program(t_map *map);
 void	move_player(t_map *map, int x, int y);
 void	free_map(t_map *map);
 void	*open_img(t_map *map, char *path);
@@ -164,13 +163,12 @@ void	color_background(t_map *map);
 void	*open_img(t_map *map, char *path);
 void	path_image(t_map *map);
 void	free_pointers(t_map *map);
-int		end_program(t_map *map);
 int		minimize_window(t_map *map);
 void	render_minimap(t_map *map);
 void	get_rays(t_map *map);
 void	rays_struct_init(t_map *map);
 void 	game_loop(t_map *map);
-int		is_wall(char *map_line);
+int		is_wall(char *map_line, int map_height);
 int		is_valid_char(char map_char);
 void	store_player_info(t_map *map, char spawn, int row, int column);
 int		is_single_gamer(t_map *map, char spawn, int row, int column);
@@ -181,10 +179,12 @@ int		is_map_open(t_map *map);
 void	validate_floor(t_map *map);
 void	validate_ceilling(t_map	*map);
 void	validate_texture(t_map *map);
+void	map_error(t_map *map);
 int		validate_map(t_map *map);
 int		measure_width(char	**line, t_map *map);
 void	measure_height(char **line, t_map *map);
 void	store_map(char **line, t_map *map, char *filename);
 t_map	*prepare_to_store(char *filename);
 void	file_error(void);
+void	free_matrix(char **split_values);
 #endif
