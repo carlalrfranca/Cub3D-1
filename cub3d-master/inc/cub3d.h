@@ -6,7 +6,7 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 18:15:32 by cleticia          #+#    #+#             */
-/*   Updated: 2022/11/17 03:11:59 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/11/19 22:26:21 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define CUB3D_H
 # define FT_ERROR 1
 # define FT_SUCCESS 0
-# define SCREEN_WIDTH 1200
+# define SCREEN_WIDTH 800
 # define SCREEN_HEIGHT 800
 
 # include <math.h>
@@ -131,7 +131,7 @@ enum e_keycode
 float	measure_ray_dist(float beginX, float beginY, float endX, float endY);
 int		minimize_window(t_map *map);
 int		end_program(t_map *map);
-
+int		encode_rgb(uint8_t red, uint8_t green, uint8_t blue);
 int		draw_line(t_map *map, int color);
 void	cast_rays(t_map *map);
 void	paint_gamer(t_map *map);
