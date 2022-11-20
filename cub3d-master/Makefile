@@ -6,7 +6,7 @@
 #    By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/08/10 18:12:04 by cleticia          #+#    #+#              #
-#    Updated: 2022/11/17 19:52:45 by lfranca-         ###   ########.fr        #
+#    Updated: 2022/11/19 22:50:35 by lfranca-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,7 @@ RM = rm -rf
 
 INC = -I ./inc/ -I /src/lib/ -I ./src/mlx/minilibx-linux
 
-FLAGS =	-Werror -Wall -Wextra -g
+FLAGS =	-Werror -Wall -Wextra -fsanitize=address
 
 OBJDIR = obj
 
