@@ -6,7 +6,7 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 20:03:30 by lfranca-          #+#    #+#             */
-/*   Updated: 2022/11/17 00:48:17 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/11/19 22:03:58 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,22 +17,34 @@ void	paint_gamer(t_map *map)
 	int pixel_horizontal;//x;
 	int pixel_vertical;//y;
 
-	map->gamer.ptr_img = mlx_new_image(map->mlx.mlx_ptr, 8, 8);
-	map->gamer.data = (int *)mlx_get_data_addr(map->gamer.ptr_img,
-		&map->gamer.bpp, &map->gamer.line_size, &map->gamer.endian);
-	pixel_horizontal = 0;
-	while (pixel_horizontal < 8)
+	// map->gamer.ptr_img = mlx_new_image(map->mlx.mlx_ptr, 8, 8);
+	// map->gamer.data = (int *)mlx_get_data_addr(map->gamer.ptr_img,
+		// &map->gamer.bpp, &map->gamer.line_size, &map->gamer.endian);
+	// ----------- tentando adaptar usando o ponteiro do mapa 2D
+	// map->map2d.data
+	// pixel_horizontal = 0;
+	pixel_horizontal = map->rays.pos_x;
+	int total_pixels_horizontal;
+	// printf("Px: %d\n", pixel_horizontal);
+	total_pixels_horizontal = pixel_horizontal + 8;
+	int total_pixels_vertical;
+	while (pixel_horizontal < total_pixels_horizontal)
 	{
-		pixel_vertical = 0;
-		while (pixel_vertical < 8)
+		// pixel_vertical = 0;
+		pixel_vertical = map->rays.pos_y;
+		total_pixels_vertical = pixel_vertical + 8;
+		while (pixel_vertical < total_pixels_vertical)
 		{
-			map->gamer.data[pixel_horizontal * 8 + pixel_vertical] = 0xFFCC00;
+			map->map2d.data[pixel_vertical * (map->width * map_s) + pixel_horizontal] = 0xFFCC00;
+			// map->gamer.data[pixel_horizontal * 8 + pixel_vertical] = 0xFFCC00;
 			pixel_vertical++;
 		}
 		pixel_horizontal++;
 	}
-	mlx_put_image_to_window(map->mlx.mlx_ptr, map->mlx.win,
-		map->gamer.ptr_img, map->rays.pos_x, map->rays.pos_y);
+	// mlx_put_image_to_window(map->mlx.mlx_ptr, map->mlx.win,
+	// 	map->gamer.ptr_img, map->rays.pos_x, map->rays.pos_y);
+	// mlx_put_image_to_window(map->mlx.mlx_ptr, map->mlx.win, map->map2d.ptr_img, 0, 0);
+
 	//draw_line(mlx_ptr, win, px+4, py+4, px+pdx*5, py+pdy*5, 0xFF6347);
 	cast_rays(map);
 }
@@ -75,5 +87,5 @@ void	paint_map(t_map *map)
 		}
 		cell_horizontal++;
 	}
-	mlx_put_image_to_window(map->mlx.mlx_ptr, map->mlx.win, map->map2d.ptr_img, 0, 0);
+	// mlx_put_image_to_window(map->mlx.mlx_ptr, map->mlx.win, map->map2d.ptr_img, 0, 0);
 }

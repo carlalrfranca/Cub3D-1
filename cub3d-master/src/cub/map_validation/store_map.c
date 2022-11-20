@@ -6,7 +6,7 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 16:48:18 by cleticia          #+#    #+#             */
-/*   Updated: 2022/11/17 02:54:18 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/11/19 23:15:22 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,8 @@ void	store_map(char **line, t_map *map, char *filename)
 			map->map[content] = *line;
 			content++;
 		}
+		// if(*line)
+			// free(*line);
 	}
 	*line = NULL;
 }
@@ -73,8 +75,6 @@ void	measure_height(char **line, t_map *map)
 	int		rgb;
 	int		monitoring;
 
-	map->height = 0;
-	map->width = 0;
 	ret = 1;
 	rgb = 0;
 	texture = 0;
@@ -111,19 +111,33 @@ void	measure_height(char **line, t_map *map)
 			size = ft_strlen(*line);
 			if(size > map->width)
 				map->width = size;
-		}	
+		}
+		if (*line)
+			free(*line);
 	}
-	if(*line)
-	{
-		free(*line);
-		*line = NULL;
-	}
+	// if(line && *line)
+	// {
+	// 	free(*line);
+	// 	*line = NULL;
+	// }
 	if (map->height == 0)
 	{
 		close(map->fd);
 		file_error();
 	}
 	map->monitoring = monitoring;
+}
+
+static void init_map(t_map *map)
+{
+	map->map = NULL;
+	map->floor = NULL;
+	map->ceilling = NULL;
+	map->monitoring = 0;
+	map->height = 0;
+	map->width = 0;
+	map->fd = 0;
+	map->spawing = 0;
 }
 
 t_map	*prepare_to_store(char *filename)
@@ -133,8 +147,13 @@ t_map	*prepare_to_store(char *filename)
 
 	line = NULL;
 	map = malloc(sizeof(t_map));
-	map->spawing = 0;
+	init_map(map);
 	map->fd = open(filename, O_RDONLY);
+	if (map->fd == -1)
+	{
+		free(map);
+		exit(-1);
+	}
 	measure_height(&line, map);
 	store_map(&line, map, filename);
 	// int i = 0;

@@ -6,7 +6,7 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 16:48:25 by cleticia          #+#    #+#             */
-/*   Updated: 2022/11/17 03:11:59 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/11/19 21:44:38 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,12 +113,12 @@ int	event_key(int keycode, t_map *map)
 		if (map->rays.pos_y < 0)
 			map->rays.pos_y = 1;
  	}
-	mlx_destroy_image (map->mlx.mlx_ptr, map->gamer.ptr_img);
-	// mlx_destroy_image (map->mlx.mlx_ptr, map->map2d.ptr_img);
+	// mlx_destroy_image (map->mlx.mlx_ptr, map->gamer.ptr_img);
+	mlx_destroy_image (map->mlx.mlx_ptr, map->map2d.ptr_img);
 	mlx_destroy_image (map->mlx.mlx_ptr, map->back.ptr_img);
 	color_background(map);
-	mlx_put_image_to_window(map->mlx.mlx_ptr, map->mlx.win, map->map2d.ptr_img, 0, 0);
-	// paint_map(map);
+	// mlx_put_image_to_window(map->mlx.mlx_ptr, map->mlx.win, map->map2d.ptr_img, 0, 0);
+	paint_map(map);
 	paint_gamer(map);
 	return 0;
 }
@@ -149,6 +149,19 @@ static int	check_resolution(t_map *map)
 	return (0);
 }
 
+static void init_gamer_angle(char spawning, float *gamer_angle)
+{
+	if(spawning == 'N')
+		*gamer_angle = P3;
+	else if (spawning == 'S')
+		*gamer_angle = P2;
+	else if (spawning == 'E')
+		*gamer_angle = 0;
+	else
+		*gamer_angle = PI;
+	return; 
+}
+
 void	game_loop(t_map *map)
 {
 	// int	x;
@@ -162,6 +175,7 @@ void	game_loop(t_map *map)
 	check_resolution(map);
 	map->mlx.win = mlx_new_window(map->mlx.mlx_ptr, SCREEN_WIDTH, SCREEN_HEIGHT, "cub3d");
 	color_background(map);
+	init_gamer_angle(map->spawing, &map->rays.gamer_angle);
 	paint_map(map);	
 	paint_gamer(map);
 	mlx_hook(map->mlx.win, X_EVENT_KEY_PRESS, 1L << 0, event_key, map);

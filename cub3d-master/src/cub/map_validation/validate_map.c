@@ -6,7 +6,7 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 16:48:36 by cleticia          #+#    #+#             */
-/*   Updated: 2022/11/17 02:03:35 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/11/19 21:43:02 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -192,6 +192,7 @@ void	store_player_info(t_map *map, char spawn, int row, int column)
 	map->spawing = spawn;
 	map->rays.pos_x = column * map_s;
 	map->rays.pos_y = row * map_s;
+	map->map[row][column] = '0';
 }
 
 int	is_single_gamer(t_map *map, char spawn, int row, int column)

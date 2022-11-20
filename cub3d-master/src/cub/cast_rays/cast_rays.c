@@ -6,7 +6,7 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 20:08:08 by lfranca-          #+#    #+#             */
-/*   Updated: 2022/11/19 19:46:28 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/11/19 22:26:01 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,6 +173,7 @@ int draw_line(t_map *map, int color)
 	float	pixel_pos_x;
 	float	pixel_pos_y;
 	int		numberPixels;
+	// t_background rays_feixe;
 	
 	// coordenadas iniciais do raio a ser desenhado (posicao do pixel em x e y)
 	pixel_pos_x = map->rays.pos_x;
@@ -188,7 +189,8 @@ int draw_line(t_map *map, int color)
 	delta_y /= numberPixels; // 0
 	while (numberPixels)
 	{
-    	mlx_pixel_put(map->mlx.mlx_ptr, map->mlx.win, pixel_pos_x, pixel_pos_y, color);
+		map->map2d.data[((int)(pixel_pos_y) * (map->width * map_s) + (int)pixel_pos_x)] = color;
+    	// mlx_pixel_put(map->mlx.mlx_ptr, map->mlx.win, pixel_pos_x, pixel_pos_y, color);
     	pixel_pos_x += delta_x;
     	pixel_pos_y += delta_y;
     	--numberPixels;
@@ -336,7 +338,7 @@ static void fix_fish_eye(t_ray *rays)
 	rays->dist_final = rays->dist_final * cos(gamerToRayAngle);
 }
 
-static int	encode_rgb(uint8_t red, uint8_t green, uint8_t blue)
+int	encode_rgb(uint8_t red, uint8_t green, uint8_t blue)
 {
 	return (red << 16 | green << 8 | blue);
 }
@@ -363,13 +365,13 @@ static int	encode_rgb(uint8_t red, uint8_t green, uint8_t blue)
 // 	}
 // }
 
-static void draw_3d(t_ray *ray, t_mlx *mlx, float dist_final, int color, int ct_rays, float shade, int steptexture)
+static void draw_3d(t_ray *ray, float dist_final, int color, int ct_rays, float shade, int steptexture, t_map *map)
 {	
 	float	centeredVision;
 	float	lineHeight;
 
 	// 2- tirar a altura da coluna/tira de parede a ser desenhada
-	lineHeight = (map_s * 500/dist_final);
+	lineHeight = (map_s * 800/dist_final);
 	float ty_step = 32.0/lineHeight;
 	// ty_off vai compensar o mapeamento da textura em y caso a altura
 	// da parede estoure a altura da janela
@@ -377,13 +379,13 @@ static void draw_3d(t_ray *ray, t_mlx *mlx, float dist_final, int color, int ct_
 	// e chegar superar o tamanho de janela da projeção 3d, o
 	// desenho não fique distorcido (perca a perspectiva)
 	float ty_off = 0;
-	if(lineHeight > 500)
+	if(lineHeight > 800)
 	{
-		ty_off = (lineHeight - 500)/2.0;
-		lineHeight = 500 - 1;
+		ty_off = (lineHeight - 800)/2.0;
+		lineHeight = 800 - 1;
 	}
 	// precisamos centralizar a imagem (desenhar a tira da parede a partir de metade abaixo do total da altura da tela)
-	centeredVision = 250 - lineHeight/2;
+	centeredVision = 400 - lineHeight/2;
 	// draw_wall_slice(mlx, centeredVision, lineHeight, ct_rays, color);
 	// 'ty' calcula o valor 'y' das texturas
 	int y;
@@ -425,13 +427,21 @@ static void draw_3d(t_ray *ray, t_mlx *mlx, float dist_final, int color, int ct_
 			color = encode_rgb(0, 0, 0);
 		// ct_rays = contador de qual raio está no momento -> cada raio projeta um pedaço/uma fina coluna da parede
 		color *= shade;
-		pixelSize = ct_rays * 8;
-		totalSize = pixelSize + 8;
-		while (pixelSize < totalSize)
+		// ---------------------
+		pixelSize = ct_rays * 5;
+		totalSize = pixelSize + 5;
+    	while (pixelSize < totalSize)
 		{
-			mlx_pixel_put(mlx->mlx_ptr, mlx->win, pixelSize + 400, y + centeredVision, color);
+			map->back.data[(y + (int)centeredVision) * SCREEN_WIDTH + (pixelSize)] = color;
 			pixelSize++;
 		}
+		// pixelSize = ct_rays * 8;
+		// totalSize = pixelSize + 8;
+		// while (pixelSize < totalSize)
+		// {
+			// mlx_pixel_put(mlx->mlx_ptr, mlx->win, pixelSize + 350, y + centeredVision, color);
+			// pixelSize++;
+		// }
 		ty += ty_step;
 	}
 }
@@ -458,7 +468,7 @@ void cast_rays(t_map *map)
 	map->rays.ray_angle = map->rays.gamer_angle - DR * 30; //angulo do raio
 	keep_angle_limits(&map->rays.ray_angle);
 	ct_rays = -1;
-	while(++ct_rays < 120)
+	while(++ct_rays < 160)
 	{
 		// -------------- linhas horizontais
 		htexture = check_horizontal_hit(map, &hx, &hy);
@@ -491,10 +501,14 @@ void cast_rays(t_map *map)
 
 		// --------------- Desenhar paredes 3D -----------
 		fix_fish_eye(&map->rays);
-		draw_3d(&map->rays, &map->mlx, map->rays.dist_final, color, ct_rays, shade, htexture);
+		draw_3d(&map->rays, map->rays.dist_final, color, ct_rays, shade, htexture, map);
 
 		// --------------- incrementa angulo para o próximo raio
-		map->rays.ray_angle += DR/2;
+		map->rays.ray_angle += DR/3;
 		keep_angle_limits(&map->rays.ray_angle);
 	}
+	// coloca a imagem do fundo aqui
+	mlx_put_image_to_window(map->mlx.mlx_ptr, map->mlx.win, map->back.ptr_img, 0, 0);
+	// coloca o minimapa aqui
+	mlx_put_image_to_window(map->mlx.mlx_ptr, map->mlx.win, map->map2d.ptr_img, 0, 0);
 }
