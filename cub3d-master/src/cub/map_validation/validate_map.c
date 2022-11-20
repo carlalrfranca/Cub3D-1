@@ -6,7 +6,7 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 16:48:36 by cleticia          #+#    #+#             */
-/*   Updated: 2022/11/11 01:02:15 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/11/19 21:43:02 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,18 @@ int	is_two_commas(char *rgb_value)
 	return (1);
 }
 
+void free_matrix(char **split_values)
+{
+	int	counter;
+
+	counter = 0;
+	while (split_values[counter])
+	{
+		free(split_values[counter]);
+		counter++;
+	}
+}
+
 void	validate_rgb(char *rgb_value)
 {
 	char **split_values;
@@ -62,7 +74,10 @@ void	validate_rgb(char *rgb_value)
 	i = -1;
 	rgb = 0;
 	if (!is_two_commas(rgb_value))
+	{
+		free(rgb_value);
 		file_error();
+	}
 	split_values = ft_split(rgb_value, ',');
 	while(split_values[++i])
 	{
@@ -70,12 +85,20 @@ void	validate_rgb(char *rgb_value)
 		while (split_values[i][++j])
 		{
 			if(ft_isdigit(split_values[i][j]) == -1)
+			{
+				free_matrix(split_values);
 				file_error();
+			}
 		}
 		rgb = ft_atoi(split_values[i]);		
 		if (rgb < 0 || rgb > 255)
+		{
+			free_matrix(split_values);
 			file_error();
+		}
 	}
+	free_matrix(split_values);
+	free(split_values);
 	if(i != 3)
 		file_error();
 }
@@ -142,12 +165,12 @@ void	validate_texture(t_map *map)
 
 // vale funções daqui pra baixo + free_map(), map_error(), validate_rgb(), validate_texture(), is_two_commas()
 
-int	is_wall(char *map_line)
+int	is_wall(char *map_line, int map_height)
 {
 	int	char_counter;
 
 	char_counter = 0;
-	while(map_line[char_counter])
+	while(char_counter < map_height)
 	{
 		// se o caracter não for nem 1 nem espaço vazio retorna zero (erro)...
 		if(!ft_strchr("1 ", map_line[char_counter]))
@@ -167,8 +190,9 @@ int	is_valid_char(char map_char)
 void	store_player_info(t_map *map, char spawn, int row, int column)
 {
 	map->spawing = spawn;
-	map->rays.pos_x = column;
-	map->rays.pos_y = row;
+	map->rays.pos_x = column * map_s;
+	map->rays.pos_y = row * map_s;
+	map->map[row][column] = '0';
 }
 
 int	is_single_gamer(t_map *map, char spawn, int row, int column)
@@ -260,7 +284,7 @@ int is_map_open(t_map *map)
 	{
 		// abaixo: se for a PRIMEIRA OU ÚLTIMA linha do mapa
 		if((counter_string == 0 || counter_string == (map->height - 1))
-			&& !is_wall(map->map[counter_string]))
+			&& !is_wall(map->map[counter_string], map->height))
 			map_error(map);
 		else
 		{
