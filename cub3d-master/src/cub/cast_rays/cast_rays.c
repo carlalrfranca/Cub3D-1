@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cast_rays.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: cleticia <cleticia@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 20:08:08 by lfranca-          #+#    #+#             */
-/*   Updated: 2022/11/19 22:26:01 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/11/20 16:24:03 by cleticia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,7 +172,7 @@ int draw_line(t_map *map, int color)
 	float	delta_y;
 	float	pixel_pos_x;
 	float	pixel_pos_y;
-	int		numberPixels;
+	int	numberPixels;
 	// t_background rays_feixe;
 	
 	// coordenadas iniciais do raio a ser desenhado (posicao do pixel em x e y)
