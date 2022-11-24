@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+         #
+#    By: cleticia <cleticia@student.42sp.org.br>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/08/10 18:12:04 by cleticia          #+#    #+#              #
-#    Updated: 2022/11/19 22:50:35 by lfranca-         ###   ########.fr        #
+#    Updated: 2022/11/23 23:05:36 by cleticia         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,7 @@ RM = rm -rf
 
 INC = -I ./inc/ -I /src/lib/ -I ./src/mlx/minilibx-linux
 
-FLAGS =	-Werror -Wall -Wextra -fsanitize=address
+FLAGS =	-Werror -Wall -Wextra
 
 OBJDIR = obj
 

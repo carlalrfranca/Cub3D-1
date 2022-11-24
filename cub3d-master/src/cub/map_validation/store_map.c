@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   store_map.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: cleticia <cleticia@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 16:48:18 by cleticia          #+#    #+#             */
-/*   Updated: 2022/11/19 23:15:22 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/11/24 03:49:33 by cleticia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,13 +28,13 @@ void	store_map(char **line, t_map *map, char *filename)
 		ret = get_next_line(map->fd, line);
 		if (ret == 0 && map->height == 0)
 			file_error();
-		if (ft_strncmp("NO ./", *line, 5) == 0)
+		if (ft_strncmp("NO .", *line, 4) == 0)
 			map->textures.north_wall = ft_strchr(*line, '.');		
-		else if (ft_strncmp("SO ./", *line, 5) == 0)
+		else if (ft_strncmp("SO .", *line, 4) == 0)
 			map->textures.south_wall = ft_strchr(*line, '.');	
-		else if (ft_strncmp("WE ./", *line, 5) == 0)
+		else if (ft_strncmp("WE .", *line, 4) == 0)
 			map->textures.west_wall = ft_strchr(*line, '.');	
-		else if (ft_strncmp("EA ./", *line, 5) == 0)
+		else if (ft_strncmp("EA .", *line, 4) == 0)
 			map->textures.east_wall = ft_strchr(*line, '.');	
 		else if (ft_strncmp("F", *line, 1) == 0)
 		{
@@ -64,6 +64,7 @@ void	store_map(char **line, t_map *map, char *filename)
 		// if(*line)
 			// free(*line);
 	}
+	printf("Textura: %s\n", map->textures.west_wall);
 	*line = NULL;
 }
 
@@ -174,4 +175,5 @@ t_map	*prepare_to_store(char *filename)
 
 /*
 ./cub3d ./src/maps/map.cub
+./cub3d ./src/maps/map3.cub
 */

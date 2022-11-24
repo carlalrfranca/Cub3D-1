@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   validate_map.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: cleticia <cleticia@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 16:48:36 by cleticia          #+#    #+#             */
-/*   Updated: 2022/11/19 21:43:02 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/11/23 21:22:47 by cleticia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,51 +64,6 @@ void free_matrix(char **split_values)
 	}
 }
 
-void	validate_rgb(char *rgb_value)
-{
-	char **split_values;
-	int	rgb;
-	int	i;
-	int	j;
-
-	i = -1;
-	rgb = 0;
-	if (!is_two_commas(rgb_value))
-	{
-		free(rgb_value);
-		file_error();
-	}
-	split_values = ft_split(rgb_value, ',');
-	while(split_values[++i])
-	{
-		j = -1;
-		while (split_values[i][++j])
-		{
-			if(ft_isdigit(split_values[i][j]) == -1)
-			{
-				free_matrix(split_values);
-				file_error();
-			}
-		}
-		rgb = ft_atoi(split_values[i]);		
-		if (rgb < 0 || rgb > 255)
-		{
-			free_matrix(split_values);
-			file_error();
-		}
-	}
-	free_matrix(split_values);
-	free(split_values);
-	if(i != 3)
-		file_error();
-}
-
-void	validate_texture(t_map *map)
-{
-	if(map->textures.north_wall == 0 || map->textures.south_wall == 0
-		|| map->textures.west_wall == 0 || map->textures.east_wall == 0)
-		map_error(map);
-}
 
 // void verif_char(t_map *map)
 // {
@@ -294,6 +249,52 @@ int is_map_open(t_map *map)
 		counter_string++;
 	}
 	return(1);
+}
+
+void	validate_texture(t_map *map)
+{
+	if(map->textures.north_wall == 0 || map->textures.south_wall == 0
+		|| map->textures.west_wall == 0 || map->textures.east_wall == 0)
+		map_error(map);
+}
+
+void	validate_rgb(char *rgb_value)
+{
+	char **split_values;
+	int	rgb;
+	int	i;
+	int	j;
+
+	i = -1;
+	rgb = 0;
+	if (!is_two_commas(rgb_value))
+	{
+		free(rgb_value);
+		file_error();
+	}
+	split_values = ft_split(rgb_value, ',');
+	while(split_values[++i])
+	{
+		j = -1;
+		while (split_values[i][++j])
+		{
+			if(ft_isdigit(split_values[i][j]) == -1)
+			{
+				free_matrix(split_values);
+				file_error();
+			}
+		}
+		rgb = ft_atoi(split_values[i]);		
+		if (rgb < 0 || rgb > 255)
+		{
+			free_matrix(split_values);
+			file_error();
+		}
+	}
+	free_matrix(split_values);
+	free(split_values);
+	if(i != 3)
+		file_error();
 }
 
 int	validate_map(t_map *map)

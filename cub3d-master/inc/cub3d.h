@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: cleticia <cleticia@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 18:15:32 by cleticia          #+#    #+#             */
-/*   Updated: 2022/11/19 22:26:21 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/11/23 23:46:32 by cleticia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,8 @@
 // macros para monitorar o tipo de conteudo que foi extraído do mapa
 #define TEXTURES_DONE 4
 #define	RGB_DONE 2
-
 #define INTERNAL_CHAR "0NSWE"
 #define GAMER "NSWE"
-
 #define map_s 32 //map cube size
 #define PI 3.1415926535
 #define P2 PI/2
@@ -46,7 +44,7 @@
 typedef struct s_ray
 {
 	char	*rays; //orientacao
-	int		index;
+	int	index;
 	double	dir_x; //vetor de direcao inicial eixo x
 	double	dir_y; //vetor de direcao inicial eixo y
 	float 	ray_x; //posiciao inicial do raio rx e ry
@@ -56,78 +54,85 @@ typedef struct s_ray
 	float	gamer_angle; //pa
 	float	deltax;//pdx; //delta x
 	float 	deltay;//pdy; //delta y
-	int		x;
-	int		map_x; //posicao atual
-	int		map_y;
-    float 	step_x; //comprimento inicial interno da celula xo
-    float 	step_y; //comprimento final interno da celula yo
-	int		*rgb;
-	int		depth_of_field; //dof
+	int	x;
+	int	map_x; //posicao atual
+	int	map_y;
+	float 	step_x; //comprimento inicial interno da celula xo
+    	float 	step_y; //comprimento final interno da celula yo
+	int	*rgb;
+	int	depth_of_field; //dof
 	float	ray_angle;
 	float 	neg_tan; //ntan negativo da tangente
-	float 	neg_inv_tan; //atan negativo do inverso
+	float 	neg_inv_tan; //atan negativo do invers
 	float 	dist_horizontal; //dish;
 	float 	dist_vertical; //disv;
 	float	dist_final;
-
 }	t_ray;
 
 typedef struct s_background
 {
 	void	*ptr_img; //ptr_map
-	int		*data;
-	int		line_size;
-	int		bpp;
-	int		endian;
+	int	*data;
+	int	line_size;
+	int	bpp;
+	int	endian;
 }	t_background;
 
 typedef struct s_mlx
 {
-	void			*win;
-	void			*mlx_ptr;
+	void	*win;
+	void	*mlx_ptr;
 }	t_mlx;
 
 typedef	struct s_image
-{
-	// abaixo: as texturas das paredes e os numeros rgb
-	char			*north_wall;
-	char			*south_wall;
-	char			*west_wall;
-	char			*east_wall;
+{// abaixo: as texturas das paredes e os numeros rgb
+	char	*east_wall;//strings dos caminhos
+	char	*west_wall;
+	char	*north_wall;
+	char	*south_wall;
+	int	width;
+	int 	height;
+	t_background	east_tile;
+	t_background	west_tile;
+	t_background	north_tile;
+	t_background	south_tile;
+
 }	t_image;
 
 typedef struct s_map //principal
 {
-	t_mlx			mlx;
-	t_image			textures;
+	t_mlx	mlx;
+	t_image	textures;
 	t_background	back;
 	t_background	map2d;
 	t_background	gamer;
-	t_ray			rays;
-	char			**map;
-	char			*floor;
-	char			*ceilling;
-	int				monitoring;
-	int				height; //map_y -altura
-	int				width; //map_x -largura
-	int				fd;
-	char			spawing;
+	t_ray	rays;
+	char	**map;
+	char	*floor;
+	char	*ceilling;
+	int	monitoring;
+	int	height; //map_y -altura
+	int	width; //map_x -largura
+	int	fd;
+	char	spawing;
 }	t_map;
 
 enum e_keycode
 {
 	/* point of view keys */
-	KEY_W				= 119,
-	KEY_A				= 97,
-	KEY_S				= 115,
-	KEY_D				= 100,
-	KEY_ESC				= 65307,
-	ROTATE_LEFT			= 123,
-	ROTATE_RIGHT		= 124,
+	KEY_W	= 119,
+	KEY_A	= 97,
+	KEY_S	= 115,
+	KEY_D	= 100,
+	KEY_ESC	= 65307,
+	ROTATE_LEFT	= 123,
+	ROTATE_RIGHT	= 124,
 	X_EVENT_KEY_EXIT	= 17,
 	X_EVENT_KEY_PRESS	= 2
 };
 
+
+void	textures_init(t_image *textures, t_mlx *mlx);
 float	measure_ray_dist(float beginX, float beginY, float endX, float endY);
 int		minimize_window(t_map *map);
 int		end_program(t_map *map);
