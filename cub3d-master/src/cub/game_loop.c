@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   game_loop.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: cleticia <cleticia@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 16:48:25 by cleticia          #+#    #+#             */
-/*   Updated: 2022/11/19 21:44:38 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/11/24 13:54:32 by cleticia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,16 +123,6 @@ int	event_key(int keycode, t_map *map)
 	return 0;
 }
 
-void	rays_struct_init(t_map *map)
-{
-	// map->rays.pos_x = 40;
-	// map->rays.pos_y = 80;
-	map->rays.map_x = map->width;
-	map->rays.map_y = map->height;
-	map->rays.gamer_angle = PI;
-	map->rays.deltax = cos(map->rays.gamer_angle) * 5;
-	map->rays.deltay = sin(map->rays.gamer_angle) * 5;
-}
 
 static int	check_resolution(t_map *map)
 {
@@ -162,6 +152,33 @@ static void init_gamer_angle(char spawning, float *gamer_angle)
 	return; 
 }
 
+void	textures_init(t_image *textures, t_mlx *mlx)
+{
+	textures->west_tile.ptr_img = mlx_xpm_file_to_image(mlx->mlx_ptr,textures->west_wall, &textures->width, &textures->height);
+	textures->west_tile.data = (int *)mlx_get_data_addr(textures->west_tile.ptr_img, &textures->west_tile.bpp, &textures->west_tile.line_size, &textures->west_tile.endian);
+
+	textures->east_tile.ptr_img = mlx_xpm_file_to_image(mlx->mlx_ptr,textures->east_wall, &textures->width, &textures->height);
+	textures->east_tile.data = (int *)mlx_get_data_addr(textures->east_tile.ptr_img, &textures->east_tile.bpp, &textures->east_tile.line_size, &textures->east_tile.endian);
+
+	textures->north_tile.ptr_img = mlx_xpm_file_to_image(mlx->mlx_ptr,textures->north_wall, &textures->width, &textures->height);
+	textures->north_tile.data = (int *)mlx_get_data_addr(textures->north_tile.ptr_img, &textures->north_tile.bpp, &textures->north_tile.line_size, &textures->north_tile.endian);
+
+	textures->south_tile.ptr_img = mlx_xpm_file_to_image(mlx->mlx_ptr,textures->south_wall, &textures->width, &textures->height);
+	textures->south_tile.data = (int *)mlx_get_data_addr(textures->south_tile.ptr_img, &textures->south_tile.bpp, &textures->south_tile.line_size, &textures->south_tile.endian);
+}
+
+void	rays_struct_init(t_map *map)
+{
+	// map->rays.pos_x = 40;
+	// map->rays.pos_y = 80;
+	textures_init(&map->textures, &map->mlx);
+	map->rays.map_x = map->width;
+	map->rays.map_y = map->height;
+	map->rays.gamer_angle = PI;
+	map->rays.deltax = cos(map->rays.gamer_angle) * 5;
+	map->rays.deltay = sin(map->rays.gamer_angle) * 5;
+}
+
 void	game_loop(t_map *map)
 {
 	// int	x;
@@ -170,9 +187,9 @@ void	game_loop(t_map *map)
 	// y = map->height * 32;
 	// printf("coordenadas player: %f e %f\n", map->rays.pos_x, map->rays.pos_y);
 	// map_x e map_y é pra ser a largura e altura do mapa em celulas? (width e height, entao?)
-	rays_struct_init(map);
 	map->mlx.mlx_ptr = mlx_init();
 	check_resolution(map);
+	rays_struct_init(map);
 	map->mlx.win = mlx_new_window(map->mlx.mlx_ptr, SCREEN_WIDTH, SCREEN_HEIGHT, "cub3d");
 	color_background(map);
 	init_gamer_angle(map->spawing, &map->rays.gamer_angle);

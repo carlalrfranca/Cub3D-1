@@ -6,7 +6,7 @@
 /*   By: cleticia <cleticia@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 20:08:08 by lfranca-          #+#    #+#             */
-/*   Updated: 2022/11/20 16:24:03 by cleticia         ###   ########.fr       */
+/*   Updated: 2022/11/24 13:58:50 by cleticia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,13 +165,12 @@ int All_Textures[] =
 };
 
 // 
-
 int draw_line(t_map *map, int color)
 {
 	float	delta_x;
 	float	delta_y;
 	float	pixel_pos_x;
-	float	pixel_pos_y;
+	float	pixel_pos_y;                                                                                                                
 	int	numberPixels;
 	// t_background rays_feixe;
 	
@@ -369,6 +368,7 @@ static void draw_3d(t_ray *ray, float dist_final, int color, int ct_rays, float 
 {	
 	float	centeredVision;
 	float	lineHeight;
+	int	*data_tile;
 
 	// 2- tirar a altura da coluna/tira de parede a ser desenhada
 	lineHeight = (map_s * 800/dist_final);
@@ -389,27 +389,34 @@ static void draw_3d(t_ray *ray, float dist_final, int color, int ct_rays, float 
 	// draw_wall_slice(mlx, centeredVision, lineHeight, ct_rays, color);
 	// 'ty' calcula o valor 'y' das texturas
 	int y;
-	float ty = ty_off * ty_step + (32 * steptexture);
+	printf("steptext: %d\n", steptexture);
+	float ty = ty_off * ty_step; // + (32 * steptexture)
 	float tx;
 	if(shade == 1)
 	{
 		tx = (int)(ray->ray_x/2.0) % 32;
-		if(ray->ray_angle > PI)
+		if(ray->ray_angle > PI) //olhando para baixo
 		{
+			data_tile = map->textures.south_tile.data;
 			tx = 31 - tx;
-			ty += 32 * 2;
+			//ty += 32 * 2;
 		}
+		else
+			data_tile = map->textures.north_tile.data;
 	}
 	else
 	{
 		tx = (int)(ray->ray_y/2.0) % 32;
 		if (ray->ray_angle > P2 && ray->ray_angle < P3)
 		{
+			data_tile = map->textures.west_tile.data;
 			tx = 31 - tx;
-			ty += 32 * 2;
+			//ty += 32 * 2;
 		}
 		else
-			ty += 32;
+			data_tile = map->textures.east_tile.data;
+		//else
+			//ty += 32;
 		// pra pintar uma textura diferente do lado esquerdo da parede só incrementar o ty pra textura
 	}
 	float c;
@@ -420,19 +427,24 @@ static void draw_3d(t_ray *ray, float dist_final, int color, int ct_rays, float 
 
 	for(y=0; y<lineHeight; y++)
 	{
-		c = All_Textures[(int)(ty)*32 + (int)(tx)];
-		if(c == 0)
-			color = encode_rgb(255, 255, 255);
-		else
-			color = encode_rgb(0, 0, 0);
+		c = (data_tile)[(int)(ty)*32 + (int)(tx)];
+		//if(c == 0)
+			//color = encode_rgb(255, 255, 255);
+		//else
+			//color = encode_rgb(0, 0, 0);
 		// ct_rays = contador de qual raio está no momento -> cada raio projeta um pedaço/uma fina coluna da parede
 		color *= shade;
+		if (map->rays.dist_vertical < map->rays.dist_horizontal)
+		{
+			//para escurecer a cor um pouco: col = (col & 0xfefefe) >> 1;
+			c = ((int)c & 0xfefefe) >> 1;
+		}
 		// ---------------------
 		pixelSize = ct_rays * 5;
 		totalSize = pixelSize + 5;
     	while (pixelSize < totalSize)
 		{
-			map->back.data[(y + (int)centeredVision) * SCREEN_WIDTH + (pixelSize)] = color;
+			map->back.data[(y + (int)centeredVision) * SCREEN_WIDTH + (pixelSize)] = c;
 			pixelSize++;
 		}
 		// pixelSize = ct_rays * 8;
@@ -487,7 +499,7 @@ void cast_rays(t_map *map)
 			map->rays.ray_x = vx;
 			map->rays.ray_y = vy;
 			map->rays.dist_final = map->rays.dist_vertical;
-			shade = 0.6;
+			shade = 0.05;
 			color = encode_rgb(54, 204, 207);
 		}
 		else if (map->rays.dist_horizontal < map->rays.dist_vertical)

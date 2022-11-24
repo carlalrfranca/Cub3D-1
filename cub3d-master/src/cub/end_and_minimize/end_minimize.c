@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   end_minimize.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: cleticia <cleticia@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 20:06:54 by lfranca-          #+#    #+#             */
-/*   Updated: 2022/11/19 23:11:20 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/11/24 03:50:11 by cleticia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 int	end_program(t_map *map)
 {
-
 	mlx_destroy_image (map->mlx.mlx_ptr, map->back.ptr_img);
 	mlx_destroy_image (map->mlx.mlx_ptr, map->map2d.ptr_img);
 	// mlx_destroy_image (map->mlx.mlx_ptr, map->gamer.ptr_img);
