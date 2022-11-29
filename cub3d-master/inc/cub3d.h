@@ -6,7 +6,7 @@
 /*   By: cleticia <cleticia@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 18:15:32 by cleticia          #+#    #+#             */
-/*   Updated: 2022/11/23 23:46:32 by cleticia         ###   ########.fr       */
+/*   Updated: 2022/11/29 03:55:19 by cleticia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,18 @@
 #define P3 3 * PI/2
 #define DR 0.0174533 //um degrau em radiano
 
+
+typedef struct s_col
+{
+    int col_pos_x;
+	int col_pos_y;
+	int	col_pos_x_add_offset_x;
+	int	col_pos_y_add_offset_y;
+	int col_pos_y_sub_offset_y;
+	int col_pos_x_sub_offset_x;
+
+} t_col;
+
 typedef struct s_ray
 {
 	char	*rays; //orientacao
@@ -67,6 +79,7 @@ typedef struct s_ray
 	float 	dist_horizontal; //dish;
 	float 	dist_vertical; //disv;
 	float	dist_final;
+        t_col   collision;
 }	t_ray;
 
 typedef struct s_background
@@ -131,7 +144,9 @@ enum e_keycode
 	X_EVENT_KEY_PRESS	= 2
 };
 
-
+void    rotate_gamer(t_ray *rays, char *direction);
+void    move_gamer(char **map, t_ray *rays, char *movement);
+void open_texture(t_mlx *mlx, t_background *tile, int *coord, char *path);
 void	textures_init(t_image *textures, t_mlx *mlx);
 float	measure_ray_dist(float beginX, float beginY, float endX, float endY);
 int		minimize_window(t_map *map);
@@ -161,32 +176,32 @@ void	free_pointers(t_map *map);
 void	move_player(t_map *map, int x, int y);
 void	free_map(t_map *map);
 void	*open_img(t_map *map, char *path);
-int		event_key(int keycode, t_map *map);
+int	event_key(int keycode, t_map *map);
 void	path_img(t_map *map);
 void	clear_screen(t_map *map);
 void	color_background(t_map *map);
 void	*open_img(t_map *map, char *path);
 void	path_image(t_map *map);
 void	free_pointers(t_map *map);
-int		minimize_window(t_map *map);
+int	minimize_window(t_map *map);
 void	render_minimap(t_map *map);
 void	get_rays(t_map *map);
 void	rays_struct_init(t_map *map);
 void 	game_loop(t_map *map);
-int		is_wall(char *map_line, int map_height);
-int		is_valid_char(char map_char);
+int	is_wall(char *map_line, int map_height);
+int	is_valid_char(char map_char);
 void	store_player_info(t_map *map, char spawn, int row, int column);
-int		is_single_gamer(t_map *map, char spawn, int row, int column);
-int		ft_is_space(char letter);
-int		check_is_closed(char **map_line, int char_counter);
-int		check_map_interior(t_map *map, char **map_line, int row);
-int		is_map_open(t_map *map);
+int	is_single_gamer(t_map *map, char spawn, int row, int column);
+int	ft_is_space(char letter);
+int	check_is_closed(char **map_line, int char_counter);
+int	check_map_interior(t_map *map, char **map_line, int row);
+int	is_map_open(t_map *map);
 void	validate_floor(t_map *map);
 void	validate_ceilling(t_map	*map);
 void	validate_texture(t_map *map);
 void	map_error(t_map *map);
-int		validate_map(t_map *map);
-int		measure_width(char	**line, t_map *map);
+int	validate_map(t_map *map);
+int	measure_width(char	**line, t_map *map);
 void	measure_height(char **line, t_map *map);
 void	store_map(char **line, t_map *map, char *filename);
 t_map	*prepare_to_store(char *filename);
