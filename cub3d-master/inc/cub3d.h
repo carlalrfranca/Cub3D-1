@@ -6,7 +6,7 @@
 /*   By: cleticia <cleticia@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 18:15:32 by cleticia          #+#    #+#             */
-/*   Updated: 2022/11/29 03:55:19 by cleticia         ###   ########.fr       */
+/*   Updated: 2022/11/30 17:03:35 by cleticia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,6 @@
 #define P3 3 * PI/2
 #define DR 0.0174533 //um degrau em radiano
 
-
 typedef struct s_col
 {
     int col_pos_x;
@@ -50,7 +49,6 @@ typedef struct s_col
 	int	col_pos_y_add_offset_y;
 	int col_pos_y_sub_offset_y;
 	int col_pos_x_sub_offset_x;
-
 } t_col;
 
 typedef struct s_ray
@@ -109,7 +107,6 @@ typedef	struct s_image
 	t_background	west_tile;
 	t_background	north_tile;
 	t_background	south_tile;
-
 }	t_image;
 
 typedef struct s_map //principal
@@ -144,19 +141,28 @@ enum e_keycode
 	X_EVENT_KEY_PRESS	= 2
 };
 
+int     check_smaller_ray(t_ray *rays, float *horiz_position, float *vert_position);
+void    fix_fish_eye(t_ray *rays);
+void	keep_angle_limits(float *ray_angle);
+void    draw_3d(t_ray *ray, float dist_final, int rays_counter, t_map *map);
+void    check_axis(int *axis_depth, t_map *map, float **ray_axis, char *axis);
+void    init_ray_projection_values(t_map *map, float *rayX, float *rayY, float *ray_dist);
+void    search_hit_point(t_map *map, float *ray_end_x, float *ray_end_y, char *axis);
+int     check_vertical_hit(t_map *map, float *vx, float *vy);
+int     check_horizontal_hit(t_map *map, float *hx, float *hy);
 void    rotate_gamer(t_ray *rays, char *direction);
 void    move_gamer(char **map, t_ray *rays, char *movement);
-void open_texture(t_mlx *mlx, t_background *tile, int *coord, char *path);
+void    open_texture(t_mlx *mlx, t_background *tile, int *coord, char *path);
 void	textures_init(t_image *textures, t_mlx *mlx);
 float	measure_ray_dist(float beginX, float beginY, float endX, float endY);
-int		minimize_window(t_map *map);
-int		end_program(t_map *map);
-int		encode_rgb(uint8_t red, uint8_t green, uint8_t blue);
-int		draw_line(t_map *map, int color);
+int	minimize_window(t_map *map);
+int	end_program(t_map *map);
+int	encode_rgb(uint8_t red, uint8_t green, uint8_t blue);
+int     draw_ray_2d(t_ray *rays, t_background *map2d, int map_width, int color);
 void	cast_rays(t_map *map);
 void	paint_gamer(t_map *map);
 void	paint_map(t_map *map);
-int		event_key(int keycode, t_map *map);
+int	event_key(int keycode, t_map *map);
 void	move_player(t_map *map, int x, int y);
 void	draw_stripe(t_map *map);
 void	check_color(t_map *map);
