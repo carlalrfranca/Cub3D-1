@@ -6,25 +6,33 @@
 /*   By: cleticia <cleticia@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 20:08:08 by lfranca-          #+#    #+#             */
-/*   Updated: 2022/11/30 17:03:46 by cleticia         ###   ########.fr       */
+/*   Updated: 2022/11/30 17:23:21 by cleticia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../inc/cub3d.h"
 
+static int find_pixel_index(float *pixel_coord, int map_width)
+{
+    int pixel_x;
+    int pixel_y;
 
+    pixel_x = pixel_coord[0];
+    pixel_y = pixel_coord[1];
+    return (pixel_y * (map_width * map_s) + pixel_x);
+}
 
 int draw_ray_2d(t_ray *rays, t_background *map2d, int map_width, int color)
 {
 	float	delta_x;
 	float	delta_y;
-    float   pixel_pos_y;               
-	float	pixel_pos_x;
-	int	number_pixels;
+    float   pixel_coord[2];
+    int     pixel_index;
+	int     number_pixels;
 	
 	// coordenadas iniciais do raio a ser desenhado (posicao do pixel em x e y)
-	pixel_pos_x = rays->pos_x;
-	pixel_pos_y = rays->pos_y;
+	pixel_coord[0] = rays->pos_x;
+	pixel_coord[1] = rays->pos_y;
 	delta_y = rays->ray_y - rays->pos_y; //endy - py; //0
 	delta_x = rays->ray_x - rays->pos_x; //endx - px; //10
 	number_pixels = sqrt((delta_x * delta_x) + (delta_y * delta_y));
@@ -34,9 +42,10 @@ int draw_ray_2d(t_ray *rays, t_background *map2d, int map_width, int color)
     delta_y /= number_pixels; // 0
     while (number_pixels)
     {
-    	map2d->data[((int)(pixel_pos_y) * (map_width * map_s) + (int)pixel_pos_x)] = color;
-    	pixel_pos_x += delta_x;
-    	pixel_pos_y += delta_y;
+        pixel_index = find_pixel_index(pixel_coord, map_width);
+    	map2d->data[pixel_index] = color;
+    	pixel_coord[0] += delta_x;
+    	pixel_coord[1] += delta_y;
     	--number_pixels;
     }
     return(0);
@@ -66,7 +75,7 @@ int check_smaller_ray(t_ray *rays, float *horiz_position, float *vert_position)
 
 void cast_rays(t_map *map)
 {
-	int	rays_counter; //r;
+	int     rays_counter; //r;
     float   horiz_position[2];
     float   vert_position[2];
     int     ray_color;
@@ -89,8 +98,8 @@ void cast_rays(t_map *map)
 		map->rays.ray_angle += DR/3;
 		keep_angle_limits(&map->rays.ray_angle);
 	}
-	// coloca a imagem do fundo aqui
+	// coloca a imagem do fundo
 	mlx_put_image_to_window(map->mlx.mlx_ptr, map->mlx.win, map->back.ptr_img, 0, 0);
-	// coloca o minimapa aqui
+	// coloca o minimapa
 	mlx_put_image_to_window(map->mlx.mlx_ptr, map->mlx.win, map->map2d.ptr_img, 0, 0);
 }
