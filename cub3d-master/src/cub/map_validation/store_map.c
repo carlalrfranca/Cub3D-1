@@ -6,7 +6,7 @@
 /*   By: cleticia <cleticia@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 16:48:18 by cleticia          #+#    #+#             */
-/*   Updated: 2022/12/02 01:12:40 by cleticia         ###   ########.fr       */
+/*   Updated: 2022/12/02 06:46:39 by cleticia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,8 +92,8 @@ static void check_which_rgb(char *line, char **floor, char **ceilling, t_map *ma
 
 void	store_map(char **line, t_map *map, char *filename)
 {
-	int		content;
-	int		ret;
+	int content;
+	int ret;
 
 	content = 0;
 	ret = 1;
@@ -115,8 +115,8 @@ void	store_map(char **line, t_map *map, char *filename)
 			continue;
 		}
 		else
-		{ //caso for o mapa
-            //colocar uma restrição aqui porque as texturas e o rgb tem que já ter vindo
+		{ //caso for o mapa 
+         //colocar uma restrição aqui porque as texturas e o rgb tem que já ter vindo
 			map->monitoring = 0;
 			map->map[content] = ft_strdup(*line);
 			content++;
@@ -125,56 +125,63 @@ void	store_map(char **line, t_map *map, char *filename)
 	}
 }
 
-void	measure_height(char **line, t_map *map)
+
+void    check_textures_rgb(char *line, int *monitoring)
+{
+	static int  texture;
+	static int  rgb;
+
+	if (ft_strchr(line, '.')) //texturas
+	{
+		texture++;
+		if (texture == TEXTURES_DONE)
+			(*monitoring) += 4;
+	}
+	else if (ft_strchr(line, ','))//floor e ceilling
+	{
+		rgb++;
+		if(rgb == RGB_DONE)
+			(*monitoring ) += 2;//significa que passou pelo rgb
+	}
+}
+
+
+void    count_height_width(char *line, t_map *map)
 {
 	int		size;
+
+	map->height++;
+	size = ft_strlen(line);
+	if(size > map->width)
+		map->width = size;
+}
+
+void	measure_height(char **line, t_map *map)
+{
 	int		ret;
-	int		texture;
-	int		rgb;
-	int		monitoring;
 
 	ret = 1;
-	rgb = 0;
-	texture = 0;
-	monitoring = 0;
 	while (ret)
 	{
+        if (line && (*line))
+            free(*line);
 		ret = get_next_line(map->fd, line);
 		if (ret == 0 && map->height == 0)
-			file_error("Error\nEmpty file.", 5); //monitoring_content();
-		if (ft_strchr(*line, '.')) //texturas
-		{
-			texture++;
-			if (texture == TEXTURES_DONE) //precisa juntar ao caso de se o rgb vier ANTES (algum calculo com os valores?)
-				monitoring += 4;
-		}
-		else if (ft_strchr(*line, ','))//floor e ceilling
-		{
-			rgb++;
-			if(rgb == RGB_DONE)
-				monitoring += 2;//significa que passou pelo rgb
-		}
+			file_error("Error\nEmpty file.", 6); //monitoring_content();
+ 		if (ft_strchr(*line, '.') || ft_strchr(*line, ','))
+            check_textures_rgb(*line, &map->monitoring);      
 		else if(ft_strlen(*line) == 0 && map->height == 0)//se nao é linha vazia e nao é 2
-		{
-			free(*line);
 			continue;
-		}
-		else if (monitoring == 6) //significa que ja passamos tanto pelas texturas quanto pelo rgb e só resta o mapa
-		{
-			map->height++;
-			size = ft_strlen(*line);
-			if(size > map->width)
-				map->width = size;
-		}
-		if (*line)
-			free(*line);
+		else if (map->monitoring == 6) //significa que ja passamos tanto pelas texturas quanto pelo rgb e só resta o mapa
+            count_height_width(*line, map);
 	}
+	if (*line)
+		free(*line);
 	if (map->height == 0)
 	{
 		close(map->fd);
 		file_error("Error\nEmpty map.", 5);
 	}
-	map->monitoring = monitoring;
 }
 
 static void init_map(t_map *map)

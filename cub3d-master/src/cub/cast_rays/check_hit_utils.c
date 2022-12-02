@@ -6,7 +6,7 @@
 /*   By: cleticia <cleticia@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 12:45:12 by cleticia          #+#    #+#             */
-/*   Updated: 2022/11/30 13:58:03 by cleticia         ###   ########.fr       */
+/*   Updated: 2022/12/02 03:10:53 by cleticia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,8 +59,7 @@ void    check_axis(int *axis_depth, t_map *map, float **ray_axis, char *axis)
 }
 
 void    search_hit_point(t_map *map, float *ray_end_x, float *ray_end_y, char *axis)
-{
-    //abaixo: definidos de acordo com a string axis
+{//abaixo: definidos de acordo com a string axis
     int axis_depth; //height pra horizontal, width pra vertical
     float *final_dist_ray; //dist_horizontal p/ horizontal, dist_vertical pra vertical
 

@@ -6,7 +6,7 @@
 /*   By: cleticia <cleticia@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 14:00:43 by cleticia          #+#    #+#             */
-/*   Updated: 2022/11/30 18:18:59 by cleticia         ###   ########.fr       */
+/*   Updated: 2022/12/02 03:44:14 by cleticia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,7 @@ void    draw_wall_strip(t_3dmap *map_3D, t_background *backg, t_ray *rays, int r
     y = -1;
     while (++y < map_3D->line_height)
     {
-    	pixel_color = (map_3D->data_tile)[(int)(map_3D->texture_y) * map_s + (int)(map_3D->texture_x)];
-        // paredes no eixo y terão cor sombreada...
+    	pixel_color = (map_3D->data_tile)[(int)(map_3D->texture_y) * map_s + (int)(map_3D->texture_x)]; // paredes no eixo y terão cor sombreada...
     	if (rays->dist_vertical < rays->dist_horizontal)
     	{
     		//para escurecer a cor um pouco: col = (col & 0xfefefe) >> 1;
