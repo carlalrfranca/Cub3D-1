@@ -6,7 +6,7 @@
 /*   By: cleticia <cleticia@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 16:48:18 by cleticia          #+#    #+#             */
-/*   Updated: 2022/12/02 01:04:35 by cleticia         ###   ########.fr       */
+/*   Updated: 2022/12/02 01:12:40 by cleticia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -208,6 +208,7 @@ t_map	*prepare_to_store(char *filename)
 	close(map->fd);
 	return (map);
 }
+
 
 /*
 ./cub3d ./src/maps/map.cub

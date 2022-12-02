@@ -6,7 +6,7 @@
 /*   By: cleticia <cleticia@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 16:48:25 by cleticia          #+#    #+#             */
-/*   Updated: 2022/11/29 03:56:14 by cleticia         ###   ########.fr       */
+/*   Updated: 2022/12/02 01:16:20 by cleticia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ void    move_gamer(char **map, t_ray *rays, char *movement)
     {
         if (map[rays->collision.col_pos_y][rays->collision.col_pos_x_sub_offset_x] == '0')
             rays->pos_x -= rays->deltax;
-         if(map[rays->collision.col_pos_y_sub_offset_y][rays->collision.col_pos_x] == '0')
+        if(map[rays->collision.col_pos_y_sub_offset_y][rays->collision.col_pos_x] == '0')
             rays->pos_y -= rays->deltay;
     }
     if(rays->pos_x < 0)
@@ -118,7 +118,6 @@ int	event_key(int keycode, t_map *map)
 	paint_gamer(map);
 	return 0;
 }
-
 
 static int	check_resolution(t_map *map)
 {
