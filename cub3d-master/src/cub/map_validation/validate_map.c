@@ -6,7 +6,7 @@
 /*   By: cleticia <cleticia@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 16:48:36 by cleticia          #+#    #+#             */
-/*   Updated: 2022/11/23 21:22:47 by cleticia         ###   ########.fr       */
+/*   Updated: 2022/12/01 23:21:36 by cleticia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,11 @@ void	free_map(t_map *map)
 	int	index;
 
 	index = -1;
-	while (++index < map->height)
-		free(map->map[index]);
+    if (map->map[0] != NULL && map->height > 0)
+    {
+        while (++index < map->height)
+		    free(map->map[index]);
+    }
 	free(map->map);
 	if(map->floor)
 		free(map->floor);
@@ -31,25 +34,7 @@ void	map_error(t_map *map)
 {
 	free_map(map);
 	write(2, "Error\nInvalid Map\n", 18);
-	exit(-1);
-}
-
-int	is_two_commas(char *rgb_value)
-{
-	int	index;
-	int	total_commas;
-
-	index = 0;
-	total_commas = 0;
-	while (rgb_value[index])
-	{
-		if (rgb_value[index] == ',')
-			total_commas++;
-		index++;
-	}
-	if (total_commas != 2)
-		return (0);
-	return (1);
+	exit(11);
 }
 
 void free_matrix(char **split_values)
@@ -63,37 +48,6 @@ void free_matrix(char **split_values)
 		counter++;
 	}
 }
-
-
-// void verif_char(t_map *map)
-// {
-// 	char	letter;
-// 	int		i;
-// 	int		j;
-
-// 	i = 0;
-// 	j = 0;
-// 	while(map->map[i])
-// 	{
-// 		j = 0;
-// 		while(map->map[i][j])
-// 		{
-// 			letter = map->map[i][j];
-// 			if (letter != '0' && letter != ' ' && letter != '1'
-// 				&& letter != 'N' && letter != 'S' &&letter != 'E' && letter != 'W') //substituir por ft_strncmp()
-// 				map_error(map);
-// 			if (letter == 'S' || letter == 'N' || letter == 'E'
-// 				|| letter == 'W')
-// 			{
-// 				map->spawing = letter;
-// 				map->rays.pos_x = j;
-// 				map->rays.pos_y = i;
-// 			}
-// 			j++;
-// 		}
-// 		i++;
-// 	}
-// }
 
 // ----------------------------------------------------------------------------------
 // acho que em vem da função acima, a gente pode criar uma função para verificar
@@ -167,19 +121,15 @@ int	ft_is_space(char letter)
 	return(0);
 }
 
+/*
+    ** pra verificar as linhas anterior e posteriores, precisa acessar
+    ** o ENDEREÇO em (-1) e (+1) / e (0).. por isso precisa
+    ** passar a linha por ENDEREÇO/PONTEIRO. Se for por valor, será
+    ** apenas uma CÓPIA do valor da string EM OUTRO ESPAÇO DE MEMORIA,
+    ** e NAO DARÁ PRA ACESSAR AS LINHAS ANTERIORES/POSTERIORES DO MAPA
+*/
 int	check_is_closed(char **map_line, int char_counter)
 {
-	// pra verificar as linhas anterior e posteriores, precisa acessar
-	// o ENDEREÇO em (-1) e (+1) / e (0).. por isso precisa
-	// passar a linha por ENDEREÇO/PONTEIRO. Se for por valor, será
-	// apenas uma CÓPIA do valor da string EM OUTRO ESPAÇO DE MEMORIA,
-	// e NAO DARÁ PRA ACESSAR AS LINHAS ANTERIORES/POSTERIORES DO MAPA
-	
-	// teste pra ver se imprime a linha anterior, a anterior e a posterior (linhas do mapa):
-	/*
-		printf("anterior: %s\natual: %s\nposterior: %s\n", map_line[0], map_line[-1], map_line[+1]);
-	*/
-
 	if(ft_is_space(map_line[0][char_counter - 1]) || !map_line[0][char_counter - 1])
 		return(0);
 	if(ft_is_space(map_line[0][char_counter + 1]) || !map_line[0][char_counter + 1])
@@ -199,17 +149,17 @@ int	check_is_closed(char **map_line, int char_counter)
 	return(1);
 }
 
+/*
+    ** aqui verificaremos apenas se tem caracteres validos (o que inclui espaço e 1..)
+    ** MAS TAMBÉM (&&) se são os caracteres válidos INTERNOS (0NSWE)
+    ** se algum deles NEM VÁLIDO EM GERAL FOR (sei la, vai que alguem digite '3' ou 'z'),
+    ** retorna erro
+*/
 int	check_map_interior(t_map *map, char **map_line, int row)
 {
 	int	char_counter;
 
 	char_counter = 0;
-	// aqui verificaremos apenas se tem caracteres validos (o que inclui espaço e 1..)
-	// MAS TAMBÉM (&&) se são os caracteres válidos INTERNOS (0NSWE)
-	// se algum deles NEM VÁLIDO EM GERAL FOR (sei la, vai que alguem digite '3' ou 'z'),
-	// retorna erro
-	// printf("map interior: %s\n", map_line[0]);
-	// printf("map interior primeiro char: %c\n", map_line[0][char_counter + 2]);
 	while(map_line[0][char_counter])
 	{
 		if(!is_valid_char(map_line[0][char_counter]))
@@ -230,6 +180,13 @@ int	check_map_interior(t_map *map, char **map_line, int row)
 	return(1);
 }
 
+static int is_first_last_row(int counter_row, int height)
+{
+    if((counter_row == 0 || counter_row == (height - 1)))
+        return (1);
+    return(0);
+}
+
 int is_map_open(t_map *map)
 {
 	int counter_string;
@@ -238,10 +195,10 @@ int is_map_open(t_map *map)
 	while (counter_string < map->height)
 	{
 		// abaixo: se for a PRIMEIRA OU ÚLTIMA linha do mapa
-		if((counter_string == 0 || counter_string == (map->height - 1))
+		if(is_first_last_row(counter_string, map->height)
 			&& !is_wall(map->map[counter_string], map->height))
 			map_error(map);
-		else
+		else if (!is_first_last_row(counter_string, map->height))
 		{
 			if (!check_map_interior(map, &map->map[counter_string], counter_string))
 				map_error(map); //passar um numero especifico para o erro para personalizar a mensagem?
@@ -267,13 +224,8 @@ void	validate_rgb(char *rgb_value)
 
 	i = -1;
 	rgb = 0;
-	if (!is_two_commas(rgb_value))
-	{
-		free(rgb_value);
-		file_error();
-	}
 	split_values = ft_split(rgb_value, ',');
-	while(split_values[++i])
+	while(split_values[++i]) //jogar esse while pra uma função propria
 	{
 		j = -1;
 		while (split_values[i][++j])
@@ -281,20 +233,23 @@ void	validate_rgb(char *rgb_value)
 			if(ft_isdigit(split_values[i][j]) == -1)
 			{
 				free_matrix(split_values);
-				file_error();
+				file_error("Error\nRGB must be numeric digits.", 2);
 			}
 		}
 		rgb = ft_atoi(split_values[i]);		
 		if (rgb < 0 || rgb > 255)
 		{
 			free_matrix(split_values);
-			file_error();
+			file_error("Error\nRGB numbers must be between 0-255.", 3);
 		}
 	}
 	free_matrix(split_values);
 	free(split_values);
 	if(i != 3)
-		file_error();
+    {
+        free(rgb_value);
+		file_error("Error\nRGB must be a set of 3 numbers comma-separated.", 4);
+    }
 }
 
 int	validate_map(t_map *map)
@@ -302,7 +257,6 @@ int	validate_map(t_map *map)
 	validate_rgb(map->floor);
 	validate_rgb(map->ceilling);
 	validate_texture(map);
-	// verif_char(map);
 	is_map_open(map);
 	printf("Aparentemente deu tudo certo\n");
 	return (0);

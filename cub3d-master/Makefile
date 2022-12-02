@@ -6,7 +6,7 @@
 #    By: cleticia <cleticia@student.42sp.org.br>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/08/10 18:12:04 by cleticia          #+#    #+#              #
-#    Updated: 2022/11/23 23:05:36 by cleticia         ###   ########.fr        #
+#    Updated: 2022/12/01 21:26:15 by cleticia         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,18 +20,23 @@ RM = rm -rf
 
 INC = -I ./inc/ -I /src/lib/ -I ./src/mlx/minilibx-linux
 
-FLAGS =	-Werror -Wall -Wextra
+FLAGS =	-Werror -Wall -Wextra -g
 
 OBJDIR = obj
 
 SRC = src/cub/main.c\
-	src/cub/map_validation/store_map.c\
-    src/cub/map_validation/validate_map.c\
 	src/cub/game_loop.c\
 	src/cub/paint_frame/color_bg.c\
 	src/cub/paint_frame/paint_scene.c\
+	src/cub/map_validation/store_map.c\
+    src/cub/map_validation/validate_map.c\
 	src/cub/end_and_minimize/end_minimize.c\
 	src/cub/cast_rays/cast_rays.c\
+	src/cub/cast_rays/cast_rays_utils.c\
+	src/cub/cast_rays/check_hit_utils.c\
+	src/cub/cast_rays/check_horizontal_hit.c\
+	src/cub/cast_rays/check_vertical_hit.c\
+	src/cub/cast_rays/draw_3d.c\
 	src/gnl/get_next_line.c\
 
 OBJS = $(SRC:.c=.o)
