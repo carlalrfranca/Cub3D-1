@@ -6,7 +6,7 @@
 #    By: cleticia <cleticia@student.42sp.org.br>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/08/10 18:12:04 by cleticia          #+#    #+#              #
-#    Updated: 2022/11/30 16:30:31 by cleticia         ###   ########.fr        #
+#    Updated: 2022/12/01 21:26:15 by cleticia         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,7 @@ RM = rm -rf
 
 INC = -I ./inc/ -I /src/lib/ -I ./src/mlx/minilibx-linux
 
-FLAGS =	-Werror -Wall -Wextra
+FLAGS =	-Werror -Wall -Wextra -g
 
 OBJDIR = obj
 

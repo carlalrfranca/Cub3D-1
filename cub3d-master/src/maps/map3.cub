@@ -1,13 +1,12 @@
+F 33,60,70
+C 25,50,80
 NO ./src/img/north_texture.xpm
 SO ./src/img/south_texture.xpm
 WE ./src/img/west_texture.xpm
 EA ./src/img/east_texture.xpm
-
-F 33,60,70
-C 25,50,80
-
 11111111111
 11000000011
+
 10010000011
 10010E00001
 11111111101

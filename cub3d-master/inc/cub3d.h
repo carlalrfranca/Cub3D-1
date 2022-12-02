@@ -6,7 +6,7 @@
 /*   By: cleticia <cleticia@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 18:15:32 by cleticia          #+#    #+#             */
-/*   Updated: 2022/11/30 17:03:35 by cleticia         ###   ########.fr       */
+/*   Updated: 2022/12/01 23:12:47 by cleticia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,18 @@ typedef struct s_col
 	int col_pos_y_sub_offset_y;
 	int col_pos_x_sub_offset_x;
 } t_col;
+
+typedef struct s_3dmap
+{
+    float	centered_vision;
+    float	line_height;
+    int	*data_tile;
+    // variáveis usadas para mapear os pixels das texturas que estão sendo pintados
+    float   texture_x;
+    float   texture_y_step;
+    float   texture_y_off;
+    float   texture_y;
+} t_3dmap;
 
 typedef struct s_ray
 {
@@ -141,6 +153,7 @@ enum e_keycode
 	X_EVENT_KEY_PRESS	= 2
 };
 
+void    draw_wall_strip(t_3dmap *map_3D, t_background *backg, t_ray *rays, int rays_counter);
 int     check_smaller_ray(t_ray *rays, float *horiz_position, float *vert_position);
 void    fix_fish_eye(t_ray *rays);
 void	keep_angle_limits(float *ray_angle);
@@ -211,6 +224,6 @@ int	measure_width(char	**line, t_map *map);
 void	measure_height(char **line, t_map *map);
 void	store_map(char **line, t_map *map, char *filename);
 t_map	*prepare_to_store(char *filename);
-void	file_error(void);
+void	file_error(char *error_message, int error_code);
 void	free_matrix(char **split_values);
 #endif
