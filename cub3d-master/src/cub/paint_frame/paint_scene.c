@@ -6,46 +6,39 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 20:03:30 by lfranca-          #+#    #+#             */
-/*   Updated: 2022/11/19 22:03:58 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/12/06 20:17:42 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../inc/cub3d.h"
 
+static int find_index(int pixel_horiz, int pixel_vert, int map_width)
+{
+    return (pixel_vert * (map_width * map_s) + pixel_horiz);
+}
+
 void	paint_gamer(t_map *map)
 {
-	int pixel_horizontal;//x;
-	int pixel_vertical;//y;
+	int pixel_horiz;//x;
+	int pixel_vert;//y;
+	int	pixel_index;
+	int total_pixels_horiz;
+	int total_pixels_vert;
 
-	// map->gamer.ptr_img = mlx_new_image(map->mlx.mlx_ptr, 8, 8);
-	// map->gamer.data = (int *)mlx_get_data_addr(map->gamer.ptr_img,
-		// &map->gamer.bpp, &map->gamer.line_size, &map->gamer.endian);
-	// ----------- tentando adaptar usando o ponteiro do mapa 2D
-	// map->map2d.data
-	// pixel_horizontal = 0;
-	pixel_horizontal = map->rays.pos_x;
-	int total_pixels_horizontal;
-	// printf("Px: %d\n", pixel_horizontal);
-	total_pixels_horizontal = pixel_horizontal + 8;
-	int total_pixels_vertical;
-	while (pixel_horizontal < total_pixels_horizontal)
+	pixel_horiz = map->rays.pos_x;
+	total_pixels_horiz = pixel_horiz + 8;
+	while (pixel_horiz < total_pixels_horiz)
 	{
-		// pixel_vertical = 0;
-		pixel_vertical = map->rays.pos_y;
-		total_pixels_vertical = pixel_vertical + 8;
-		while (pixel_vertical < total_pixels_vertical)
+		pixel_vert = map->rays.pos_y;
+		total_pixels_vert = pixel_vert + 8;
+		while (pixel_vert < total_pixels_vert)
 		{
-			map->map2d.data[pixel_vertical * (map->width * map_s) + pixel_horizontal] = 0xFFCC00;
-			// map->gamer.data[pixel_horizontal * 8 + pixel_vertical] = 0xFFCC00;
-			pixel_vertical++;
+			pixel_index = find_index(pixel_horiz, pixel_vert, map->width);
+			map->map2d.data[pixel_index] = 0xFFCC00;
+			pixel_vert++;
 		}
-		pixel_horizontal++;
+		pixel_horiz++;
 	}
-	// mlx_put_image_to_window(map->mlx.mlx_ptr, map->mlx.win,
-	// 	map->gamer.ptr_img, map->rays.pos_x, map->rays.pos_y);
-	// mlx_put_image_to_window(map->mlx.mlx_ptr, map->mlx.win, map->map2d.ptr_img, 0, 0);
-
-	//draw_line(mlx_ptr, win, px+4, py+4, px+pdx*5, py+pdy*5, 0xFF6347);
 	cast_rays(map);
 }
 
@@ -72,7 +65,6 @@ void	paint_map(t_map *map)
 				px_begin_vertical = cell_vertical * map_s;
 				while (px_begin_vertical < (map_s * (cell_vertical + 1)))
 				{
-					//printf("cell_h: %d e cell_v: %d\n", cell_horizontal, cell_vertical);
 					if(map->map[cell_vertical][cell_horizontal] == '1')
 						map->map2d.data[px_begin_vertical * (map->width * map_s) + px_begin_horizontal] = 0x000000;
 					else if (map->map[cell_vertical][cell_horizontal] == '0' || map->map[cell_vertical][cell_horizontal] == map->spawing)
@@ -87,5 +79,4 @@ void	paint_map(t_map *map)
 		}
 		cell_horizontal++;
 	}
-	// mlx_put_image_to_window(map->mlx.mlx_ptr, map->mlx.win, map->map2d.ptr_img, 0, 0);
 }
