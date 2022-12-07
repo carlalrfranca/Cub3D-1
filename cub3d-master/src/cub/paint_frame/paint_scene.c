@@ -6,77 +6,97 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 20:03:30 by lfranca-          #+#    #+#             */
-/*   Updated: 2022/12/06 20:17:42 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/12/06 21:19:30 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../inc/cub3d.h"
 
-static int find_index(int pixel_horiz, int pixel_vert, int map_width)
+static int find_index(int curr_pixel_x, int curr_pixel_y, int map_width)
 {
-    return (pixel_vert * (map_width * map_s) + pixel_horiz);
+    return (curr_pixel_y * (map_width * map_s) + curr_pixel_x);
 }
 
 void	paint_gamer(t_map *map)
 {
-	int pixel_horiz;//x;
-	int pixel_vert;//y;
+	int curr_pixel_y;
+	int curr_pixel_x;
+	int total_pixels_x;
+	int total_pixels_y;
 	int	pixel_index;
-	int total_pixels_horiz;
-	int total_pixels_vert;
 
-	pixel_horiz = map->rays.pos_x;
-	total_pixels_horiz = pixel_horiz + 8;
-	while (pixel_horiz < total_pixels_horiz)
+	curr_pixel_x = map->rays.pos_x;
+	total_pixels_x = curr_pixel_x + 8;
+	while (curr_pixel_x < total_pixels_x)
 	{
-		pixel_vert = map->rays.pos_y;
-		total_pixels_vert = pixel_vert + 8;
-		while (pixel_vert < total_pixels_vert)
+		curr_pixel_y = map->rays.pos_y;
+		total_pixels_y = curr_pixel_y + 8;
+		while (curr_pixel_y < total_pixels_y)
 		{
-			pixel_index = find_index(pixel_horiz, pixel_vert, map->width);
+			pixel_index = find_index(curr_pixel_x, curr_pixel_y, map->width);
 			map->map2d.data[pixel_index] = 0xFFCC00;
-			pixel_vert++;
+			curr_pixel_y++;
 		}
-		pixel_horiz++;
+		curr_pixel_x++;
 	}
 	cast_rays(map);
 }
 
+static void	paint_each_cell(t_map *map, int cell_in_x, int cell_in_y)
+{
+	int curr_pixel_y; //yo;// parte do pixel inicial da celula atual na vertical
+	int curr_pixel_x; //xo;// parte do pixel inicial da celula atual na horizontal
+	int pixel_index;
+
+	curr_pixel_x = cell_in_x * map_s;
+	while (curr_pixel_x < (map_s * (cell_in_x + 1)))
+	{
+		curr_pixel_y = cell_in_y * map_s;
+		while (curr_pixel_y < (map_s * (cell_in_y + 1)))
+		{
+			pixel_index = find_index(curr_pixel_x, curr_pixel_y, map->width);
+			if(map->map[cell_in_y][cell_in_x] == '1')
+				map->map2d.data[pixel_index] = 0x000000;
+			else if (map->map[cell_in_y][cell_in_x] == '0'
+				|| map->map[cell_in_y][cell_in_x] == map->spawing)
+				map->map2d.data[pixel_index] = 0xFFFFFF;
+			else
+				map->map2d.data[pixel_index] = 0x2C2F36;
+			curr_pixel_y++;
+		}
+		curr_pixel_x++;
+	}
+}
+
+static void	init_map2d_img(t_map *map)
+{
+	int	_2d_width;
+	int _2d_height;
+
+	//estabelece o tam do quadrado dentro da tela, por cima do background
+	_2d_width = map->width * map_s;
+	_2d_height = map->height * map_s;
+	map->map2d.ptr_img = mlx_new_image(map->mlx.mlx_ptr,
+		_2d_width, _2d_height);
+	map->map2d.data = (int *)mlx_get_data_addr(map->map2d.ptr_img,
+		&map->map2d.bpp, &map->map2d.line_size, &map->map2d.endian);
+}
+
 void	paint_map(t_map *map)
 {
-	int cell_horizontal;//x;
-	int cell_vertical;//y;
-	int px_begin_horizontal;//xo;//pixel inicial da celula em horizontal
-	int px_begin_vertical;//yo;// pixel inicial da celula em vertical
+	int current_cell_x;
+	int current_cell_y;
+	int	total_cells_x;
+	int	total_cells_y;
 
-	//estabelece o tam do quadrado dentro da tela, por cima do backgrground
-	map->map2d.ptr_img = mlx_new_image(map->mlx.mlx_ptr, map->width * map_s, map->height * map_s);
-	map->map2d.data = (int *)mlx_get_data_addr(map->map2d.ptr_img, &map->map2d.bpp, &map->map2d.line_size, &map->map2d.endian);
-	cell_horizontal = 0;
-	while (cell_horizontal < map->width)
+	init_map2d_img(map);
+	total_cells_x = map->width;
+	total_cells_y = map->height;
+	current_cell_x = -1;
+	while (++current_cell_x < total_cells_x)
 	{
-		cell_vertical = 0;
-		while (cell_vertical < map->height)
-		{
-			px_begin_horizontal = cell_horizontal * map_s;
-			// inserir esses dois while() internos na função: paint_pixel()
-			while (px_begin_horizontal < (map_s * (cell_horizontal + 1)))
-			{
-				px_begin_vertical = cell_vertical * map_s;
-				while (px_begin_vertical < (map_s * (cell_vertical + 1)))
-				{
-					if(map->map[cell_vertical][cell_horizontal] == '1')
-						map->map2d.data[px_begin_vertical * (map->width * map_s) + px_begin_horizontal] = 0x000000;
-					else if (map->map[cell_vertical][cell_horizontal] == '0' || map->map[cell_vertical][cell_horizontal] == map->spawing)
-						map->map2d.data[px_begin_vertical * (map->width * map_s) + px_begin_horizontal] = 0xFFFFFF;
-					else
-						map->map2d.data[px_begin_vertical * (map->width * map_s) + px_begin_horizontal] = 0x2C2F36;
-					px_begin_vertical++;
-				}
-				px_begin_horizontal++;
-			}
-			cell_vertical++;
-		}
-		cell_horizontal++;
+		current_cell_y = -1;
+		while (++current_cell_y < total_cells_y)
+			paint_each_cell(map, current_cell_x, current_cell_y);
 	}
 }
