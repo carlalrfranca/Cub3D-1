@@ -3,25 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   game_loop.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cleticia <cleticia@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 16:48:25 by cleticia          #+#    #+#             */
-/*   Updated: 2022/12/02 01:16:20 by cleticia         ###   ########.fr       */
+/*   Updated: 2022/12/08 11:57:07 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/cub3d.h"
-
-/*
-	float	deltax;//pdx; //delta x
-	float 	deltay;//pdy; //delta y
-	pdx = cos(pa) * 5;
-	pdy = sin(pa) * 5; //pa gamer_angle;
-	px, py posicao do jogador ta na estrutura pos_x, pos_y
-*/
-/*
-draw_line(map->mlx.mlx_ptr, map->mlx.win, map->rays.pos_x, map->rays.pos_y, map->rays.ray_x, map->rays.ray_y, 0xFFCC00);
-*/
 
 void    check_collision(t_ray *rays)
 {
@@ -125,7 +114,7 @@ static int	check_resolution(t_map *map)
 	int	resolutionY;
 
 	mlx_get_screen_size(map->mlx.mlx_ptr, &resolutionX, &resolutionY);
-	if ((map->height * 32) >= resolutionY || (map->width * 32) >= resolutionX)
+	if (SCREEN_HEIGHT >= resolutionY || SCREEN_WIDTH >= resolutionX)
 	{
 		mlx_destroy_display(map->mlx.mlx_ptr);
 		ft_putendl_fd("Your map overflowed the resolution!", 2);
@@ -147,14 +136,17 @@ static void init_gamer_angle(char spawning, float *gamer_angle)
 	return; 
 }
 
-void open_texture(t_mlx *mlx, t_background *tile, int *coord, char *path)
+int open_texture(t_mlx *mlx, t_background *tile, int *coord, char *path)
 {
     tile->ptr_img = mlx_xpm_file_to_image(mlx->mlx_ptr, path,
         &coord[0], &coord[1]);
+	if(!tile->ptr_img)
+		return (404);
 	tile->data = (int *)mlx_get_data_addr(tile->ptr_img, &tile->bpp, &tile->line_size, &tile->endian);
+	return (0);
 }
 
-void	textures_init(t_image *textures, t_mlx *mlx)
+int	textures_init(t_image *textures, t_mlx *mlx)
 {
     char *path;
     int  coord[2];
@@ -162,34 +154,48 @@ void	textures_init(t_image *textures, t_mlx *mlx)
     coord[0] = textures->width;
     coord[1] = textures->height;
     path = textures->west_wall;
-    open_texture(mlx, &textures->west_tile, coord, path);
+    if (open_texture(mlx, &textures->west_tile, coord, path) == 404)
+		return (404);
     path = textures->east_wall;
-    open_texture(mlx, &textures->east_tile, coord, path);
+    if (open_texture(mlx, &textures->east_tile, coord, path) == 404)
+		return (404);
     path = textures->north_wall;
-    open_texture(mlx, &textures->north_tile, coord, path);
+    if (open_texture(mlx, &textures->north_tile, coord, path) == 404)
+		return (404);
     path = textures->south_wall;
-    open_texture(mlx, &textures->south_tile, coord, path);
+    if (open_texture(mlx, &textures->south_tile, coord, path) == 404)
+		return (404);
+	return (0);
 }
 
-void	rays_struct_init(t_map *map)
+int	rays_struct_init(t_map *map)
 {
-	textures_init(&map->textures, &map->mlx);
+	map->back.ptr_img = NULL;
+	map->map2d.ptr_img = NULL;
+	map->mlx.win = NULL;
+	map->textures.east_tile.ptr_img = NULL;
+	map->textures.west_tile.ptr_img = NULL;
+	map->textures.north_tile.ptr_img = NULL;
+	map->textures.south_tile.ptr_img = NULL;
+	if (textures_init(&map->textures, &map->mlx) == 404)
+		return (404);
 	map->rays.map_x = map->width;
 	map->rays.map_y = map->height;
-	map->rays.gamer_angle = PI;
+	init_gamer_angle(map->spawing, &map->rays.gamer_angle);
 	map->rays.deltax = cos(map->rays.gamer_angle) * 5;
 	map->rays.deltay = sin(map->rays.gamer_angle) * 5;
+	return (0);
 }
 
 void	game_loop(t_map *map)
 {
 	map->mlx.mlx_ptr = mlx_init();
 	check_resolution(map);
-	rays_struct_init(map);
+	if (rays_struct_init(map) == 404)
+		end_program(map);
 	map->mlx.win = mlx_new_window(map->mlx.mlx_ptr,
         SCREEN_WIDTH, SCREEN_HEIGHT, "cub3d");
 	color_background(map);
-	init_gamer_angle(map->spawing, &map->rays.gamer_angle);
 	paint_map(map);	
 	paint_gamer(map);
 	mlx_hook(map->mlx.win, X_EVENT_KEY_PRESS, 1L << 0, event_key, map);

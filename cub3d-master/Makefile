@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: cleticia <cleticia@student.42sp.org.br>    +#+  +:+       +#+         #
+#    By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/08/10 18:12:04 by cleticia          #+#    #+#              #
-#    Updated: 2022/12/01 21:26:15 by cleticia         ###   ########.fr        #
+#    Updated: 2022/12/08 21:46:29 by lfranca-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,7 +29,12 @@ SRC = src/cub/main.c\
 	src/cub/paint_frame/color_bg.c\
 	src/cub/paint_frame/paint_scene.c\
 	src/cub/map_validation/store_map.c\
+	src/cub/map_validation/store_texture_rgb.c\
+	src/cub/map_validation/store_utils.c\
+	src/cub/map_validation/validate_all.c\
     src/cub/map_validation/validate_map.c\
+	src/cub/map_validation/validate_texture_rgb.c\
+	src/cub/map_validation/validate_utils.c\
 	src/cub/end_and_minimize/end_minimize.c\
 	src/cub/cast_rays/cast_rays.c\
 	src/cub/cast_rays/cast_rays_utils.c\
@@ -48,7 +53,7 @@ LIB = -L ./src/lib/ -lft -L ./src/mlx/minilibx-linux -lmlx -lXext -lX11 -lm -lbs
 all: $(MLX) $(LFT) $(NAME)
 
 $(NAME): $(LFT) $(OBJS)
-	@$(CC) $(FLAGS) $(LFT) $(INC) $(OBJS) $(LIB) -o $@
+	$(CC) $(FLAGS) $(LFT) $(INC) $(OBJS) $(LIB) -o $@
 	@echo "Ready!"
 
 $(MLX):

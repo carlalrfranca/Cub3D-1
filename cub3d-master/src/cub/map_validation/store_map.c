@@ -3,128 +3,96 @@
 /*                                                        :::      ::::::::   */
 /*   store_map.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cleticia <cleticia@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 16:48:18 by cleticia          #+#    #+#             */
-/*   Updated: 2022/12/02 06:46:39 by cleticia         ###   ########.fr       */
+/*   Updated: 2022/12/09 08:14:37 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../inc/cub3d.h"
 
-static int  is_texture_path(char *line)
+/*
+** Verifica se a linha lida é correspondente a uma "linha vazia" (ou porque só
+** tem o caracter nulo ou porque tem espaços/tabs mas mais nada. É por isso
+** que trimá-la faz parte do processo de verificação também. Afinal, caso ela
+** tenha "conteúdo" - espaços e/ou tabs - se for só isso, ela ainda deve ser
+** considerada vazia).
+** É importante fazer essa verificação porque, caso seja uma linha vazia
+** ANTES DO MAPA, podemos "pular ela" - continuar para a próxima
+** iteração/linha.
+*/
+int is_empty_line(char *line)
 {
-    if (ft_strncmp("NO", line, 2) == 0 || ft_strncmp("SO", line, 2) == 0
-        || ft_strncmp("WE", line, 2) == 0 || ft_strncmp("EA", line, 2) == 0)
-            return (1);
-    return (0);
-}
+	char *trimmed_line;
 
-static void save_texture(t_image *textures, char *line) //TRIMMAR AQUI TAMBEM
-{
-    if(ft_strncmp("NO .", line, 4) == 0)
-		textures->north_wall = ft_strdup(ft_strchr(line, '.'));		
-	else if(ft_strncmp("SO .", line, 4) == 0)
-		textures->south_wall = ft_strdup(ft_strchr(line, '.'));	
-	else if(ft_strncmp("WE .", line, 4) == 0)
-		textures->west_wall = ft_strdup(ft_strchr(line, '.'));
-	else if(ft_strncmp("EA .", line, 4) == 0)
-		textures->east_wall = ft_strdup(ft_strchr(line, '.'));
-}
-
-static int is_rgb_color(char *line)
-{
-    if (ft_strncmp("F", line, 1) == 0)
-        return (1);
-    else if (ft_strncmp("C", line, 1) == 0)
-        return (2);
-    return (0);
-}
-
-static char *save_rgb_code(char *line)
-{
-    char    *rgb_color;
-    char    *trimmed;
-    char    *rgb_trimmed;
-
-    rgb_color = NULL;
-    trimmed = ft_strtrim(line, " ");
-    rgb_color = ft_strchr(trimmed, ' ');
-    if (!rgb_color)
-    {
-        free(trimmed);
-        return (NULL);
-    }
-    //trim again just so we garantee there's no extra spaces between the character and the number
-    rgb_trimmed = ft_strtrim(rgb_color, " ");
-    free(trimmed);
-    return (rgb_trimmed);
-
-}
-
-static void invalid_rgb(char *line, char *rgb_to_free, t_map *map)
-{
-    if(map->map)
-        free(map->map);
-    free(map);
-    write(2, "Error\nInvalid Map: RGB Formating.\n", 34);
-    free(line);
-	if(rgb_to_free)
-	    free(rgb_to_free);
-	exit(10);
-}
-
-static void check_which_rgb(char *line, char **floor, char **ceilling, t_map *map)
-{
-    if (is_rgb_color(line) == 1)
+	trimmed_line = NULL;
+	if (ft_strlen(line) == 0)
+		return (1);
+	trimmed_line = ft_strtrim(line, " \t");
+	if (ft_strlen(trimmed_line) == 0)
 	{
-        (*floor) = save_rgb_code(line);
-        if ((*floor) == NULL)
-           invalid_rgb(line, (*ceilling), map);
+		free(trimmed_line);
+		return (1);
 	}
-	else if (is_rgb_color(line) == 2)
-	{
-		(*ceilling) = save_rgb_code(line);
-        if ((*ceilling) == NULL)
-            invalid_rgb(line, (*floor), map);
-	}
+	free(trimmed_line);
+	return (0);
 }
 
-void	store_map(char **line, t_map *map, char *filename)
+/*
+** save_map() armazena o conteúdo do mapa na matriz da estrutura principal
+** antes disso, porém, verifica se os caminhos das texturas e os códigos rgb
+** já estão armazenados na estrutura (ou seja, já "passamos" por eles no arquivo).
+** Caso não, ele retorna erro e exita, porque faz parte das regras que o mapa
+** deva ser O ULTIMO conteudo do arquivo (e tambem há a possibilidade de nem ter
+** caminhos de texturas e/ou codigos rgb).
+*/
+static void save_map(t_map *map, int *content, char *line)
 {
+	if ((*content) == 0 && (!map->textures.east_wall || !map->textures.west_wall
+			|| !map->textures.south_wall || !map->textures.north_wall
+				|| !map->ceilling || !map->floor))
+					invalid_rgb(line, NULL, map);
+	map->monitoring = 0;
+	map->map[*content] = ft_strdup(line);
+	(*content)++;
+}
+
+/*
+** store_file_content() irá abrir o arquivo onde estão os caminhos para
+** as texturas, os códigos rgb e o mapa e irá percorrer esse conteúdo,
+** separando-os e armazenando-os em variáveis na estrutura principal.
+** Usa para isso as funções de apoio:
+** - save_textures_rgb()
+** - save_map()
+*/
+int	store_file_content(char **line, t_map *map, char *filename)
+{
+	int		ret;
 	int content;
-	int ret;
 
-	content = 0;
 	ret = 1;
-	map->map = malloc(sizeof(char *) * (map->height + 1));
-	map->map[map->height] = NULL;
+	content = 0;
 	map->fd = open(filename, O_RDONLY);
 	while (ret)
 	{
 		ret = get_next_line(map->fd, line);
 		if (ret == 0 && map->height == 0)
-			file_error("Error\nEmpty map.", 5);
-        if(is_texture_path(*line))
-            save_texture(&map->textures, *line);
-        else if (is_rgb_color(*line))
-            check_which_rgb(*line, &map->floor, &map->ceilling, map);
-		else if(ft_strlen(*line) == 0 && (map->monitoring == 6)) //ignorar linha vazia antes do mapa
+			return (303);
+		if (ft_strlen((*line)) != 0
+			&& ((is_texture_path(*line)) || is_rgb_color(*line)))
+			save_textures_rgb((*line), map);
+		else if(is_empty_line(*line) && (map->monitoring == 6)) //ignorar linha vazia antes do mapa
 		{
 			free(*line);
 			continue;
 		}
 		else
-		{ //caso for o mapa 
-         //colocar uma restrição aqui porque as texturas e o rgb tem que já ter vindo
-			map->monitoring = 0;
-			map->map[content] = ft_strdup(*line);
-			content++;
-		}
+			save_map(map, &content, (*line));
         free(*line);
 	}
+	return (0);
 }
-
 
 void    check_textures_rgb(char *line, int *monitoring)
 {
@@ -145,18 +113,27 @@ void    check_textures_rgb(char *line, int *monitoring)
 	}
 }
 
-
-void    count_height_width(char *line, t_map *map)
+int    count_height_width(char *line, t_map *map)
 {
 	int		size;
 
+	if (map->monitoring != 6)
+	{
+		free(line);
+		return (505); //wrong formating
+	}
 	map->height++;
 	size = ft_strlen(line);
 	if(size > map->width)
 		map->width = size;
+	return (0);
 }
 
-void	measure_height(char **line, t_map *map)
+/*
+** measure_height() vai tirar a altura da matriz do mapa (que servirá para o minimapa e
+** para projetar o mapa 3d tambem).
+*/
+int	measure_height(char **line, t_map *map)
 {
 	int		ret;
 
@@ -166,22 +143,23 @@ void	measure_height(char **line, t_map *map)
         if (line && (*line))
             free(*line);
 		ret = get_next_line(map->fd, line);
-		if (ret == 0 && map->height == 0)
-			file_error("Error\nEmpty file.", 6); //monitoring_content();
+		if (ret == 0 && map->height == 0 && map->monitoring == 0)
+			return (505);
  		if (ft_strchr(*line, '.') || ft_strchr(*line, ','))
-            check_textures_rgb(*line, &map->monitoring);      
-		else if(ft_strlen(*line) == 0 && map->height == 0)//se nao é linha vazia e nao é 2
+            check_textures_rgb(*line, &map->monitoring);
+		else if(is_empty_line(*line) && map->height == 0)
 			continue;
-		else if (map->monitoring == 6) //significa que ja passamos tanto pelas texturas quanto pelo rgb e só resta o mapa
-            count_height_width(*line, map);
+		else if (count_height_width(*line, map) == 505)
+			return (505);
 	}
 	if (*line)
 		free(*line);
 	if (map->height == 0)
 	{
 		close(map->fd);
-		file_error("Error\nEmpty map.", 5);
+		return (505);
 	}
+	return (0);
 }
 
 static void init_map(t_map *map)
@@ -194,6 +172,24 @@ static void init_map(t_map *map)
 	map->width = 0;
 	map->fd = 0;
 	map->spawing = 0;
+	map->textures.east_wall = NULL;
+	map->textures.west_wall = NULL;
+	map->textures.north_wall = NULL;
+	map->textures.south_wall = NULL;
+}
+
+static void alloc_zero_map(t_map *map)
+{
+	int counter;
+
+	counter = 0;
+	map->map = malloc(sizeof(char *) * (map->height + 1));
+	while (counter < map->height)
+	{
+		map->map[counter] = NULL;
+		counter++;
+	}
+	map->map[map->height] = NULL;
 }
 
 t_map	*prepare_to_store(char *filename)
@@ -210,8 +206,14 @@ t_map	*prepare_to_store(char *filename)
 		free(map);
         file_error("Error\nFailed to open map file.", 5);
 	}
-	measure_height(&line, map);
-	store_map(&line, map, filename);
+	if (measure_height(&line, map) == 505)
+	{
+		free(map);
+		file_error("Error\nEmpty file or Map must on the end of file", 505);
+	}
+	alloc_zero_map(map);
+	if (store_file_content(&line, map, filename) == 303)
+		map_error(map);
 	close(map->fd);
 	return (map);
 }

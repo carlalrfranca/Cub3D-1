@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   draw_3d.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cleticia <cleticia@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 14:00:43 by cleticia          #+#    #+#             */
-/*   Updated: 2022/12/02 03:44:14 by cleticia         ###   ########.fr       */
+/*   Updated: 2022/12/08 09:52:55 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void fix_fish_eye(t_ray *rays)
 		gamer_to_ray_angle += 2*PI;
 	else if (gamer_to_ray_angle > 2*PI)
 		gamer_to_ray_angle -= 2*PI;
-	rays->dist_final = rays->dist_final * cos(gamer_to_ray_angle);
+	rays->dist_final *= cos(gamer_to_ray_angle);
 }
 
 void    draw_wall_strip(t_3dmap *map_3D, t_background *backg, t_ray *rays, int rays_counter)
@@ -90,7 +90,7 @@ void draw_3d(t_ray *rays, float dist_final, int rays_counter, t_map *map)
 	// e chegar superar o tamanho de janela da projeção 3d, o
 	// desenho não fique distorcido (perca a perspectiva)
 	map_3D.texture_y_off = 0;
-	if(map_3D.line_height > 800)
+	if(map_3D.line_height > SCREEN_HEIGHT)
 	{
 		map_3D.texture_y_off = (map_3D.line_height - SCREEN_HEIGHT)/2.0;
 		map_3D.line_height = SCREEN_HEIGHT - 1;

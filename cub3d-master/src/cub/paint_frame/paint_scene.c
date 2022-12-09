@@ -6,86 +6,115 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 20:03:30 by lfranca-          #+#    #+#             */
-/*   Updated: 2022/11/19 22:03:58 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/12/09 08:39:59 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../inc/cub3d.h"
 
+static int	find_index(int curr_pixel_x, int curr_pixel_y, int map_width)
+{
+	return (curr_pixel_y * (map_width * map_s) + curr_pixel_x);
+}
+
+/*
+** paint_gamer() apenas pinta o pixel de 8px por 8px do gamer no minimapa
+** depois chama a cast_rays(), que irá fazer os cálculos dos raios
+*/
 void	paint_gamer(t_map *map)
 {
-	int pixel_horizontal;//x;
-	int pixel_vertical;//y;
+	int	curr_pixel_y;
+	int	curr_pixel_x;
+	int	total_pixels_x;
+	int	total_pixels_y;
+	int	pixel_index;
 
-	// map->gamer.ptr_img = mlx_new_image(map->mlx.mlx_ptr, 8, 8);
-	// map->gamer.data = (int *)mlx_get_data_addr(map->gamer.ptr_img,
-		// &map->gamer.bpp, &map->gamer.line_size, &map->gamer.endian);
-	// ----------- tentando adaptar usando o ponteiro do mapa 2D
-	// map->map2d.data
-	// pixel_horizontal = 0;
-	pixel_horizontal = map->rays.pos_x;
-	int total_pixels_horizontal;
-	// printf("Px: %d\n", pixel_horizontal);
-	total_pixels_horizontal = pixel_horizontal + 8;
-	int total_pixels_vertical;
-	while (pixel_horizontal < total_pixels_horizontal)
+	curr_pixel_x = map->rays.pos_x;
+	total_pixels_x = curr_pixel_x + 8;
+	while (curr_pixel_x < total_pixels_x)
 	{
-		// pixel_vertical = 0;
-		pixel_vertical = map->rays.pos_y;
-		total_pixels_vertical = pixel_vertical + 8;
-		while (pixel_vertical < total_pixels_vertical)
+		curr_pixel_y = map->rays.pos_y;
+		total_pixels_y = curr_pixel_y + 8;
+		while (curr_pixel_y < total_pixels_y)
 		{
-			map->map2d.data[pixel_vertical * (map->width * map_s) + pixel_horizontal] = 0xFFCC00;
-			// map->gamer.data[pixel_horizontal * 8 + pixel_vertical] = 0xFFCC00;
-			pixel_vertical++;
+			pixel_index = find_index(curr_pixel_x, curr_pixel_y, map->width);
+			map->map2d.data[pixel_index] = 0xFFCC00;
+			curr_pixel_y++;
 		}
-		pixel_horizontal++;
+		curr_pixel_x++;
 	}
-	// mlx_put_image_to_window(map->mlx.mlx_ptr, map->mlx.win,
-	// 	map->gamer.ptr_img, map->rays.pos_x, map->rays.pos_y);
-	// mlx_put_image_to_window(map->mlx.mlx_ptr, map->mlx.win, map->map2d.ptr_img, 0, 0);
-
-	//draw_line(mlx_ptr, win, px+4, py+4, px+pdx*5, py+pdy*5, 0xFF6347);
 	cast_rays(map);
 }
 
+/*
+** paint_each_cell() pinta uma celula de 32px por 32px na imagem do minimapa/map2d
+** Ela percorre o eixo x e y, colorindo cada pixel da celula.
+** Ela é chamada várias vezes pela paint_map() até pintar todas as células do minimapa
+*/
+static void	paint_each_cell(t_map *map, int cell_in_x, int cell_in_y)
+{
+	int	pixel_index;
+	int	curr_pixel_y; //yo;// parte do pixel inicial da celula atual na vertical
+	int	curr_pixel_x; //xo;// parte do pixel inicial da celula atual na horizontal
+
+	curr_pixel_x = cell_in_x * map_s;
+	while (curr_pixel_x < (map_s * (cell_in_x + 1)))
+	{
+		curr_pixel_y = cell_in_y * map_s;
+		while (curr_pixel_y < (map_s * (cell_in_y + 1)))
+		{
+			pixel_index = find_index(curr_pixel_x, curr_pixel_y, map->width);
+			if (map->map[cell_in_y][cell_in_x] == '1')
+				map->map2d.data[pixel_index] = 0x000000;
+			else if (map->map[cell_in_y][cell_in_x] == '0'
+				|| map->map[cell_in_y][cell_in_x] == map->spawing)
+				map->map2d.data[pixel_index] = 0xFFFFFF;
+			else
+				map->map2d.data[pixel_index] = 0x2C2F36;
+			curr_pixel_y++;
+		}
+		curr_pixel_x++;
+	}
+}
+
+/*
+** inicializa o ponteiro da imagem para uma nova imagem que servirá de
+** minimapa (ou mapa 2d)
+*/
+static void	init_map2d_img(t_map *map)
+{
+	int	_2d_width;
+	int	_2d_height;
+
+	//estabelece o tam do quadrado dentro da tela, por cima do background
+	_2d_width = map->width * map_s;
+	_2d_height = map->height * map_s;
+	map->map2d.ptr_img = mlx_new_image(map->mlx.mlx_ptr,
+			_2d_width, _2d_height);
+	map->map2d.data = (int *)mlx_get_data_addr(map->map2d.ptr_img,
+			&map->map2d.bpp, &map->map2d.line_size, &map->map2d.endian);
+}
+
+/*
+** a paint_map() vai, para cada "celula" da matriz do mapa,
+** pintar na janela uma "celula" de 32px por 32px correspondente
+** com a função paint_each_cell()
+*/
 void	paint_map(t_map *map)
 {
-	int cell_horizontal;//x;
-	int cell_vertical;//y;
-	int px_begin_horizontal;//xo;//pixel inicial da celula em horizontal
-	int px_begin_vertical;//yo;// pixel inicial da celula em vertical
+	int	current_cell_x;
+	int	current_cell_y;
+	int	total_cells_x;
+	int	total_cells_y;
 
-	//estabelece o tam do quadrado dentro da tela, por cima do backgrground
-	map->map2d.ptr_img = mlx_new_image(map->mlx.mlx_ptr, map->width * map_s, map->height * map_s);
-	map->map2d.data = (int *)mlx_get_data_addr(map->map2d.ptr_img, &map->map2d.bpp, &map->map2d.line_size, &map->map2d.endian);
-	cell_horizontal = 0;
-	while (cell_horizontal < map->width)
+	init_map2d_img(map);
+	total_cells_x = map->width;
+	total_cells_y = map->height;
+	current_cell_x = -1;
+	while (++current_cell_x < total_cells_x)
 	{
-		cell_vertical = 0;
-		while (cell_vertical < map->height)
-		{
-			px_begin_horizontal = cell_horizontal * map_s;
-			// inserir esses dois while() internos na função: paint_pixel()
-			while (px_begin_horizontal < (map_s * (cell_horizontal + 1)))
-			{
-				px_begin_vertical = cell_vertical * map_s;
-				while (px_begin_vertical < (map_s * (cell_vertical + 1)))
-				{
-					//printf("cell_h: %d e cell_v: %d\n", cell_horizontal, cell_vertical);
-					if(map->map[cell_vertical][cell_horizontal] == '1')
-						map->map2d.data[px_begin_vertical * (map->width * map_s) + px_begin_horizontal] = 0x000000;
-					else if (map->map[cell_vertical][cell_horizontal] == '0' || map->map[cell_vertical][cell_horizontal] == map->spawing)
-						map->map2d.data[px_begin_vertical * (map->width * map_s) + px_begin_horizontal] = 0xFFFFFF;
-					else
-						map->map2d.data[px_begin_vertical * (map->width * map_s) + px_begin_horizontal] = 0x2C2F36;
-					px_begin_vertical++;
-				}
-				px_begin_horizontal++;
-			}
-			cell_vertical++;
-		}
-		cell_horizontal++;
+		current_cell_y = -1;
+		while (++current_cell_y < total_cells_y)
+			paint_each_cell(map, current_cell_x, current_cell_y);
 	}
-	// mlx_put_image_to_window(map->mlx.mlx_ptr, map->mlx.win, map->map2d.ptr_img, 0, 0);
 }
