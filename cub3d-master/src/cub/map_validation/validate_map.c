@@ -3,56 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   validate_map.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cleticia <cleticia@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/08/30 16:48:36 by cleticia          #+#    #+#             */
-/*   Updated: 2022/12/01 23:21:36 by cleticia         ###   ########.fr       */
+/*   Created: 2022/12/08 19:53:11 by lfranca-          #+#    #+#             */
+/*   Updated: 2022/12/09 08:36:41 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../inc/cub3d.h"
-
-void	free_map(t_map *map)
-{
-	int	index;
-
-	index = -1;
-    if (map->map[0] != NULL && map->height > 0)
-    {
-        while (++index < map->height)
-		    free(map->map[index]);
-    }
-	free(map->map);
-	if(map->floor)
-		free(map->floor);
-	if(map->ceilling)
-		free(map->ceilling);
-	free(map);
-}
-
-void	map_error(t_map *map)
-{
-	free_map(map);
-	write(2, "Error\nInvalid Map\n", 18);
-	exit(11);
-}
-
-void free_matrix(char **split_values)
-{
-	int	counter;
-
-	counter = 0;
-	while (split_values[counter])
-	{
-		free(split_values[counter]);
-		counter++;
-	}
-}
-
-// ----------------------------------------------------------------------------------
-// acho que em vem da função acima, a gente pode criar uma função para verificar
-// que o caracter enviado é aceitável
-// e daí dentro do loop verificar cada char (substitui a verify_char)
 
 // loop principal pra verificar o mapa:
 /*
@@ -74,12 +32,13 @@ void free_matrix(char **split_values)
 
 // vale funções daqui pra baixo + free_map(), map_error(), validate_rgb(), validate_texture(), is_two_commas()
 
-int	is_wall(char *map_line, int map_height)
+int	is_wall(char *map_line, int map_width)
 {
 	int	char_counter;
 
 	char_counter = 0;
-	while(char_counter < map_height)
+	// proteção aqui caso a ultima linha do mapa seja uma linha vazia...
+	while(char_counter < map_width)
 	{
 		// se o caracter não for nem 1 nem espaço vazio retorna zero (erro)...
 		if(!ft_strchr("1 ", map_line[char_counter]))
@@ -89,36 +48,26 @@ int	is_wall(char *map_line, int map_height)
 	return (1);
 }
 
-int	is_valid_char(char map_char)
+int is_eroded_internal_wall(char **map_line, int char_counter)
 {
-	if(!ft_strchr("10 NSEW", map_char))
-		return(0);
-	return(1);
-}
-
-void	store_player_info(t_map *map, char spawn, int row, int column)
-{
-	map->spawing = spawn;
-	map->rays.pos_x = column * map_s;
-	map->rays.pos_y = row * map_s;
-	map->map[row][column] = '0';
-}
-
-int	is_single_gamer(t_map *map, char spawn, int row, int column)
-{
-	if(!map->spawing)
+	// se for interno, verifica o caractere anterior
+	if (char_counter != 0 && char_counter < ((int)ft_strlen(map_line[0]) - 1))
 	{
-		store_player_info(map, spawn, row, column);
-		return(1);
+		if(map_line[0][char_counter - 1] == '1')
+			return (0);
 	}
-	return(0);
-}
-
-int	ft_is_space(char letter)
-{
-	if(letter == ' ')
-		return(1);
-	return(0);
+	// se for menor que a extremidade à direita, podendo ser interno e tambem a extremidade esquerda (0)
+	if (char_counter < ((int)ft_strlen(map_line[0]) - 1)) //significa que a parede está no primeiro indice da linha (entao nao tem nada à esquerda, mesma coisa vale para a extremidade direita)
+	{
+		if(map_line[0][char_counter + 1] == '1' || map_line[-1][char_counter] == '1'
+			|| map_line[1][char_counter] == '1')
+			return (0);
+	}
+	// se for a borda (que deve ser parede, e caso nao seja, significa que a função que verifica os carateres internos vai delatá-la)
+	// entao é só devolver que é parede
+	if (char_counter == ((int)ft_strlen(map_line[0]) - 1))
+		return (0);
+	return (1);
 }
 
 /*
@@ -127,64 +76,82 @@ int	ft_is_space(char letter)
     ** passar a linha por ENDEREÇO/PONTEIRO. Se for por valor, será
     ** apenas uma CÓPIA do valor da string EM OUTRO ESPAÇO DE MEMORIA,
     ** e NAO DARÁ PRA ACESSAR AS LINHAS ANTERIORES/POSTERIORES DO MAPA
+	** Já que essa é uma verificação INTERNA do mapa, verifica se a linha
+	** atual, a anterior ou a seguinte está vazia, se sim, dá erro.
 */
 int	check_is_closed(char **map_line, int char_counter)
 {
-	if(ft_is_space(map_line[0][char_counter - 1]) || !map_line[0][char_counter - 1])
+	// quer dizer que caracteres internos estão na borda
+	if (char_counter == 0 || char_counter == ((int)ft_strlen(map_line[0]) - 1))
+		return (0);
+	if (is_empty_line(map_line[0]) || is_empty_line(map_line[-1]) || is_empty_line(map_line[1]))
+		return (0);
+	if(!map_line[0][char_counter - 1] || ft_is_space(map_line[0][char_counter - 1]))
 		return(0);
-	if(ft_is_space(map_line[0][char_counter + 1]) || !map_line[0][char_counter + 1])
+	if(!map_line[0][char_counter + 1] || ft_is_space(map_line[0][char_counter + 1]))
 		return(0);
-	if(ft_is_space(map_line[-1][char_counter]) || !map_line[-1][char_counter])
+	if(!map_line[-1][char_counter] || ft_is_space(map_line[-1][char_counter]))
 		return(0);
-	if(ft_is_space(map_line[-1][char_counter - 1]) || !map_line[-1][char_counter - 1])
+	if(!map_line[-1][char_counter - 1] || ft_is_space(map_line[-1][char_counter - 1]))
 		return(0);
-	if(ft_is_space(map_line[-1][char_counter + 1]) || !map_line[-1][char_counter + 1])
+	if(!map_line[-1][char_counter + 1] || ft_is_space(map_line[-1][char_counter + 1]))
 		return(0);
-	if(ft_is_space(map_line[1][char_counter]) || !map_line[1][char_counter])
+	if(!map_line[1][char_counter] || ft_is_space(map_line[1][char_counter]))
 		return(0);
-	if(ft_is_space(map_line[1][char_counter - 1]) || !map_line[1][char_counter - 1])
+	if(!map_line[1][char_counter - 1] || ft_is_space(map_line[1][char_counter - 1]))
 		return(0);
-	if(ft_is_space(map_line[1][char_counter + 1]) || !map_line[1][char_counter + 1])
+	if(!map_line[1][char_counter + 1] || ft_is_space(map_line[1][char_counter + 1]))
 		return(0);
 	return(1);
 }
+
 
 /*
     ** aqui verificaremos apenas se tem caracteres validos (o que inclui espaço e 1..)
     ** MAS TAMBÉM (&&) se são os caracteres válidos INTERNOS (0NSWE)
     ** se algum deles NEM VÁLIDO EM GERAL FOR (sei la, vai que alguem digite '3' ou 'z'),
     ** retorna erro
+	** - se for o caracter de spawning, a gente grava a letra e as coordenadas na struct
+	** - se for interno e caracteres (0NEWS), verificar se eles nao estao com espaço ao redor 
+	** - if pra verificar se , na ocorrencia de paredes internas, elas nao estao cercadas
+	** com 0's: acima, imediatamente dos lados e abaixo (celula isolada de parede dá erro)
+	** como a seguir:
+	** - 0 -
+	** 0 1 0
+	** - 0 -
 */
 int	check_map_interior(t_map *map, char **map_line, int row)
 {
-	int	char_counter;
+	int		char_counter;
+	char	*trimmed_line;
 
 	char_counter = 0;
+	if(ft_strlen(map_line[0]) == 0) //linha vazia
+		return (0);
+	trimmed_line = ft_strtrim(map_line[0], " \t");
+	if(ft_strlen(trimmed_line) == 0) //linha vazia
+	{
+		free(trimmed_line);
+		return (0);
+	}
+	free(trimmed_line);
 	while(map_line[0][char_counter])
 	{
 		if(!is_valid_char(map_line[0][char_counter]))
 			return(0);
 		else
 		{
-			// se for o caracter de spawning, a gente grava a letra e as coordenadas na struct...
 			if(ft_strchr(GAMER, map_line[0][char_counter])
 				&& !is_single_gamer(map, map_line[0][char_counter], row, char_counter))
 				return(0);
-			// ou seja: é um caracter interno (0NSEW) mas NÃO ESTÁ cercado (tem espaço ou null ao redor)
-			// daí dá erro, 
 			if(ft_strchr(INTERNAL_CHAR, map_line[0][char_counter]) && !check_is_closed(map_line, char_counter))
+				return(0);
+			else if(map_line[0][char_counter] == '1' && is_eroded_internal_wall(map_line, char_counter))
 				return(0);
 		}
 		char_counter++;
 	}
 	return(1);
-}
-
-static int is_first_last_row(int counter_row, int height)
-{
-    if((counter_row == 0 || counter_row == (height - 1)))
-        return (1);
-    return(0);
 }
 
 int is_map_open(t_map *map)
@@ -194,73 +161,15 @@ int is_map_open(t_map *map)
 	counter_string = 0;
 	while (counter_string < map->height)
 	{
-		// abaixo: se for a PRIMEIRA OU ÚLTIMA linha do mapa
 		if(is_first_last_row(counter_string, map->height)
-			&& !is_wall(map->map[counter_string], map->height))
+			&& !is_wall(map->map[counter_string], map->width))
 			map_error(map);
 		else if (!is_first_last_row(counter_string, map->height))
 		{
 			if (!check_map_interior(map, &map->map[counter_string], counter_string))
-				map_error(map); //passar um numero especifico para o erro para personalizar a mensagem?
+				map_error(map);
 		}
 		counter_string++;
 	}
 	return(1);
 }
-
-void	validate_texture(t_map *map)
-{
-	if(map->textures.north_wall == 0 || map->textures.south_wall == 0
-		|| map->textures.west_wall == 0 || map->textures.east_wall == 0)
-		map_error(map);
-}
-
-void	validate_rgb(char *rgb_value)
-{
-	char **split_values;
-	int	rgb;
-	int	i;
-	int	j;
-
-	i = -1;
-	rgb = 0;
-	split_values = ft_split(rgb_value, ',');
-	while(split_values[++i]) //jogar esse while pra uma função propria
-	{
-		j = -1;
-		while (split_values[i][++j])
-		{
-			if(ft_isdigit(split_values[i][j]) == -1)
-			{
-				free_matrix(split_values);
-				file_error("Error\nRGB must be numeric digits.", 2);
-			}
-		}
-		rgb = ft_atoi(split_values[i]);		
-		if (rgb < 0 || rgb > 255)
-		{
-			free_matrix(split_values);
-			file_error("Error\nRGB numbers must be between 0-255.", 3);
-		}
-	}
-	free_matrix(split_values);
-	free(split_values);
-	if(i != 3)
-    {
-        free(rgb_value);
-		file_error("Error\nRGB must be a set of 3 numbers comma-separated.", 4);
-    }
-}
-
-int	validate_map(t_map *map)
-{
-	validate_rgb(map->floor);
-	validate_rgb(map->ceilling);
-	validate_texture(map);
-	is_map_open(map);
-	printf("Aparentemente deu tudo certo\n");
-	return (0);
-}
-/*
-./cub3d ./src/maps/map.cub
-*/
