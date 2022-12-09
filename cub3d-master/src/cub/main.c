@@ -3,16 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cleticia <cleticia@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 15:11:59 by cleticia          #+#    #+#             */
-/*   Updated: 2022/12/01 23:18:20 by cleticia         ###   ########.fr       */
+/*   Updated: 2022/12/09 18:29:00 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/cub3d.h"
-
-// funcao para exitar game
 
 void	file_error(char *error_message, int error_code)
 {
@@ -20,7 +18,7 @@ void	file_error(char *error_message, int error_code)
 	exit(error_code);
 }
 
-int main(int argc, char **argv)
+int	main(int argc, char **argv)
 {
 	char	*extension;
 	char	*filename;
@@ -37,8 +35,3 @@ int main(int argc, char **argv)
 	game_loop(map);
 	return (0);
 }
-
-/*
-./cub3d ./src/maps/map.cub
-valgrind --leak-check=full ./cub3d ./src/maps/map.cub
-*/

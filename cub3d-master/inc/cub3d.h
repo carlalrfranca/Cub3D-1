@@ -6,18 +6,12 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 18:15:32 by cleticia          #+#    #+#             */
-/*   Updated: 2022/12/09 15:21:37 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/12/09 19:10:53 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CUB3D_H
 # define CUB3D_H
-# define FT_ERROR 1
-# define FT_SUCCESS 0
-# define SCREEN_WIDTH 800
-# define SCREEN_HEIGHT 600
-# define SMALLER_THAN_MAP_SIZE 1 //pra armazenamento do mapa
-
 # include <math.h>
 # include <stdio.h>
 # include <stdlib.h>
@@ -31,16 +25,20 @@
 # include <stdint.h>
 # include <sys/time.h>
 
-// macros para monitorar o tipo de conteudo que foi extraído do mapa
+# define FT_ERROR 1
+# define FT_SUCCESS 0
+# define SCREEN_WIDTH 800
+# define SCREEN_HEIGHT 600
+# define SMALLER_THAN_MAP_SIZE 1
 # define TEXTURES_DONE 4
 # define RGB_DONE 2
 # define INTERNAL_CHAR "0NSWE"
 # define GAMER "NSWE"
-# define map_s 32 //map cube size
+# define map_s 32
 # define PI 3.1415926535
 # define P2 PI/2
 # define P3 3 * PI/2
-# define DR 0.0174533 //um degrau em radiano
+# define DR 0.0174533
 
 typedef struct s_col
 {
@@ -52,49 +50,51 @@ typedef struct s_col
 	int	col_pos_x_sub_offset_x;
 }	t_col;
 
+/* variáveis usadas para mapear */
+/* os pixels das texturas que estão sendo pintados */
 typedef struct s_3dmap
 {
 	float	centered_vision;
 	float	line_height;
 	int		*data_tile;
-	float	texture_x; // variáveis usadas para mapear os pixels das texturas que estão sendo pintados
+	float	texture_x;
 	float	texture_y_step;
 	float	texture_y_off;
 	float	texture_y;
 }	t_3dmap;
 
+/* ray_x e ray_y = coordenada inicial do raio */
+/* pos_x e pos_y = coordenada inicial/atual do jogador */
+/* deltax e deltay = valor que o jogador "percorre" a cada */
+/* vez que as teclas de movimento são pressionadas */
+/* step_x e step_y = comprimento interno da celula em x e em y */
 typedef struct s_ray
 {
-	char	*rays; //orientacao
-	int		index;
-	double	dir_x; //vetor de direcao inicial eixo x
-	double	dir_y; //vetor de direcao inicial eixo y
-	float	ray_x; //posiciao inicial do raio rx e ry
+	float	ray_x;
 	float	ray_y;
-	float	pos_x; //px
-	float	pos_y; //py
-	float	gamer_angle; //pa
-	float	deltax;//pdx; //delta x
-	float	deltay;//pdy; //delta y
-	int		x;
-	int		map_x; //posicao atual
-	int		map_y;
-	float	step_x; //comprimento inicial interno da celula xo
-	float	step_y; //comprimento final interno da celula yo
-	int		*rgb;
-	int		depth_of_field; //dof
 	float	ray_angle;
-	float	neg_tan; //ntan negativo da tangente
-	float	neg_inv_tan; //atan negativo do invers
-	float	dist_horizontal; //dish;
-	float	dist_vertical; //disv;
+	float	pos_x;
+	float	pos_y;
+	float	gamer_angle;
+	float	deltax;
+	float	deltay;
+	int		map_x;
+	int		map_y;
+	float	step_x;
+	float	step_y;
+	int		*rgb;
+	int		depth_of_field;
+	float	neg_tan;
+	float	neg_inv_tan;
+	float	dist_horizontal;
+	float	dist_vertical;
 	float	dist_final;
 	t_col	collision;
 }	t_ray;
 
 typedef struct s_background
 {
-	void	*ptr_img; //ptr_map
+	void	*ptr_img;
 	int		*data;
 	int		line_size;
 	int		bpp;
@@ -107,21 +107,21 @@ typedef struct s_mlx
 	void	*mlx_ptr;
 }	t_mlx;
 
-typedef	struct s_image
-{// abaixo: as texturas das paredes e os numeros rgb
-	char			*east_wall;//strings dos caminhos
+typedef struct s_image
+{
+	char			*east_wall;
 	char			*west_wall;
 	char			*north_wall;
 	char			*south_wall;
 	int				width;
-	int 			height;
+	int				height;
 	t_background	east_tile;
 	t_background	west_tile;
 	t_background	north_tile;
 	t_background	south_tile;
 }	t_image;
 
-typedef struct s_map //principal
+typedef struct s_map
 {
 	t_mlx			mlx;
 	t_image			textures;
@@ -134,15 +134,15 @@ typedef struct s_map //principal
 	char			*ceilling;
 	int				monitoring;
 	int				is_squared_map;
-	int				height; //map_y -altura
-	int				width; //map_x -largura
+	int				height;
+	int				width;
 	int				fd;
 	char			spawing;
 }	t_map;
 
+/* point of view keys */
 enum e_keycode
 {
-	/* point of view keys */
 	KEY_W	= 119,
 	KEY_A	= 97,
 	KEY_S	= 115,

@@ -6,7 +6,7 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 20:03:30 by lfranca-          #+#    #+#             */
-/*   Updated: 2022/12/09 08:39:59 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/12/09 18:31:37 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,16 +46,16 @@ void	paint_gamer(t_map *map)
 	cast_rays(map);
 }
 
-/*
-** paint_each_cell() pinta uma celula de 32px por 32px na imagem do minimapa/map2d
-** Ela percorre o eixo x e y, colorindo cada pixel da celula.
-** Ela é chamada várias vezes pela paint_map() até pintar todas as células do minimapa
-*/
+/* paint_each_cell() pinta uma celula de 32px */
+/* por 32px na imagem do minimapa/map2d */
+/* Ela percorre o eixo x e y, colorindo cada pixel da celula. */
+/* Ela é chamada várias vezes pela paint_map() */
+/* até pintar todas as células do minimapa */
 static void	paint_each_cell(t_map *map, int cell_in_x, int cell_in_y)
 {
 	int	pixel_index;
-	int	curr_pixel_y; //yo;// parte do pixel inicial da celula atual na vertical
-	int	curr_pixel_x; //xo;// parte do pixel inicial da celula atual na horizontal
+	int	curr_pixel_y;
+	int	curr_pixel_x;
 
 	curr_pixel_x = cell_in_x * map_s;
 	while (curr_pixel_x < (map_s * (cell_in_x + 1)))
@@ -86,7 +86,6 @@ static void	init_map2d_img(t_map *map)
 	int	_2d_width;
 	int	_2d_height;
 
-	//estabelece o tam do quadrado dentro da tela, por cima do background
 	_2d_width = map->width * map_s;
 	_2d_height = map->height * map_s;
 	map->map2d.ptr_img = mlx_new_image(map->mlx.mlx_ptr,

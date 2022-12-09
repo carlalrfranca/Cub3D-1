@@ -6,7 +6,7 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 16:48:36 by cleticia          #+#    #+#             */
-/*   Updated: 2022/12/09 13:29:41 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/12/09 17:45:23 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,17 +25,17 @@ void	free_map(t_map *map)
 
 	index = -1;
 	free_textures(map);
-    if (map->map[0] != NULL && map->height > 0)
-    {
-        while (++index < map->height)
-		    free(map->map[index]);
-    }
-	free(map->map);
-	if(map->floor)
-		free(map->floor);
-	if(map->ceilling)
-		free(map->ceilling);
-	free(map);
+	if (map->map[0] != NULL && map->height > 0)
+	{
+		while (++index < map->height)
+			free (map->map[index]);
+	}
+	free (map->map);
+	if (map->floor)
+		free (map->floor);
+	if (map->ceilling)
+		free (map->ceilling);
+	free (map);
 	map = NULL;
 }
 
@@ -46,7 +46,7 @@ void	map_error(t_map *map)
 	exit(11);
 }
 
-void free_matrix(char **split_values)
+void	free_matrix(char **split_values)
 {
 	int	counter;
 
@@ -70,12 +70,12 @@ int	validate_map(t_map *map)
 	if (validate_rgb(map->floor) != 0)
 	{
 		free_map(map);
-		file_error("Error\nRGB must be a set of 3 numeric digits between 0-255 and comma separated.", 2);
+		file_error("Error\nRGB must be: [0-255],[0-255],[0-255]", 2);
 	}
 	if (validate_rgb(map->ceilling) != 0)
 	{
 		free_map(map);
-		file_error("Error\nRGB must be a set of 3 numeric digits between 0-255 and comma separated.", 2);
+		file_error("Error\nRGB must be: [0-255],[0-255],[0-255]", 2);
 	}
 	validate_texture(map);
 	is_map_open(map);
@@ -83,6 +83,3 @@ int	validate_map(t_map *map)
 		map_error(map);
 	return (0);
 }
-/*
-./cub3d ./src/maps/map.cub
-*/
