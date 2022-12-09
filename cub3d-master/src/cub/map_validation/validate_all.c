@@ -6,7 +6,7 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 16:48:36 by cleticia          #+#    #+#             */
-/*   Updated: 2022/12/08 22:36:19 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/12/09 11:40:02 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,8 @@ int	validate_map(t_map *map)
 	}
 	validate_texture(map);
 	is_map_open(map);
+	if (map->spawing == 0)
+		map_error(map);
 	return (0);
 }
 /*
