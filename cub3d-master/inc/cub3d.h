@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cleticia <cleticia@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 18:15:32 by cleticia          #+#    #+#             */
-/*   Updated: 2022/12/02 06:34:45 by cleticia         ###   ########.fr       */
+/*   Updated: 2022/12/09 08:14:33 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 # define FT_ERROR 1
 # define FT_SUCCESS 0
 # define SCREEN_WIDTH 800
-# define SCREEN_HEIGHT 800
+# define SCREEN_HEIGHT 600
 
 # include <math.h>
 # include <stdio.h>
@@ -153,7 +153,7 @@ enum e_keycode
 	X_EVENT_KEY_PRESS	= 2
 };
 
-void    count_height_width(char *line, t_map *map);
+int    count_height_width(char *line, t_map *map);
 void    check_textures_rgb(char *line, int *monitoring);
 void    draw_wall_strip(t_3dmap *map_3D, t_background *backg, t_ray *rays, int rays_counter);
 int     check_smaller_ray(t_ray *rays, float *horiz_position, float *vert_position);
@@ -167,8 +167,8 @@ int     check_vertical_hit(t_map *map, float *vx, float *vy);
 int     check_horizontal_hit(t_map *map, float *hx, float *hy);
 void    rotate_gamer(t_ray *rays, char *direction);
 void    move_gamer(char **map, t_ray *rays, char *movement);
-void    open_texture(t_mlx *mlx, t_background *tile, int *coord, char *path);
-void	textures_init(t_image *textures, t_mlx *mlx);
+int		open_texture(t_mlx *mlx, t_background *tile, int *coord, char *path);
+int		textures_init(t_image *textures, t_mlx *mlx);
 float	measure_ray_dist(float beginX, float beginY, float endX, float endY);
 int	minimize_window(t_map *map);
 int	end_program(t_map *map);
@@ -197,35 +197,48 @@ void	free_pointers(t_map *map);
 void	move_player(t_map *map, int x, int y);
 void	free_map(t_map *map);
 void	*open_img(t_map *map, char *path);
-int	event_key(int keycode, t_map *map);
+int		event_key(int keycode, t_map *map);
 void	path_img(t_map *map);
 void	clear_screen(t_map *map);
 void	color_background(t_map *map);
-void	*open_img(t_map *map, char *path);
 void	path_image(t_map *map);
 void	free_pointers(t_map *map);
-int	minimize_window(t_map *map);
+int		minimize_window(t_map *map);
 void	render_minimap(t_map *map);
 void	get_rays(t_map *map);
-void	rays_struct_init(t_map *map);
-void 	game_loop(t_map *map);
-int	is_wall(char *map_line, int map_height);
-int	is_valid_char(char map_char);
+int		rays_struct_init(t_map *map);
+void	game_loop(t_map *map);
+
+int		ft_is_space(char letter);
+int		is_eroded_internal_wall(char **map_line, int char_counter);
+int		check_is_closed(char **map_line, int char_counter);
 void	store_player_info(t_map *map, char spawn, int row, int column);
-int	is_single_gamer(t_map *map, char spawn, int row, int column);
-int	ft_is_space(char letter);
-int	check_is_closed(char **map_line, int char_counter);
-int	check_map_interior(t_map *map, char **map_line, int row);
-int	is_map_open(t_map *map);
-void	validate_floor(t_map *map);
-void	validate_ceilling(t_map	*map);
+int		is_single_gamer(t_map *map, char spawn, int row, int column);
+int		is_valid_char(char map_char);
+int		check_map_interior(t_map *map, char **map_line, int row);
+int		is_wall(char *map_line, int map_height);
+int		is_first_last_row(int counter_row, int height);
+int		is_map_open(t_map *map);
 void	validate_texture(t_map *map);
 void	map_error(t_map *map);
-int	validate_map(t_map *map);
-int	measure_width(char	**line, t_map *map);
-void	measure_height(char **line, t_map *map);
-void	store_map(char **line, t_map *map, char *filename);
+int		validate_rgb(char *rgb_value);
+int		validate_map(t_map *map);
+
+void	save_textures_rgb(char *line, t_map *map);
+void	free_textures(t_map *map);
+void	invalid_rgb(char *line, char *rgb_to_free, t_map *map);
+int		is_empty_line(char *line);
+int		is_rgb_color(char *line);
+void	invalid_texture(char *line, t_map *map);
+int		is_texture_path(char *line);
+int		store_file_content(char **line, t_map *map, char *filename);
+
+int		count_height_width(char *line, t_map *map);
+void	check_textures_rgb(char *line, int *monitoring);
+int		measure_height(char **line, t_map *map);
+
 t_map	*prepare_to_store(char *filename);
+
 void	file_error(char *error_message, int error_code);
 void	free_matrix(char **split_values);
 #endif
