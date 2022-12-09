@@ -5,37 +5,47 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/08/30 16:48:18 by cleticia          #+#    #+#             */
-/*   Updated: 2022/12/09 08:14:37 by lfranca-         ###   ########.fr       */
+/*   Created: 2022/12/09 11:10:59 by lfranca-          #+#    #+#             */
+/*   Updated: 2022/12/09 11:11:54 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../inc/cub3d.h"
 
-/*
-** Verifica se a linha lida é correspondente a uma "linha vazia" (ou porque só
-** tem o caracter nulo ou porque tem espaços/tabs mas mais nada. É por isso
-** que trimá-la faz parte do processo de verificação também. Afinal, caso ela
-** tenha "conteúdo" - espaços e/ou tabs - se for só isso, ela ainda deve ser
-** considerada vazia).
-** É importante fazer essa verificação porque, caso seja uma linha vazia
-** ANTES DO MAPA, podemos "pular ela" - continuar para a próxima
-** iteração/linha.
+/* ------------------------------------ abaixo:
+** ------- funções de suporte para a save_map()
+** - int check_line_length(char *line, int map_width)
+**	---> returns the difference to fill. If returns 0, there's no difference to fill
+** - void fill_difference(char **line)
 */
-int is_empty_line(char *line)
+static void	fill_difference(char **line, int map_width)
 {
-	char *trimmed_line;
+	int		difference_to_fill;
+	char	*only_spaces;
+	char	*filled_line;
 
-	trimmed_line = NULL;
-	if (ft_strlen(line) == 0)
-		return (1);
-	trimmed_line = ft_strtrim(line, " \t");
-	if (ft_strlen(trimmed_line) == 0)
-	{
-		free(trimmed_line);
-		return (1);
-	}
-	free(trimmed_line);
+	difference_to_fill = map_width - ft_strlen(*line);
+	// teste pra verificar a diferença pra preencher (pra saber se nao tá pegando caracter a mais)
+	// printf("Diferença a preencher com espaços: %d\n", difference_to_fill);
+	only_spaces = malloc(sizeof(char) * (difference_to_fill + 1));
+	only_spaces[difference_to_fill] = '\0';
+	ft_memset(only_spaces, ' ', difference_to_fill); //passar a len sem contar caracter nulo
+	// agora que difference_with spaces está devidamente preenchido de espaços,
+	// é só "adicioná-lo" à linha original
+	filled_line = ft_strjoin((*line), only_spaces);
+	// liberamos a linha antiga/sem espaços para reatribuir a nova linha à ela
+	free(only_spaces);
+	free((*line));
+	(*line) = filled_line;
+}
+
+static int	check_line_length(char *line, int map_width)
+{
+	size_t	length;
+
+	length = ft_strlen(line);
+	if ((int)length != map_width)
+		return (SMALLER_THAN_MAP_SIZE); //macro SMALLER_THAN_MAP_SIZE
 	return (0);
 }
 
@@ -46,15 +56,31 @@ int is_empty_line(char *line)
 ** Caso não, ele retorna erro e exita, porque faz parte das regras que o mapa
 ** deva ser O ULTIMO conteudo do arquivo (e tambem há a possibilidade de nem ter
 ** caminhos de texturas e/ou codigos rgb).
+**
+** Se a variavel is_squared_map for == 0, significa que há linhas
+** diferentes, daí vamos para um fluxo que vai receber a linha atual,
+** comparar sua largura com a width do mapa e, se for uma das linhas
+** menores, vai preenche-la com espaços vazios pela quantidade da diferença
+** e armazená-la.
+** Usa como apoio:
+** - is_map_square()
+** - check_line_length()
+** - fill_difference()
 */
-static void save_map(t_map *map, int *content, char *line)
+
+static void save_map(t_map *map, int *content, char **line)
 {
 	if ((*content) == 0 && (!map->textures.east_wall || !map->textures.west_wall
 			|| !map->textures.south_wall || !map->textures.north_wall
 				|| !map->ceilling || !map->floor))
-					invalid_rgb(line, NULL, map);
+					invalid_rgb(*line, NULL, map);
 	map->monitoring = 0;
-	map->map[*content] = ft_strdup(line);
+	if (map->is_squared_map == 0) //significa que tem linhas de tamanhos diferentes e  precisa preencher
+	{
+		if (check_line_length(*line, map->width) == SMALLER_THAN_MAP_SIZE)
+			fill_difference(line, map->width); //passa por endereço, porque daí podemos reatribuir à line a linha preenchida atualizada
+	}
+	map->map[*content] = ft_strdup(*line);
 	(*content)++;
 }
 
@@ -88,138 +114,8 @@ int	store_file_content(char **line, t_map *map, char *filename)
 			continue;
 		}
 		else
-			save_map(map, &content, (*line));
+			save_map(map, &content, line);
         free(*line);
 	}
 	return (0);
 }
-
-void    check_textures_rgb(char *line, int *monitoring)
-{
-	static int  texture;
-	static int  rgb;
-
-	if (ft_strchr(line, '.')) //texturas
-	{
-		texture++;
-		if (texture == TEXTURES_DONE)
-			(*monitoring) += 4;
-	}
-	else if (ft_strchr(line, ','))//floor e ceilling
-	{
-		rgb++;
-		if(rgb == RGB_DONE)
-			(*monitoring ) += 2;//significa que passou pelo rgb
-	}
-}
-
-int    count_height_width(char *line, t_map *map)
-{
-	int		size;
-
-	if (map->monitoring != 6)
-	{
-		free(line);
-		return (505); //wrong formating
-	}
-	map->height++;
-	size = ft_strlen(line);
-	if(size > map->width)
-		map->width = size;
-	return (0);
-}
-
-/*
-** measure_height() vai tirar a altura da matriz do mapa (que servirá para o minimapa e
-** para projetar o mapa 3d tambem).
-*/
-int	measure_height(char **line, t_map *map)
-{
-	int		ret;
-
-	ret = 1;
-	while (ret)
-	{
-        if (line && (*line))
-            free(*line);
-		ret = get_next_line(map->fd, line);
-		if (ret == 0 && map->height == 0 && map->monitoring == 0)
-			return (505);
- 		if (ft_strchr(*line, '.') || ft_strchr(*line, ','))
-            check_textures_rgb(*line, &map->monitoring);
-		else if(is_empty_line(*line) && map->height == 0)
-			continue;
-		else if (count_height_width(*line, map) == 505)
-			return (505);
-	}
-	if (*line)
-		free(*line);
-	if (map->height == 0)
-	{
-		close(map->fd);
-		return (505);
-	}
-	return (0);
-}
-
-static void init_map(t_map *map)
-{
-	map->map = NULL;
-	map->floor = NULL;
-	map->ceilling = NULL;
-	map->monitoring = 0;
-	map->height = 0;
-	map->width = 0;
-	map->fd = 0;
-	map->spawing = 0;
-	map->textures.east_wall = NULL;
-	map->textures.west_wall = NULL;
-	map->textures.north_wall = NULL;
-	map->textures.south_wall = NULL;
-}
-
-static void alloc_zero_map(t_map *map)
-{
-	int counter;
-
-	counter = 0;
-	map->map = malloc(sizeof(char *) * (map->height + 1));
-	while (counter < map->height)
-	{
-		map->map[counter] = NULL;
-		counter++;
-	}
-	map->map[map->height] = NULL;
-}
-
-t_map	*prepare_to_store(char *filename)
-{
-	t_map	*map;
-	char	*line;
-
-	line = NULL;
-	map = malloc(sizeof(t_map));
-	init_map(map);
-	map->fd = open(filename, O_RDONLY);
-	if (map->fd == -1)
-	{
-		free(map);
-        file_error("Error\nFailed to open map file.", 5);
-	}
-	if (measure_height(&line, map) == 505)
-	{
-		free(map);
-		file_error("Error\nEmpty file or Map must on the end of file", 505);
-	}
-	alloc_zero_map(map);
-	if (store_file_content(&line, map, filename) == 303)
-		map_error(map);
-	close(map->fd);
-	return (map);
-}
-
-
-/*
-./cub3d ./src/maps/map.cub
-./cub3d ./src/maps/map3.cub
-*/
