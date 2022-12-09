@@ -6,7 +6,7 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 13:28:34 by lfranca-          #+#    #+#             */
-/*   Updated: 2022/12/08 22:32:13 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/12/09 14:29:40 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ static void	save_texture(t_image *textures, char *line, t_map *map)
 		//significa que pode ter as letras indicando a orientação,
 		// mas nao tem espaço depois, e é necessario para separar o caminho
 		free(trimmed);
-		invalid_texture(line, map); 
+		invalid_texture(line, map, "Error\nWrong TEXTURE formatting");
 	}
 	free(trimmed);
 }

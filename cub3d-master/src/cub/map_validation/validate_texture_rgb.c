@@ -6,7 +6,7 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 19:50:13 by lfranca-          #+#    #+#             */
-/*   Updated: 2022/12/08 22:48:11 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/12/09 13:28:26 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,9 +80,6 @@ int	validate_rgb(char *rgb_value)
 	free_matrix(split_values);
 	free(split_values);
 	if(i != 3)
-	{
-		free(rgb_value);
 		return (808);
-	}
 	return (0);
 }

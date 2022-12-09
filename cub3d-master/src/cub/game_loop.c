@@ -6,7 +6,7 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 16:48:25 by cleticia          #+#    #+#             */
-/*   Updated: 2022/12/08 11:57:07 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/12/09 13:33:23 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -192,7 +192,10 @@ void	game_loop(t_map *map)
 	map->mlx.mlx_ptr = mlx_init();
 	check_resolution(map);
 	if (rays_struct_init(map) == 404)
+	{
+		ft_putendl_fd("Error\nTexture not found.", 2);
 		end_program(map);
+	}
 	map->mlx.win = mlx_new_window(map->mlx.mlx_ptr,
         SCREEN_WIDTH, SCREEN_HEIGHT, "cub3d");
 	color_background(map);

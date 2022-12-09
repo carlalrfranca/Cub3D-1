@@ -6,7 +6,7 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 18:15:32 by cleticia          #+#    #+#             */
-/*   Updated: 2022/12/09 10:41:02 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/12/09 15:21:37 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,37 +32,36 @@
 # include <sys/time.h>
 
 // macros para monitorar o tipo de conteudo que foi extraído do mapa
-#define TEXTURES_DONE 4
-#define	RGB_DONE 2
-#define INTERNAL_CHAR "0NSWE"
-#define GAMER "NSWE"
-#define map_s 32 //map cube size
-#define PI 3.1415926535
-#define P2 PI/2
-#define P3 3 * PI/2
-#define DR 0.0174533 //um degrau em radiano
+# define TEXTURES_DONE 4
+# define RGB_DONE 2
+# define INTERNAL_CHAR "0NSWE"
+# define GAMER "NSWE"
+# define map_s 32 //map cube size
+# define PI 3.1415926535
+# define P2 PI/2
+# define P3 3 * PI/2
+# define DR 0.0174533 //um degrau em radiano
 
 typedef struct s_col
 {
-    int col_pos_x;
-	int col_pos_y;
+	int	col_pos_x;
+	int	col_pos_y;
 	int	col_pos_x_add_offset_x;
 	int	col_pos_y_add_offset_y;
-	int col_pos_y_sub_offset_y;
-	int col_pos_x_sub_offset_x;
-} t_col;
+	int	col_pos_y_sub_offset_y;
+	int	col_pos_x_sub_offset_x;
+}	t_col;
 
 typedef struct s_3dmap
 {
-    float	centered_vision;
-    float	line_height;
-    int	*data_tile;
-    // variáveis usadas para mapear os pixels das texturas que estão sendo pintados
-    float   texture_x;
-    float   texture_y_step;
-    float   texture_y_off;
-    float   texture_y;
-} t_3dmap;
+	float	centered_vision;
+	float	line_height;
+	int		*data_tile;
+	float	texture_x; // variáveis usadas para mapear os pixels das texturas que estão sendo pintados
+	float	texture_y_step;
+	float	texture_y_off;
+	float	texture_y;
+}	t_3dmap;
 
 typedef struct s_ray
 {
@@ -70,27 +69,27 @@ typedef struct s_ray
 	int		index;
 	double	dir_x; //vetor de direcao inicial eixo x
 	double	dir_y; //vetor de direcao inicial eixo y
-	float 	ray_x; //posiciao inicial do raio rx e ry
-	float 	ray_y;
+	float	ray_x; //posiciao inicial do raio rx e ry
+	float	ray_y;
 	float	pos_x; //px
 	float	pos_y; //py
 	float	gamer_angle; //pa
 	float	deltax;//pdx; //delta x
-	float 	deltay;//pdy; //delta y
+	float	deltay;//pdy; //delta y
 	int		x;
 	int		map_x; //posicao atual
 	int		map_y;
-	float 	step_x; //comprimento inicial interno da celula xo
-    float 	step_y; //comprimento final interno da celula yo
+	float	step_x; //comprimento inicial interno da celula xo
+	float	step_y; //comprimento final interno da celula yo
 	int		*rgb;
 	int		depth_of_field; //dof
 	float	ray_angle;
-	float 	neg_tan; //ntan negativo da tangente
-	float 	neg_inv_tan; //atan negativo do invers
-	float 	dist_horizontal; //dish;
-	float 	dist_vertical; //disv;
+	float	neg_tan; //ntan negativo da tangente
+	float	neg_inv_tan; //atan negativo do invers
+	float	dist_horizontal; //dish;
+	float	dist_vertical; //disv;
 	float	dist_final;
-    t_col   collision;
+	t_col	collision;
 }	t_ray;
 
 typedef struct s_background
@@ -159,23 +158,23 @@ int		count_height_width(char *line, t_map *map);
 void	check_textures_rgb(char *line, int *monitoring);
 void	draw_wall_strip(t_3dmap *map_3D, t_background *backg, t_ray *rays, int rays_counter);
 int		check_smaller_ray(t_ray *rays, float *horiz_position, float *vert_position);
-void    fix_fish_eye(t_ray *rays);
+void	fix_fish_eye(t_ray *rays);
 void	keep_angle_limits(float *ray_angle);
-void    draw_3d(t_ray *ray, float dist_final, int rays_counter, t_map *map);
-void    check_axis(int *axis_depth, t_map *map, float **ray_axis, char *axis);
-void    init_ray_projection_values(t_map *map, float *rayX, float *rayY, float *ray_dist);
-void    search_hit_point(t_map *map, float *ray_end_x, float *ray_end_y, char *axis);
-int     check_vertical_hit(t_map *map, float *vx, float *vy);
-int     check_horizontal_hit(t_map *map, float *hx, float *hy);
-void    rotate_gamer(t_ray *rays, char *direction);
-void    move_gamer(char **map, t_ray *rays, char *movement);
+void	draw_3d(t_ray *ray, float dist_final, int rays_counter, t_map *map);
+void	check_axis(int *axis_depth, t_map *map, float **ray_axis, char *axis);
+void	init_ray_projection_values(t_map *map, float *rayX, float *rayY, float *ray_dist);
+void	search_hit_point(t_map *map, float *ray_end_x, float *ray_end_y, char *axis);
+int		check_vertical_hit(t_map *map, float *vx, float *vy);
+int		check_horizontal_hit(t_map *map, float *hx, float *hy);
+void	rotate_gamer(t_ray *rays, char *direction);
+void	move_gamer(char **map, t_ray *rays, char *movement);
 int		open_texture(t_mlx *mlx, t_background *tile, int *coord, char *path);
 int		textures_init(t_image *textures, t_mlx *mlx);
 float	measure_ray_dist(float beginX, float beginY, float endX, float endY);
 int		minimize_window(t_map *map);
 int		end_program(t_map *map);
 int		encode_rgb(uint8_t red, uint8_t green, uint8_t blue);
-int     draw_ray_2d(t_ray *rays, t_background *map2d, int map_width, int color);
+int		draw_ray_2d(t_ray *rays, t_background *map2d, int map_width, int color);
 void	cast_rays(t_map *map);
 void	paint_gamer(t_map *map);
 void	paint_map(t_map *map);
@@ -231,7 +230,7 @@ void	free_textures(t_map *map);
 void	invalid_rgb(char *line, char *rgb_to_free, t_map *map);
 int		is_empty_line(char *line);
 int		is_rgb_color(char *line);
-void	invalid_texture(char *line, t_map *map);
+void	invalid_texture(char *line, t_map *map, char *error_message);
 int		is_texture_path(char *line);
 int		store_file_content(char **line, t_map *map, char *filename);
 

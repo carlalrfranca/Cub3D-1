@@ -6,7 +6,7 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/09 11:10:59 by lfranca-          #+#    #+#             */
-/*   Updated: 2022/12/09 11:11:54 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/12/09 14:29:43 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ static void save_map(t_map *map, int *content, char **line)
 	if ((*content) == 0 && (!map->textures.east_wall || !map->textures.west_wall
 			|| !map->textures.south_wall || !map->textures.north_wall
 				|| !map->ceilling || !map->floor))
-					invalid_rgb(*line, NULL, map);
+					invalid_texture((*line), map, "Error\nTexture or RGB error.");
 	map->monitoring = 0;
 	if (map->is_squared_map == 0) //significa que tem linhas de tamanhos diferentes e  precisa preencher
 	{

@@ -6,7 +6,7 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 13:26:32 by lfranca-          #+#    #+#             */
-/*   Updated: 2022/12/08 20:09:41 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/12/09 14:58:15 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,14 +24,19 @@ void	free_textures(t_map *map)
 		free(map->textures.south_wall);
 }
 
-void	invalid_texture(char *line, t_map *map)
+void	invalid_texture(char *line, t_map *map, char *error_message)
 {
+	free(line);
 	free_textures(map);
+	// inclui agora tambem liberar os rgb se tiver... (nova mudança, alem do prototipo dela)
+	if(map->ceilling)
+		free(map->ceilling);
+	if(map->floor)
+		free(map->floor);
 	if (map->map)
 		free(map->map);
 	free(map);
-	write(2, "Error\nInvalid Map: TEXTURE Formating.\n", 38);
-	free(line);
+	ft_putendl_fd(error_message, 2);
 	exit(20);
 }
 

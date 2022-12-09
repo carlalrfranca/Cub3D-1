@@ -6,7 +6,7 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 16:48:18 by cleticia          #+#    #+#             */
-/*   Updated: 2022/12/09 11:13:17 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/12/09 14:32:57 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ t_map	*prepare_to_store(char *filename)
 	if (measure_height(&line, map) == 505)
 	{
 		free(map);
-		file_error("Error\nEmpty file or Map must on the end of file", 505);
+		file_error("Error\nEmpty/Incomplete file or Map must be at the end", 505);
 	}
 	alloc_zero_map(map);
 	if (store_file_content(&line, map, filename) == 303)
