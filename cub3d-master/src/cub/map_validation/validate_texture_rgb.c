@@ -6,7 +6,7 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 19:50:13 by lfranca-          #+#    #+#             */
-/*   Updated: 2022/12/08 22:48:11 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/12/09 18:14:48 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,17 @@
 
 void	validate_texture(t_map *map)
 {
-	if(map->textures.north_wall == 0 || map->textures.south_wall == 0
+	if (map->textures.north_wall == 0 || map->textures.south_wall == 0
 		|| map->textures.west_wall == 0 || map->textures.east_wall == 0)
 		map_error(map);
 }
 
-static int is_out_of_range(char **split_values, int i)
+static int	is_out_of_range(char **split_values, int i)
 {
 	int	rgb;
-	rgb = 0;
 
-	rgb = ft_atoi(split_values[i]);		
+	rgb = 0;
+	rgb = ft_atoi(split_values[i]);
 	if (rgb < 0 || rgb > 255)
 	{
 		free_matrix(split_values);
@@ -33,14 +33,14 @@ static int is_out_of_range(char **split_values, int i)
 	return (0);
 }
 
-static int is_code_numbers(char **split_values, int i)
+static int	is_code_numbers(char **split_values, int i)
 {
 	int	j;
 
 	j = -1;
 	while (split_values[i][++j])
 	{
-		if(ft_isdigit(split_values[i][j]) == -1)
+		if (ft_isdigit(split_values[i][j]) == -1)
 		{
 			free_matrix(split_values);
 			return (606);
@@ -59,12 +59,12 @@ static int is_code_numbers(char **split_values, int i)
 */
 int	validate_rgb(char *rgb_value)
 {
-	char **split_values;
-	int	i;
+	char	**split_values;
+	int		i;
 
 	i = -1;
 	split_values = ft_split(rgb_value, ',');
-	while(split_values[++i]) //jogar esse while pra uma função propria
+	while (split_values[++i])
 	{
 		if (is_code_numbers(split_values, i) == 606)
 		{
@@ -78,11 +78,8 @@ int	validate_rgb(char *rgb_value)
 		}
 	}
 	free_matrix(split_values);
-	free(split_values);
-	if(i != 3)
-	{
-		free(rgb_value);
+	free (split_values);
+	if (i != 3)
 		return (808);
-	}
 	return (0);
 }

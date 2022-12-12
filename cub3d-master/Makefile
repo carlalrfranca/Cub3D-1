@@ -6,7 +6,7 @@
 #    By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/08/10 18:12:04 by cleticia          #+#    #+#              #
-#    Updated: 2022/12/09 11:12:48 by lfranca-         ###   ########.fr        #
+#    Updated: 2022/12/09 20:28:17 by lfranca-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,14 +20,13 @@ RM = rm -rf
 
 INC = -I ./inc/ -I /src/lib/ -I ./src/mlx/minilibx-linux
 
-FLAGS =	-Werror -Wall -Wextra -g
+FLAGS =	-Werror -Wall -Wextra -fsanitize=address
 
 OBJDIR = obj
 
 SRC = src/cub/main.c\
 	src/cub/game_loop.c\
 	src/cub/paint_frame/color_bg.c\
-	src/cub/paint_frame/paint_scene.c\
 	src/cub/map_validation/prepare_to_store.c\
 	src/cub/map_validation/measure_map.c\
 	src/cub/map_validation/store_map.c\

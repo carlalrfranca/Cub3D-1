@@ -6,7 +6,7 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 16:48:18 by cleticia          #+#    #+#             */
-/*   Updated: 2022/12/09 11:13:17 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/12/09 17:27:04 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,9 @@
 ** ANTES DO MAPA, podemos "pular ela" - continuar para a próxima
 ** iteração/linha.
 */
-int is_empty_line(char *line)
+int	is_empty_line(char *line)
 {
-	char *trimmed_line;
+	char	*trimmed_line;
 
 	trimmed_line = NULL;
 	if (ft_strlen(line) == 0)
@@ -39,7 +39,7 @@ int is_empty_line(char *line)
 	return (0);
 }
 
-static void init_map(t_map *map)
+static void	init_map(t_map *map)
 {
 	map->map = NULL;
 	map->floor = NULL;
@@ -56,9 +56,9 @@ static void init_map(t_map *map)
 	map->textures.south_wall = NULL;
 }
 
-static void alloc_zero_map(t_map *map)
+static void	alloc_zero_map(t_map *map)
 {
-	int counter;
+	int	counter;
 
 	counter = 0;
 	map->map = malloc(sizeof(char *) * (map->height + 1));
@@ -82,12 +82,12 @@ t_map	*prepare_to_store(char *filename)
 	if (map->fd == -1)
 	{
 		free(map);
-        file_error("Error\nFailed to open map file.", 5);
+		file_error("Error\nFailed to open map file.", 5);
 	}
 	if (measure_height(&line, map) == 505)
 	{
 		free(map);
-		file_error("Error\nEmpty file or Map must on the end of file", 505);
+		file_error("Error\nEmpty/Incomplete file or badly placed map", 505);
 	}
 	alloc_zero_map(map);
 	if (store_file_content(&line, map, filename) == 303)
@@ -95,9 +95,3 @@ t_map	*prepare_to_store(char *filename)
 	close(map->fd);
 	return (map);
 }
-
-
-/*
-./cub3d ./src/maps/map.cub
-./cub3d ./src/maps/map3.cub
-*/

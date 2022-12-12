@@ -6,18 +6,12 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 18:15:32 by cleticia          #+#    #+#             */
-/*   Updated: 2022/12/09 10:41:02 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/12/09 21:37:35 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CUB3D_H
 # define CUB3D_H
-# define FT_ERROR 1
-# define FT_SUCCESS 0
-# define SCREEN_WIDTH 800
-# define SCREEN_HEIGHT 600
-# define SMALLER_THAN_MAP_SIZE 1 //pra armazenamento do mapa
-
 # include <math.h>
 # include <stdio.h>
 # include <stdlib.h>
@@ -31,76 +25,81 @@
 # include <stdint.h>
 # include <sys/time.h>
 
-// macros para monitorar o tipo de conteudo que foi extraído do mapa
-#define TEXTURES_DONE 4
-#define	RGB_DONE 2
-#define INTERNAL_CHAR "0NSWE"
-#define GAMER "NSWE"
-#define map_s 32 //map cube size
-#define PI 3.1415926535
-#define P2 PI/2
-#define P3 3 * PI/2
-#define DR 0.0174533 //um degrau em radiano
+# define FT_ERROR 1
+# define FT_SUCCESS 0
+# define SCREEN_WIDTH 800
+# define SCREEN_HEIGHT 600
+# define SMALLER_THAN_MAP_SIZE 1
+# define TEXTURES_DONE 4
+# define RGB_DONE 2
+# define INTERNAL_CHAR "0NSWE"
+# define GAMER "NSWE"
+# define MAP_S 32
+# define PI 3.1415926535
+# define P2 PI/2
+# define P3 3 * PI/2
+# define DR 0.0174533
 
 typedef struct s_col
 {
-    int col_pos_x;
-	int col_pos_y;
+	int	col_pos_x;
+	int	col_pos_y;
 	int	col_pos_x_add_offset_x;
 	int	col_pos_y_add_offset_y;
-	int col_pos_y_sub_offset_y;
-	int col_pos_x_sub_offset_x;
-} t_col;
+	int	col_pos_y_sub_offset_y;
+	int	col_pos_x_sub_offset_x;
+}	t_col;
 
+/* variáveis usadas para mapear */
+/* os pixels das texturas que estão sendo pintados */
 typedef struct s_3dmap
 {
-    float	centered_vision;
-    float	line_height;
-    int	*data_tile;
-    // variáveis usadas para mapear os pixels das texturas que estão sendo pintados
-    float   texture_x;
-    float   texture_y_step;
-    float   texture_y_off;
-    float   texture_y;
-} t_3dmap;
+	float	centered_vision;
+	float	line_height;
+	int		*data_tile;
+	float	texture_x;
+	float	texture_y_step;
+	float	texture_y_off;
+	float	texture_y;
+}	t_3dmap;
 
+/* ray_x e ray_y = coordenada inicial do raio */
+/* pos_x e pos_y = coordenada inicial/atual do jogador */
+/* deltax e deltay = valor que o jogador "percorre" a cada */
+/* vez que as teclas de movimento são pressionadas */
+/* step_x e step_y = comprimento interno da celula em x e em y */
 typedef struct s_ray
 {
-	char	*rays; //orientacao
-	int		index;
-	double	dir_x; //vetor de direcao inicial eixo x
-	double	dir_y; //vetor de direcao inicial eixo y
-	float 	ray_x; //posiciao inicial do raio rx e ry
-	float 	ray_y;
-	float	pos_x; //px
-	float	pos_y; //py
-	float	gamer_angle; //pa
-	float	deltax;//pdx; //delta x
-	float 	deltay;//pdy; //delta y
-	int		x;
-	int		map_x; //posicao atual
-	int		map_y;
-	float 	step_x; //comprimento inicial interno da celula xo
-    float 	step_y; //comprimento final interno da celula yo
-	int		*rgb;
-	int		depth_of_field; //dof
+	float	ray_x;
+	float	ray_y;
 	float	ray_angle;
-	float 	neg_tan; //ntan negativo da tangente
-	float 	neg_inv_tan; //atan negativo do invers
-	float 	dist_horizontal; //dish;
-	float 	dist_vertical; //disv;
+	float	pos_x;
+	float	pos_y;
+	float	gamer_angle;
+	float	deltax;
+	float	deltay;
+	int		map_x;
+	int		map_y;
+	float	step_x;
+	float	step_y;
+	int		*rgb;
+	int		depth_of_field;
+	float	neg_tan;
+	float	neg_inv_tan;
+	float	dist_horizontal;
+	float	dist_vertical;
 	float	dist_final;
-    t_col   collision;
+	t_col	collision;
 }	t_ray;
 
 typedef struct s_background
 {
-	void	*ptr_img; //ptr_map
+	void	*ptr_img;
 	int		*data;
 	int		line_size;
 	int		bpp;
 	int		endian;
-}	t_background;
+}	t_image;
 
 typedef struct s_mlx
 {
@@ -108,42 +107,40 @@ typedef struct s_mlx
 	void	*mlx_ptr;
 }	t_mlx;
 
-typedef	struct s_image
-{// abaixo: as texturas das paredes e os numeros rgb
-	char			*east_wall;//strings dos caminhos
+typedef struct s_textures
+{
+	char			*east_wall;
 	char			*west_wall;
 	char			*north_wall;
 	char			*south_wall;
 	int				width;
-	int 			height;
-	t_background	east_tile;
-	t_background	west_tile;
-	t_background	north_tile;
-	t_background	south_tile;
-}	t_image;
+	int				height;
+	t_image			east_tile;
+	t_image			west_tile;
+	t_image			north_tile;
+	t_image			south_tile;
+}	t_textures;
 
-typedef struct s_map //principal
+typedef struct s_map
 {
 	t_mlx			mlx;
-	t_image			textures;
-	t_background	back;
-	t_background	map2d;
-	t_background	gamer;
+	t_textures		textures;
+	t_image			back;
 	t_ray			rays;
 	char			**map;
 	char			*floor;
 	char			*ceilling;
 	int				monitoring;
 	int				is_squared_map;
-	int				height; //map_y -altura
-	int				width; //map_x -largura
+	int				height;
+	int				width;
 	int				fd;
 	char			spawing;
 }	t_map;
 
+/* point of view keys */
 enum e_keycode
 {
-	/* point of view keys */
 	KEY_W	= 119,
 	KEY_A	= 97,
 	KEY_S	= 115,
@@ -155,61 +152,43 @@ enum e_keycode
 	X_EVENT_KEY_PRESS	= 2
 };
 
-int		count_height_width(char *line, t_map *map);
-void	check_textures_rgb(char *line, int *monitoring);
-void	draw_wall_strip(t_3dmap *map_3D, t_background *backg, t_ray *rays, int rays_counter);
-int		check_smaller_ray(t_ray *rays, float *horiz_position, float *vert_position);
-void    fix_fish_eye(t_ray *rays);
-void	keep_angle_limits(float *ray_angle);
-void    draw_3d(t_ray *ray, float dist_final, int rays_counter, t_map *map);
-void    check_axis(int *axis_depth, t_map *map, float **ray_axis, char *axis);
-void    init_ray_projection_values(t_map *map, float *rayX, float *rayY, float *ray_dist);
-void    search_hit_point(t_map *map, float *ray_end_x, float *ray_end_y, char *axis);
-int     check_vertical_hit(t_map *map, float *vx, float *vy);
-int     check_horizontal_hit(t_map *map, float *hx, float *hy);
-void    rotate_gamer(t_ray *rays, char *direction);
-void    move_gamer(char **map, t_ray *rays, char *movement);
-int		open_texture(t_mlx *mlx, t_background *tile, int *coord, char *path);
-int		textures_init(t_image *textures, t_mlx *mlx);
-float	measure_ray_dist(float beginX, float beginY, float endX, float endY);
-int		minimize_window(t_map *map);
-int		end_program(t_map *map);
+/* Abaixo: funções da parte GRÁFICA (segunda parte: depois do */
+/* armazenamento e validação do conteúdo do arquivo) */
+/* Funções de apoio: (devolve um int rgb e free_map() */
+/* libera tudo antes de exitar)*/
 int		encode_rgb(uint8_t red, uint8_t green, uint8_t blue);
-int     draw_ray_2d(t_ray *rays, t_background *map2d, int map_width, int color);
-void	cast_rays(t_map *map);
-void	paint_gamer(t_map *map);
-void	paint_map(t_map *map);
-int		event_key(int keycode, t_map *map);
-void	move_player(t_map *map, int x, int y);
-void	draw_stripe(t_map *map);
-void	check_color(t_map *map);
-void	calculate_init_ray(t_map *map);
-void	calculate_ray_lenght(t_map *map);
-void	calculate_initial_step_x(t_map *map);
-void	calculate_initial_step_y(t_map *map);
-void	check_distance_height_pixel(t_map *map);
-void	check_ray_hit_wall(t_map *map);
-char	*dec_to_hexa(int color);
-char	*rgb_to_hexa(t_map *map);
-void	render_minimap(t_map *map);
-void	get_rays(t_map *map);
-void	*open_img(t_map *map, char *path);
-void	path_img(t_map *map);
-void	free_pointers(t_map *map);
-void	move_player(t_map *map, int x, int y);
 void	free_map(t_map *map);
-void	*open_img(t_map *map, char *path);
+
+void	draw_wall_strip(t_3dmap *scene, t_map *map, int rays_counter);
+void	draw_3d(t_ray *ray, float dist_final, int rays_counter, t_map *map);
+void	fix_fish_eye(t_ray *rays);
+int		check_smaller_ray(t_ray *rays, float *horiz_coord, float *vert_coord);
+float	measure_ray_dist(float beginX, float beginY, float endX, float endY);
+int		is_wall_hit(t_ray *rays, int map_width, int map_height, char **map);
+void	check_axis(int *axis_depth, t_map *map, float **ray_axis, char *axis);
+void	find_hit(t_map *map, float *ray_end_x, float *ray_end_y, char *axis);
+int		check_vertical_hit(t_map *map, float *vx, float *vy);
+int		check_horizontal_hit(t_map *map, float *hx, float *hy);
+void	init_hit_data(t_map *map, float *rayX, float *rayY, float *ray_dist);
+void	keep_angle_limits(float *ray_angle);
+void	move_gamer(char **map, t_ray *rays, char *movement);
+void	rotate_gamer(t_ray *rays, char *direction);
+void	check_collision(t_ray *rays);
+
 int		event_key(int keycode, t_map *map);
-void	path_img(t_map *map);
-void	clear_screen(t_map *map);
+void	cast_rays(t_map *map);
 void	color_background(t_map *map);
-void	path_image(t_map *map);
-void	free_pointers(t_map *map);
+
+int		end_program(t_map *map);
 int		minimize_window(t_map *map);
-void	render_minimap(t_map *map);
-void	get_rays(t_map *map);
+
+int		open_texture(t_mlx *mlx, t_image *tile, int *coord, char *path);
+int		textures_init(t_textures *textures, t_mlx *mlx);
 int		rays_struct_init(t_map *map);
 void	game_loop(t_map *map);
+
+/* Funções abaixo: para armazenamento e validação do conteúdo do arquivo */
+/* do mapa -> caminhos das texturas, codigos rgb e conteúdo do mapa */
 
 int		ft_is_space(char letter);
 int		is_eroded_internal_wall(char **map_line, int char_counter);
@@ -231,14 +210,13 @@ void	free_textures(t_map *map);
 void	invalid_rgb(char *line, char *rgb_to_free, t_map *map);
 int		is_empty_line(char *line);
 int		is_rgb_color(char *line);
-void	invalid_texture(char *line, t_map *map);
+void	invalid_texture(char *line, t_map *map, char *error_message);
 int		is_texture_path(char *line);
 int		store_file_content(char **line, t_map *map, char *filename);
 
 int		count_height_width(char *line, t_map *map);
 void	check_textures_rgb(char *line, int *monitoring);
 int		measure_height(char **line, t_map *map);
-
 t_map	*prepare_to_store(char *filename);
 
 void	file_error(char *error_message, int error_code);

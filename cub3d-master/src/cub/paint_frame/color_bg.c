@@ -6,7 +6,7 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 20:03:26 by lfranca-          #+#    #+#             */
-/*   Updated: 2022/12/08 22:14:19 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/12/09 18:29:40 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ static int	get_color(char *rgb)
 ** color_background() pinta metade da janela com a cor do teto
 ** e outra metade com a cor do piso
 */
-void	color_background(t_map *map) //pintar a tela
+void	color_background(t_map *map)
 {
 	int	columns;
 	int	rows;
@@ -49,7 +49,7 @@ void	color_background(t_map *map) //pintar a tela
 	map->back.ptr_img = mlx_new_image(map->mlx.mlx_ptr,
 			SCREEN_WIDTH, SCREEN_HEIGHT);
 	map->back.data = (int *)mlx_get_data_addr(map->back.ptr_img, &map->back.bpp,
-		&map->back.line_size, &map->back.endian);
+			&map->back.line_size, &map->back.endian);
 	columns = -1;
 	while (++columns < SCREEN_HEIGHT)
 	{
