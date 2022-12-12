@@ -6,7 +6,7 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 16:48:25 by cleticia          #+#    #+#             */
-/*   Updated: 2022/12/09 18:28:23 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/12/09 21:06:27 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,11 +99,9 @@ int	event_key(int keycode, t_map *map)
 		// poder "recuar" no eixo x.. se houver '1', ele nao recua
 		move_gamer(map->map, &map->rays, "to_down");
 	}
-	mlx_destroy_image (map->mlx.mlx_ptr, map->map2d.ptr_img);
 	mlx_destroy_image (map->mlx.mlx_ptr, map->back.ptr_img);
 	color_background(map);
-	paint_map(map);
-	paint_gamer(map);
+	cast_rays(map);
 	return (0);
 }
 
@@ -135,7 +133,7 @@ static void	init_gamer_angle(char spawning, float *gamer_angle)
 	return ;
 }
 
-int	open_texture(t_mlx *mlx, t_background *tile, int *coord, char *path)
+int	open_texture(t_mlx *mlx, t_image *tile, int *coord, char *path)
 {
 	tile->ptr_img = mlx_xpm_file_to_image(mlx->mlx_ptr, path,
 			&coord[0], &coord[1]);
@@ -145,7 +143,7 @@ int	open_texture(t_mlx *mlx, t_background *tile, int *coord, char *path)
 	return (0);
 }
 
-int	textures_init(t_image *textures, t_mlx *mlx)
+int	textures_init(t_textures *textures, t_mlx *mlx)
 {
 	char	*path;
 	int		coord[2];
@@ -170,7 +168,6 @@ int	textures_init(t_image *textures, t_mlx *mlx)
 int	rays_struct_init(t_map *map)
 {
 	map->back.ptr_img = NULL;
-	map->map2d.ptr_img = NULL;
 	map->mlx.win = NULL;
 	map->textures.east_tile.ptr_img = NULL;
 	map->textures.west_tile.ptr_img = NULL;
@@ -198,8 +195,7 @@ void	game_loop(t_map *map)
 	map->mlx.win = mlx_new_window(map->mlx.mlx_ptr,
 			SCREEN_WIDTH, SCREEN_HEIGHT, "cub3d");
 	color_background(map);
-	paint_map(map);
-	paint_gamer(map);
+	cast_rays(map);
 	mlx_hook(map->mlx.win, X_EVENT_KEY_PRESS, 1L << 0, event_key, map);
 	mlx_hook(map->mlx.win, X_EVENT_KEY_EXIT, 1L << 0, end_program, map);
 	mlx_expose_hook(map->mlx.win, minimize_window, map);

@@ -6,13 +6,13 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 12:45:12 by cleticia          #+#    #+#             */
-/*   Updated: 2022/12/09 18:46:26 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/12/09 21:27:17 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../inc/cub3d.h"
 
-void	init_ray_projection_values(t_map *map, float *rayX, float *rayY, float *ray_dist)
+void	init_hit_data(t_map *map, float *rayX, float *rayY, float *ray_dist)
 {
 	map->rays.depth_of_field = 0;
 	*ray_dist = 1000000;
@@ -59,7 +59,7 @@ void	check_axis(int *axis_depth, t_map *map, float **ray_axis, char *axis)
 	}
 }
 
-void	search_hit_point(t_map *map, float *ray_end_x, float *ray_end_y, char *axis)
+void	find_hit(t_map *map, float *ray_end_x, float *ray_end_y, char *axis)
 {
 	int		axis_depth;
 	float	*final_dist_ray;

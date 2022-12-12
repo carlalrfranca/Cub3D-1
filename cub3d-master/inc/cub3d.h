@@ -6,7 +6,7 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 18:15:32 by cleticia          #+#    #+#             */
-/*   Updated: 2022/12/09 19:10:53 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/12/09 21:37:35 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@
 # define RGB_DONE 2
 # define INTERNAL_CHAR "0NSWE"
 # define GAMER "NSWE"
-# define map_s 32
+# define MAP_S 32
 # define PI 3.1415926535
 # define P2 PI/2
 # define P3 3 * PI/2
@@ -99,7 +99,7 @@ typedef struct s_background
 	int		line_size;
 	int		bpp;
 	int		endian;
-}	t_background;
+}	t_image;
 
 typedef struct s_mlx
 {
@@ -107,7 +107,7 @@ typedef struct s_mlx
 	void	*mlx_ptr;
 }	t_mlx;
 
-typedef struct s_image
+typedef struct s_textures
 {
 	char			*east_wall;
 	char			*west_wall;
@@ -115,19 +115,17 @@ typedef struct s_image
 	char			*south_wall;
 	int				width;
 	int				height;
-	t_background	east_tile;
-	t_background	west_tile;
-	t_background	north_tile;
-	t_background	south_tile;
-}	t_image;
+	t_image			east_tile;
+	t_image			west_tile;
+	t_image			north_tile;
+	t_image			south_tile;
+}	t_textures;
 
 typedef struct s_map
 {
 	t_mlx			mlx;
-	t_image			textures;
-	t_background	back;
-	t_background	map2d;
-	t_background	gamer;
+	t_textures		textures;
+	t_image			back;
 	t_ray			rays;
 	char			**map;
 	char			*floor;
@@ -154,61 +152,43 @@ enum e_keycode
 	X_EVENT_KEY_PRESS	= 2
 };
 
-int		count_height_width(char *line, t_map *map);
-void	check_textures_rgb(char *line, int *monitoring);
-void	draw_wall_strip(t_3dmap *map_3D, t_background *backg, t_ray *rays, int rays_counter);
-int		check_smaller_ray(t_ray *rays, float *horiz_position, float *vert_position);
-void	fix_fish_eye(t_ray *rays);
-void	keep_angle_limits(float *ray_angle);
+/* Abaixo: funções da parte GRÁFICA (segunda parte: depois do */
+/* armazenamento e validação do conteúdo do arquivo) */
+/* Funções de apoio: (devolve um int rgb e free_map() */
+/* libera tudo antes de exitar)*/
+int		encode_rgb(uint8_t red, uint8_t green, uint8_t blue);
+void	free_map(t_map *map);
+
+void	draw_wall_strip(t_3dmap *scene, t_map *map, int rays_counter);
 void	draw_3d(t_ray *ray, float dist_final, int rays_counter, t_map *map);
+void	fix_fish_eye(t_ray *rays);
+int		check_smaller_ray(t_ray *rays, float *horiz_coord, float *vert_coord);
+float	measure_ray_dist(float beginX, float beginY, float endX, float endY);
+int		is_wall_hit(t_ray *rays, int map_width, int map_height, char **map);
 void	check_axis(int *axis_depth, t_map *map, float **ray_axis, char *axis);
-void	init_ray_projection_values(t_map *map, float *rayX, float *rayY, float *ray_dist);
-void	search_hit_point(t_map *map, float *ray_end_x, float *ray_end_y, char *axis);
+void	find_hit(t_map *map, float *ray_end_x, float *ray_end_y, char *axis);
 int		check_vertical_hit(t_map *map, float *vx, float *vy);
 int		check_horizontal_hit(t_map *map, float *hx, float *hy);
-void	rotate_gamer(t_ray *rays, char *direction);
+void	init_hit_data(t_map *map, float *rayX, float *rayY, float *ray_dist);
+void	keep_angle_limits(float *ray_angle);
 void	move_gamer(char **map, t_ray *rays, char *movement);
-int		open_texture(t_mlx *mlx, t_background *tile, int *coord, char *path);
-int		textures_init(t_image *textures, t_mlx *mlx);
-float	measure_ray_dist(float beginX, float beginY, float endX, float endY);
-int		minimize_window(t_map *map);
-int		end_program(t_map *map);
-int		encode_rgb(uint8_t red, uint8_t green, uint8_t blue);
-int		draw_ray_2d(t_ray *rays, t_background *map2d, int map_width, int color);
+void	rotate_gamer(t_ray *rays, char *direction);
+void	check_collision(t_ray *rays);
+
+int		event_key(int keycode, t_map *map);
 void	cast_rays(t_map *map);
-void	paint_gamer(t_map *map);
-void	paint_map(t_map *map);
-int		event_key(int keycode, t_map *map);
-void	move_player(t_map *map, int x, int y);
-void	draw_stripe(t_map *map);
-void	check_color(t_map *map);
-void	calculate_init_ray(t_map *map);
-void	calculate_ray_lenght(t_map *map);
-void	calculate_initial_step_x(t_map *map);
-void	calculate_initial_step_y(t_map *map);
-void	check_distance_height_pixel(t_map *map);
-void	check_ray_hit_wall(t_map *map);
-char	*dec_to_hexa(int color);
-char	*rgb_to_hexa(t_map *map);
-void	render_minimap(t_map *map);
-void	get_rays(t_map *map);
-void	*open_img(t_map *map, char *path);
-void	path_img(t_map *map);
-void	free_pointers(t_map *map);
-void	move_player(t_map *map, int x, int y);
-void	free_map(t_map *map);
-void	*open_img(t_map *map, char *path);
-int		event_key(int keycode, t_map *map);
-void	path_img(t_map *map);
-void	clear_screen(t_map *map);
 void	color_background(t_map *map);
-void	path_image(t_map *map);
-void	free_pointers(t_map *map);
+
+int		end_program(t_map *map);
 int		minimize_window(t_map *map);
-void	render_minimap(t_map *map);
-void	get_rays(t_map *map);
+
+int		open_texture(t_mlx *mlx, t_image *tile, int *coord, char *path);
+int		textures_init(t_textures *textures, t_mlx *mlx);
 int		rays_struct_init(t_map *map);
 void	game_loop(t_map *map);
+
+/* Funções abaixo: para armazenamento e validação do conteúdo do arquivo */
+/* do mapa -> caminhos das texturas, codigos rgb e conteúdo do mapa */
 
 int		ft_is_space(char letter);
 int		is_eroded_internal_wall(char **map_line, int char_counter);
@@ -237,7 +217,6 @@ int		store_file_content(char **line, t_map *map, char *filename);
 int		count_height_width(char *line, t_map *map);
 void	check_textures_rgb(char *line, int *monitoring);
 int		measure_height(char **line, t_map *map);
-
 t_map	*prepare_to_store(char *filename);
 
 void	file_error(char *error_message, int error_code);

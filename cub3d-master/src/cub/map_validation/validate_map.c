@@ -6,7 +6,7 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 19:53:11 by lfranca-          #+#    #+#             */
-/*   Updated: 2022/12/09 18:10:58 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/12/12 11:31:48 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,12 +31,13 @@
 /*	se houver mais, DÁ ERRO! (macro GAMER[NSEW]?) */
 /*	OBS2: A gente também tem que invalidar o mapa caso */
 /*	ele tenha LINHAS VAZIAS NO MEIO.. */
+/* proteção antes do while caso a ultima linha do mapa seja uma linha */
+/* vazia??? talvez trimá-la? */
 int	is_wall(char *map_line, int map_width)
 {
 	int	char_counter;
 
 	char_counter = 0;
-	// proteção aqui caso a ultima linha do mapa seja uma linha vazia...
 	while (char_counter < map_width)
 	{
 		if (!ft_strchr("1 ", map_line[char_counter]))

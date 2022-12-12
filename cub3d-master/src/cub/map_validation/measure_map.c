@@ -6,7 +6,7 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/09 11:07:50 by lfranca-          #+#    #+#             */
-/*   Updated: 2022/12/09 17:23:58 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/12/12 11:29:55 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,10 +71,9 @@ int	count_height_width(char *line, t_map *map)
 	return (0);
 }
 
-/*
-** measure_height() vai tirar a altura da matriz do mapa (que servirá para o minimapa e
-** para projetar o mapa 3d tambem).
-*/
+/* measure_height() vai tirar a altura da matriz do mapa*/
+/*(que servirá para o minimapa e */
+/* para projetar o mapa 3d tambem). */
 int	measure_height(char **line, t_map *map)
 {
 	int		ret;

@@ -6,13 +6,13 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 13:28:34 by lfranca-          #+#    #+#             */
-/*   Updated: 2022/12/09 17:38:03 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/12/12 11:34:13 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../inc/cub3d.h"
 
-static void	save_texture(t_image *textures, char *line, t_map *map)
+static void	save_texture(t_textures *textures, char *line, t_map *map)
 {
 	char	*trimmed;
 
@@ -59,7 +59,6 @@ static char	*save_rgb_code(char *line)
 		free(trimmed);
 		return (NULL);
 	}
-	//trim again just so we garantee there's no extra spaces between the character and the number
 	rgb_trimmed = ft_strtrim(rgb_color, " \t");
 	free(trimmed);
 	return (rgb_trimmed);

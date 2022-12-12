@@ -6,7 +6,7 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 14:00:43 by cleticia          #+#    #+#             */
-/*   Updated: 2022/12/09 18:58:18 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/12/12 11:26:14 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,12 @@ void	fix_fish_eye(t_ray *rays)
 	rays->dist_final *= cos(gamer_to_ray_angle);
 }
 
-void	draw_wall_strip(t_3dmap *map_3D, t_background *backg, t_ray *rays, int rays_counter)
+static int	find_texture_pixel(t_3dmap *scene)
+{
+	return ((int)(scene->texture_y) * MAP_S + (int)(scene->texture_x));
+}
+
+void	draw_wall_strip(t_3dmap *scene, t_map *map, int rays_counter)
 {
 	int		y;
 	float	pixel_color;
@@ -32,71 +37,73 @@ void	draw_wall_strip(t_3dmap *map_3D, t_background *backg, t_ray *rays, int rays
 	int		total_size;
 
 	y = -1;
-	while (++y < map_3D->line_height)
+	while (++y < scene->line_height)
 	{
-		pixel_color = (map_3D->data_tile)[(int)(map_3D->texture_y) * map_s + (int)(map_3D->texture_x)];
-		if (rays->dist_vertical < rays->dist_horizontal)
+		pixel_color = (scene->data_tile)[find_texture_pixel(scene)];
+		if (map->rays.dist_vertical < map->rays.dist_horizontal)
 			pixel_color = ((int)pixel_color & 0xfefefe) >> 1;
 		pixel_size = rays_counter * 5;
 		total_size = pixel_size + 5;
 		while (pixel_size < total_size)
 		{
-			backg->data[(y + (int)map_3D->centered_vision) * SCREEN_WIDTH + (pixel_size)] = pixel_color;
+			map->back.data[(y + (int)scene->centered_vision)
+				* SCREEN_WIDTH + (pixel_size)] = pixel_color;
 			pixel_size++;
 		}
-		map_3D->texture_y += map_3D->texture_y_step;
+		scene->texture_y += scene->texture_y_step;
 	}
 }
 
-static void	defines_wall_texture(t_3dmap *map_3D, t_ray *rays, t_image *textures)
+static void	defines_wall_texture(t_3dmap *scene, t_ray *rays, t_textures *textures)
 {
 	if (rays->dist_horizontal < rays->dist_vertical)
 	{
-		map_3D->texture_x = (int)(rays->ray_x / 2.0) % map_s;
+		scene->texture_x = (int)(rays->ray_x / 2.0) % MAP_S;
 		if (rays->ray_angle > PI)
 		{
-			map_3D->data_tile = textures->south_tile.data;
-			map_3D->texture_x = 31 - map_3D->texture_x;
+			scene->data_tile = textures->south_tile.data;
+			scene->texture_x = 31 - scene->texture_x;
 		}
 		else
-			map_3D->data_tile = textures->north_tile.data;
+			scene->data_tile = textures->north_tile.data;
 	}
 	else
 	{
-		map_3D->texture_x = (int)(rays->ray_y / 2.0) % map_s;
+		scene->texture_x = (int)(rays->ray_y / 2.0) % MAP_S;
 		if (rays->ray_angle > P2 && rays->ray_angle < P3)
 		{
-			map_3D->data_tile = textures->west_tile.data;
-			map_3D->texture_x = 31 - map_3D->texture_x;
+			scene->data_tile = textures->west_tile.data;
+			scene->texture_x = 31 - scene->texture_x;
 		}
 		else
-			map_3D->data_tile = textures->east_tile.data;
+			scene->data_tile = textures->east_tile.data;
 	}
 }
 
+/* 1 - tirar a altura da coluna/tira de parede a ser desenhada */
+/* texture_y_off vai compensar o mapeamento da textura em y caso a altura */
+/* da parede estoure a altura da janela */
+/* pra que, na hora que estiver desenhando a textura */
+/* e chegar superar o tamanho de janela da projeção 3d, o */
+/* desenho não fique distorcido (perca a perspectiva) */
+/* precisamos centralizar a imagem (desenhar a tira da parede*/
+/* a partir de metade abaixo do total da altura da tela) */
+/* 'texture_y' calcula o valor 'y' das texturas */
+/* defines_wall_texture() --> chooses the texture and set the texture_x */
 void	draw_3d(t_ray *rays, float dist_final, int rays_counter, t_map *map)
 {
-	t_3dmap	map_3D;
+	t_3dmap	scene;
 
-	// 1 - tirar a altura da coluna/tira de parede a ser desenhada
-	map_3D.line_height = (map_s * SCREEN_HEIGHT / dist_final);
-	map_3D.texture_y_step = 32.0 / map_3D.line_height;
-	// texture_y_off vai compensar o mapeamento da textura em y caso a altura
-	// da parede estoure a altura da janela
-	// pra que, na hora que estiver desenhando a textura
-	// e chegar superar o tamanho de janela da projeção 3d, o
-	// desenho não fique distorcido (perca a perspectiva)
-	map_3D.texture_y_off = 0;
-	if (map_3D.line_height > SCREEN_HEIGHT)
+	scene.line_height = (MAP_S * SCREEN_HEIGHT / dist_final);
+	scene.texture_y_step = 32.0 / scene.line_height;
+	scene.texture_y_off = 0;
+	if (scene.line_height > SCREEN_HEIGHT)
 	{
-		map_3D.texture_y_off = (map_3D.line_height - SCREEN_HEIGHT) / 2.0;
-		map_3D.line_height = SCREEN_HEIGHT - 1;
+		scene.texture_y_off = (scene.line_height - SCREEN_HEIGHT) / 2.0;
+		scene.line_height = SCREEN_HEIGHT - 1;
 	}
-	// precisamos centralizar a imagem (desenhar a tira da parede a partir de metade abaixo do total da altura da tela)
-	map_3D.centered_vision = (SCREEN_HEIGHT / 2) - (map_3D.line_height / 2);
-	// 'texture_y' calcula o valor 'y' das texturas
-	map_3D.texture_y = map_3D.texture_y_off * map_3D.texture_y_step;
-	// ------------- chooses the texture and set the texture_x
-	defines_wall_texture(&map_3D, rays, &map->textures);
-	draw_wall_strip(&map_3D, &map->back, &map->rays, rays_counter);
+	scene.centered_vision = (SCREEN_HEIGHT / 2) - (scene.line_height / 2);
+	scene.texture_y = scene.texture_y_off * scene.texture_y_step;
+	defines_wall_texture(&scene, rays, &map->textures);
+	draw_wall_strip(&scene, map, rays_counter);
 }
