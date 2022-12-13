@@ -1,19 +1,16 @@
 ![(https://github.com/42Paris/minilibx-linux/actions/workflows/ci.yml/badge.svg)](https://img.shields.io/badge/norminette-100%25-green)
 # Cub3D
 
-Desenvolver um projeto usando raycasting. Um método de implementar jogos emulando ambiente 3D em um 2D. Para que isso aconteça algumas limitações são necessárias como os cubos serem do mesmo tamanho, paredes perpendiculares <br>
+Desenvolver um projeto usando raycasting. 
+Ray Casting é uma técnica de renderização (90's) que "emula" um ambiente 3D em 2D. Ele transforma uma forma limitada de dados (mapas simples ou plantas baixas) em uma projeção 3D.<br>
 
-Objetivo <br>
-
-O que é feito a principio<br>
-Se for usar algum argumento como será aplicado<br>
 
 [**Mais**](https://bumpy-truffle-c97.notion.site/cub3D-miniRT-e85fe30656d84ecaaa03b30cac114b79)
 
 ## Sobre o repositório
 
 - [**Cub3D**](./cub3d/) : arquivo contendo o código-fonte da aplicação
-- [**Info**](./Concept.md/) : conceitos e aprendizados necessários
+- [**Info**](./Info.md/) : Info sobre funções
 
 ## Tecnologias utilizadas
 

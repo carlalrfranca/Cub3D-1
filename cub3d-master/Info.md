@@ -19,29 +19,6 @@ Cubos múltiplos de 2, dessa forma facilita as operações de deslocamento aritm
 Essas operações são mais rápidas que multiplicação ou divisão;<br>
 Quanto maior o tamanho do cubo, mais em bloco o mundo parecerá;<br>
 
-#### Sobre FOV (ponto de vista):
-O jogador deve ser capaz de ver o que está a sua frente; <br>
-Na tela o FOV não fica legal com 90 graus; 
-Geralmente definimos em 60 graus (ajuste por teste e experimentação); <br>
-A altura do jogador é definida como 32 unidades porque é uma suposição razoável considerando 64 unidades de altura <br>
-Para colocar o jogador dentro do mundo precisamos definir os três atributos que formam o FOV do jogador: <br>
-As coordenadas X e Y do jogador e o ângulo para o qual o jogador está de frente; <br>
-
-#### Traçando Cenas:
- Podemos traçar o raio para cada coluna vertical da tela. <br>
- Então se temos uma tela de 320 X 200 pixels, teremos 320 linhas verticais <br>
- Sendo a coluna 0 o raio de extrema esquerda e a coluna 319 o raio de extrema direita <br>
- Ou seja, vamos renderizar traçando da esquerda para direita <br>
- Isso pode ser feito em um loop <br>
  
- <pre>
- Com base no ângulo de visão, subtraia 30 graus (metade do FOV).
- A partir da coluna 0:
- Lança um raio.
- Trace o raio até que ele atinja uma parede.
- Registre a distância até a parede (a distância é igual ao comprimento do raio).
- Adicione o incremento do ângulo para que o raio se mova para a direita (o valor do incremento do ângulo é 60/320 graus).
- Repita os passos 2 e 3 para cada coluna subsequente até que todos os 320 raios sejam lançados.
- </pre>
 
 ## Referências
