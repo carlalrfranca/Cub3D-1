@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cleticia <cleticia@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/16 16:20:52 by cleticia          #+#    #+#             */
-/*   Updated: 2022/09/03 21:16:53 by cleticia         ###   ########.fr       */
+/*   Updated: 2022/12/14 21:25:14 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/gnl.h"
+#include "../../inc/get_next_line.h"
 
 void	get_copy_line(char *bkdest, char *bksrc, size_t bksize)
 {

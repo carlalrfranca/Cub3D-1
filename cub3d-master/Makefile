@@ -6,7 +6,7 @@
 #    By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/08/10 18:12:04 by cleticia          #+#    #+#              #
-#    Updated: 2022/12/09 20:28:17 by lfranca-         ###   ########.fr        #
+#    Updated: 2022/12/14 20:59:02 by lfranca-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,6 +26,7 @@ OBJDIR = obj
 
 SRC = src/cub/main.c\
 	src/cub/game_loop.c\
+	src/cub/game_init.c\
 	src/cub/paint_frame/color_bg.c\
 	src/cub/map_validation/prepare_to_store.c\
 	src/cub/map_validation/measure_map.c\

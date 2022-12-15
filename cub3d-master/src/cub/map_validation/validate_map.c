@@ -6,7 +6,7 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 19:53:11 by lfranca-          #+#    #+#             */
-/*   Updated: 2022/12/12 11:31:48 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/12/14 20:45:02 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,11 @@
 /*	2)loop sobre cada STRING do mapa */
 /*	3)verifica que a primeira string seja parede ('1's ou espaços vazios) */
 /*	4)nas demais (até ANTES DA ÚLTIMA), enviar para uma função */
-/*		que vai verificar se o caracter é valido (1 0NSEW) && se é caracter */
-/*		interno (0NSWE) - tirando parede e espaço vazio */
-/*		- se for, verifica AO REDOR dele, e se tiver espaço vazio/nulo, */
-/*		RETORNA ERRO (e dá mapa inválido), */
-/*		senão, prossegue. */
+/*	  que vai verificar se o caracter é valido (1 0NSEW) && se é caracter */
+/*	  interno (0NSWE) - tirando parede e espaço vazio */
+/*	  - se for, verifica AO REDOR dele, e se tiver espaço vazio/nulo, */
+/*	  RETORNA ERRO (e dá mapa inválido), */
+/*	  senão, prossegue. */
 /*	5)Dentro do loop, terá uma condição pra se for */
 /*	a ÚLTIMA LINHA (i == 0 || i == (map->height - 1)) */
 /*	que será enviada para a mesma função que recebeu a primeira linha e */
@@ -56,7 +56,8 @@ int	is_wall(char *map_line, int map_width)
 /* vai delatá-la) entao é só devolver que é parede */
 int	is_eroded_internal_wall(char **map_line, int char_counter)
 {
-	if (char_counter != 0 && char_counter < ((int)ft_strlen(map_line[0]) - 1))
+	if (char_counter != 0
+		&& char_counter < ((int)ft_strlen(map_line[0]) - 1))
 	{
 		if (map_line[0][char_counter - 1] == '1')
 			return (0);
@@ -90,9 +91,7 @@ int	check_is_closed(char **map_line, int char_counter)
 
 	prev_index = char_counter - 1;
 	next_index = char_counter + 1;
-	if (char_counter == 0 || char_counter == ((int)ft_strlen(map_line[0]) - 1))
-		return (0);
-	if (is_empty_line(map_line[0]) || is_empty_line(map_line[-1]) || is_empty_line(map_line[1]))
+	if (is_char_border_or_empty_line(map_line, char_counter) == 1)
 		return (0);
 	if (!map_line[0][prev_index] || ft_is_space(map_line[0][prev_index]))
 		return (0);
@@ -133,54 +132,48 @@ int	check_is_closed(char **map_line, int char_counter)
 /* - 0 - */
 int	check_map_interior(t_map *map, char **map_line, int row)
 {
-	int		char_counter;
-	char	*trimmed_line;
+	int		char_ct;
 
-	char_counter = 0;
-	if (ft_strlen(map_line[0]) == 0)
+	char_ct = 0;
+	if (is_empty_line(map_line[0]) == 1)
 		return (0);
-	trimmed_line = ft_strtrim(map_line[0], " \t");
-	if (ft_strlen(trimmed_line) == 0)
+	while (map_line[0][char_ct])
 	{
-		free(trimmed_line);
-		return (0);
-	}
-	free(trimmed_line);
-	while (map_line[0][char_counter])
-	{
-		if (!is_valid_char(map_line[0][char_counter]))
+		if (!is_valid_char(map_line[0][char_ct]))
 			return (0);
 		else
 		{
-			if (ft_strchr(GAMER, map_line[0][char_counter])
-				&& !is_single_gamer(map, map_line[0][char_counter], row, char_counter))
+			if (ft_strchr(GAMER, map_line[0][char_ct])
+				&& !is_single_gamer(map, map_line[0][char_ct], row, char_ct))
 				return (0);
-			if (ft_strchr(INTERNAL_CHAR, map_line[0][char_counter]) && !check_is_closed(map_line, char_counter))
+			if (ft_strchr(INTERNAL_CHAR, map_line[0][char_ct])
+				&& !check_is_closed(map_line, char_ct))
 				return (0);
-			else if (map_line[0][char_counter] == '1' && is_eroded_internal_wall(map_line, char_counter))
+			else if (map_line[0][char_ct] == '1'
+				&& is_eroded_internal_wall(map_line, char_ct))
 				return (0);
 		}
-		char_counter++;
+		char_ct++;
 	}
 	return (1);
 }
 
 int	is_map_open(t_map *map)
 {
-	int	counter_string;
+	int	row;
 
-	counter_string = 0;
-	while (counter_string < map->height)
+	row = 0;
+	while (row < map->height)
 	{
-		if (is_first_last_row(counter_string, map->height)
-			&& !is_wall(map->map[counter_string], map->width))
+		if (is_first_last_row(row, map->height)
+			&& !is_wall(map->map[row], map->width))
 			map_error(map);
-		else if (!is_first_last_row(counter_string, map->height))
+		else if (!is_first_last_row(row, map->height))
 		{
-			if (!check_map_interior(map, &map->map[counter_string], counter_string))
+			if (!check_map_interior(map, &map->map[row], row))
 				map_error(map);
 		}
-		counter_string++;
+		row++;
 	}
 	return (1);
 }
