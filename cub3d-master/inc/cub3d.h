@@ -6,7 +6,7 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 18:15:32 by cleticia          #+#    #+#             */
-/*   Updated: 2022/12/09 21:37:35 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/12/14 21:24:20 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,16 +19,16 @@
 # include <unistd.h>
 # include <math.h>
 # include <fcntl.h>
-# include "../inc/gnl.h"
-# include "../inc/libft.h"
+# include "./get_next_line.h"
+# include "./libft.h"
 # include "../src/mlx/minilibx-linux/mlx.h"
 # include <stdint.h>
 # include <sys/time.h>
 
 # define FT_ERROR 1
 # define FT_SUCCESS 0
-# define SCREEN_WIDTH 800
-# define SCREEN_HEIGHT 600
+# define SCREEN_WIDTH 1000
+# define SCREEN_HEIGHT 800
 # define SMALLER_THAN_MAP_SIZE 1
 # define TEXTURES_DONE 4
 # define RGB_DONE 2
@@ -36,18 +36,16 @@
 # define GAMER "NSWE"
 # define MAP_S 32
 # define PI 3.1415926535
-# define P2 PI/2
-# define P3 3 * PI/2
 # define DR 0.0174533
 
 typedef struct s_col
 {
-	int	col_pos_x;
-	int	col_pos_y;
-	int	col_pos_x_add_offset_x;
-	int	col_pos_y_add_offset_y;
-	int	col_pos_y_sub_offset_y;
-	int	col_pos_x_sub_offset_x;
+	int	pos_x;
+	int	pos_y;
+	int	pos_x_add_offset_x;
+	int	pos_y_add_offset_y;
+	int	pos_y_sub_offset_y;
+	int	pos_x_sub_offset_x;
 }	t_col;
 
 /* variáveis usadas para mapear */
@@ -160,6 +158,7 @@ int		encode_rgb(uint8_t red, uint8_t green, uint8_t blue);
 void	free_map(t_map *map);
 
 void	draw_wall_strip(t_3dmap *scene, t_map *map, int rays_counter);
+void	define_walltexture(t_3dmap *scene, t_ray *rays, t_textures *textures);
 void	draw_3d(t_ray *ray, float dist_final, int rays_counter, t_map *map);
 void	fix_fish_eye(t_ray *rays);
 int		check_smaller_ray(t_ray *rays, float *horiz_coord, float *vert_coord);
@@ -182,6 +181,8 @@ void	color_background(t_map *map);
 int		end_program(t_map *map);
 int		minimize_window(t_map *map);
 
+int		check_resolution(t_map *map);
+void	init_gamer_angle(char spawning, float *gamer_angle);
 int		open_texture(t_mlx *mlx, t_image *tile, int *coord, char *path);
 int		textures_init(t_textures *textures, t_mlx *mlx);
 int		rays_struct_init(t_map *map);
@@ -196,6 +197,7 @@ int		check_is_closed(char **map_line, int char_counter);
 void	store_player_info(t_map *map, char spawn, int row, int column);
 int		is_single_gamer(t_map *map, char spawn, int row, int column);
 int		is_valid_char(char map_char);
+int		is_char_border_or_empty_line(char **map_line, int char_counter);
 int		check_map_interior(t_map *map, char **map_line, int row);
 int		is_wall(char *map_line, int map_height);
 int		is_first_last_row(int counter_row, int height);
@@ -205,6 +207,7 @@ void	map_error(t_map *map);
 int		validate_rgb(char *rgb_value);
 int		validate_map(t_map *map);
 
+void	check_which_rgb(char *line, char **floor, char **ceilling, t_map *map);
 void	save_textures_rgb(char *line, t_map *map);
 void	free_textures(t_map *map);
 void	invalid_rgb(char *line, char *rgb_to_free, t_map *map);

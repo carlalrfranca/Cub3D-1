@@ -6,7 +6,7 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 16:48:25 by cleticia          #+#    #+#             */
-/*   Updated: 2022/12/09 21:06:27 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/12/14 20:56:23 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,34 +27,33 @@ void	check_collision(t_ray *rays)
 		offset_y = -20;
 	else
 		offset_y = 20;
-	rays->collision.col_pos_x = rays->pos_x / 32.0;
-	rays->collision.col_pos_y = rays->pos_y / 32.0;
-	rays->collision.col_pos_x_add_offset_x = (rays->pos_x + offset_x) / 32.0;
-	rays->collision.col_pos_y_add_offset_y = (rays->pos_y + offset_y) / 32.0;
-	rays->collision.col_pos_y_sub_offset_y = (rays->pos_y - offset_y) / 32.0;
-	rays->collision.col_pos_x_sub_offset_x = (rays->pos_x - offset_x) / 32.0;
+	rays->collision.pos_x = rays->pos_x / 32.0;
+	rays->collision.pos_y = rays->pos_y / 32.0;
+	rays->collision.pos_x_add_offset_x = (rays->pos_x + offset_x) / 32.0;
+	rays->collision.pos_y_add_offset_y = (rays->pos_y + offset_y) / 32.0;
+	rays->collision.pos_y_sub_offset_y = (rays->pos_y - offset_y) / 32.0;
+	rays->collision.pos_x_sub_offset_x = (rays->pos_x - offset_x) / 32.0;
 }
 
 void	move_gamer(char **map, t_ray *rays, char *movement)
 {
+	t_col	*collision;
+
+	collision = &rays->collision;
 	if (!ft_strncmp(movement, "to_up", ft_strlen(movement)))
 	{
-		if (map[rays->collision.col_pos_y][rays->collision.col_pos_x_add_offset_x] == '0')
+		if (map[collision->pos_y][collision->pos_x_add_offset_x] == '0')
 			rays->pos_x += rays->deltax;
-		if (map[rays->collision.col_pos_y_add_offset_y][rays->collision.col_pos_x] == '0')
+		if (map[collision->pos_y_add_offset_y][collision->pos_x] == '0')
 			rays->pos_y += rays->deltay;
 	}
 	else
 	{
-		if (map[rays->collision.col_pos_y][rays->collision.col_pos_x_sub_offset_x] == '0')
+		if (map[collision->pos_y][collision->pos_x_sub_offset_x] == '0')
 			rays->pos_x -= rays->deltax;
-		if (map[rays->collision.col_pos_y_sub_offset_y][rays->collision.col_pos_x] == '0')
+		if (map[collision->pos_y_sub_offset_y][collision->pos_x] == '0')
 			rays->pos_y -= rays->deltay;
 	}
-	if (rays->pos_x < 0)
-		rays->pos_x = 1;
-	if (rays->pos_y < 0)
-		rays->pos_y = 1;
 }
 
 void	rotate_gamer(t_ray *rays, char *direction)
@@ -88,98 +87,12 @@ int	event_key(int keycode, t_map *map)
 	if (keycode == KEY_D)
 		rotate_gamer(&map->rays, "to_right");
 	if (keycode == KEY_W)
-	{
-		// esse primeiro if faz com que ele "deslize" no eixo x quando contra uma parede
-		// garantindo tambem um "offset" no eixo x, ou seja, se houver '1' no offset de x
-		// (lateral do gamer) ele não avança mais, só enquanto for '0'..
 		move_gamer(map->map, &map->rays, "to_up");
-	}
 	if (keycode == KEY_S)
-	{
-		// poder "recuar" no eixo x.. se houver '1', ele nao recua
 		move_gamer(map->map, &map->rays, "to_down");
-	}
 	mlx_destroy_image (map->mlx.mlx_ptr, map->back.ptr_img);
 	color_background(map);
 	cast_rays(map);
-	return (0);
-}
-
-static int	check_resolution(t_map *map)
-{
-	int	resolution_x;
-	int	resolution_y;
-
-	mlx_get_screen_size(map->mlx.mlx_ptr, &resolution_x, &resolution_y);
-	if (SCREEN_HEIGHT >= resolution_y || SCREEN_WIDTH >= resolution_x)
-	{
-		mlx_destroy_display(map->mlx.mlx_ptr);
-		ft_putendl_fd("Your map overflowed the resolution!", 2);
-		map_error(map);
-	}
-	return (0);
-}
-
-static void	init_gamer_angle(char spawning, float *gamer_angle)
-{
-	if (spawning == 'N')
-		*gamer_angle = P3;
-	else if (spawning == 'S')
-		*gamer_angle = P2;
-	else if (spawning == 'E')
-		*gamer_angle = 0;
-	else
-		*gamer_angle = PI;
-	return ;
-}
-
-int	open_texture(t_mlx *mlx, t_image *tile, int *coord, char *path)
-{
-	tile->ptr_img = mlx_xpm_file_to_image(mlx->mlx_ptr, path,
-			&coord[0], &coord[1]);
-	if (!tile->ptr_img)
-		return (404);
-	tile->data = (int *)mlx_get_data_addr(tile->ptr_img, &tile->bpp, &tile->line_size, &tile->endian);
-	return (0);
-}
-
-int	textures_init(t_textures *textures, t_mlx *mlx)
-{
-	char	*path;
-	int		coord[2];
-
-	coord[0] = textures->width;
-	coord[1] = textures->height;
-	path = textures->west_wall;
-	if (open_texture(mlx, &textures->west_tile, coord, path) == 404)
-		return (404);
-	path = textures->east_wall;
-	if (open_texture(mlx, &textures->east_tile, coord, path) == 404)
-		return (404);
-	path = textures->north_wall;
-	if (open_texture(mlx, &textures->north_tile, coord, path) == 404)
-		return (404);
-	path = textures->south_wall;
-	if (open_texture(mlx, &textures->south_tile, coord, path) == 404)
-		return (404);
-	return (0);
-}
-
-int	rays_struct_init(t_map *map)
-{
-	map->back.ptr_img = NULL;
-	map->mlx.win = NULL;
-	map->textures.east_tile.ptr_img = NULL;
-	map->textures.west_tile.ptr_img = NULL;
-	map->textures.north_tile.ptr_img = NULL;
-	map->textures.south_tile.ptr_img = NULL;
-	if (textures_init(&map->textures, &map->mlx) == 404)
-		return (404);
-	map->rays.map_x = map->width;
-	map->rays.map_y = map->height;
-	init_gamer_angle(map->spawing, &map->rays.gamer_angle);
-	map->rays.deltax = cos(map->rays.gamer_angle) * 5;
-	map->rays.deltay = sin(map->rays.gamer_angle) * 5;
 	return (0);
 }
 

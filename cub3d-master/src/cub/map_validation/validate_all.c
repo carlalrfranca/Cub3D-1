@@ -6,11 +6,22 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 16:48:36 by cleticia          #+#    #+#             */
-/*   Updated: 2022/12/09 17:45:23 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/12/14 20:45:04 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../inc/cub3d.h"
+
+int	is_char_border_or_empty_line(char **map_line, int char_counter)
+{
+	if (char_counter == 0
+		|| char_counter == ((int)ft_strlen(map_line[0]) - 1))
+		return (1);
+	if (is_empty_line(map_line[0]) || is_empty_line(map_line[-1])
+		|| is_empty_line(map_line[1]))
+		return (1);
+	return (0);
+}
 
 /*
 ** Libera:

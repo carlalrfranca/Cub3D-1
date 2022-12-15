@@ -6,7 +6,7 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 20:08:08 by lfranca-          #+#    #+#             */
-/*   Updated: 2022/12/12 08:09:25 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/12/14 20:11:41 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,14 +38,14 @@ void	cast_rays(t_map *map)
 	map->rays.ray_angle = map->rays.gamer_angle - DR * 30;
 	keep_angle_limits(&map->rays.ray_angle);
 	rays_counter = -1;
-	while (++rays_counter < 160)
+	while (++rays_counter < (SCREEN_WIDTH / 2))
 	{
 		check_horizontal_hit(map, &horiz_coord[0], &horiz_coord[1]);
 		check_vertical_hit(map, &vert_coord[0], &vert_coord[1]);
 		check_smaller_ray(&map->rays, horiz_coord, vert_coord);
 		fix_fish_eye(&map->rays);
 		draw_3d(&map->rays, map->rays.dist_final, rays_counter, map);
-		map->rays.ray_angle += DR / 3;
+		map->rays.ray_angle += ((DR * 60) / (SCREEN_WIDTH / 2));
 		keep_angle_limits(&map->rays.ray_angle);
 	}
 	mlx_put_image_to_window(map->mlx.mlx_ptr,

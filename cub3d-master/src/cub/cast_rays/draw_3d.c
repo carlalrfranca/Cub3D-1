@@ -6,7 +6,7 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 14:00:43 by cleticia          #+#    #+#             */
-/*   Updated: 2022/12/12 11:26:14 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/12/14 20:13:40 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,8 @@ void	draw_wall_strip(t_3dmap *scene, t_map *map, int rays_counter)
 		pixel_color = (scene->data_tile)[find_texture_pixel(scene)];
 		if (map->rays.dist_vertical < map->rays.dist_horizontal)
 			pixel_color = ((int)pixel_color & 0xfefefe) >> 1;
-		pixel_size = rays_counter * 5;
-		total_size = pixel_size + 5;
+		pixel_size = rays_counter * 2;
+		total_size = pixel_size + 2;
 		while (pixel_size < total_size)
 		{
 			map->back.data[(y + (int)scene->centered_vision)
@@ -54,27 +54,21 @@ void	draw_wall_strip(t_3dmap *scene, t_map *map, int rays_counter)
 	}
 }
 
-static void	defines_wall_texture(t_3dmap *scene, t_ray *rays, t_textures *textures)
+void	define_walltexture(t_3dmap *scene, t_ray *rays, t_textures *textures)
 {
 	if (rays->dist_horizontal < rays->dist_vertical)
 	{
-		scene->texture_x = (int)(rays->ray_x / 2.0) % MAP_S;
+		scene->texture_x = (int)(rays->ray_x) % MAP_S;
 		if (rays->ray_angle > PI)
-		{
 			scene->data_tile = textures->south_tile.data;
-			scene->texture_x = 31 - scene->texture_x;
-		}
 		else
 			scene->data_tile = textures->north_tile.data;
 	}
 	else
 	{
-		scene->texture_x = (int)(rays->ray_y / 2.0) % MAP_S;
-		if (rays->ray_angle > P2 && rays->ray_angle < P3)
-		{
+		scene->texture_x = (int)(rays->ray_y) % MAP_S;
+		if (rays->ray_angle > (PI / 2) && rays->ray_angle < (3 * PI / 2))
 			scene->data_tile = textures->west_tile.data;
-			scene->texture_x = 31 - scene->texture_x;
-		}
 		else
 			scene->data_tile = textures->east_tile.data;
 	}
@@ -104,6 +98,6 @@ void	draw_3d(t_ray *rays, float dist_final, int rays_counter, t_map *map)
 	}
 	scene.centered_vision = (SCREEN_HEIGHT / 2) - (scene.line_height / 2);
 	scene.texture_y = scene.texture_y_off * scene.texture_y_step;
-	defines_wall_texture(&scene, rays, &map->textures);
+	define_walltexture(&scene, rays, &map->textures);
 	draw_wall_strip(&scene, map, rays_counter);
 }
