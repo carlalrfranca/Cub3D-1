@@ -42,8 +42,8 @@ void	draw_wall_strip(t_3dmap *scene, t_map *map, int rays_counter)
 		pixel_color = (scene->data_tile)[find_texture_pixel(scene)];
 		if (map->rays.dist_vertical < map->rays.dist_horizontal)
 			pixel_color = ((int)pixel_color & 0xfefefe) >> 1;
-		pixel_size = rays_counter * 2;
-		total_size = pixel_size + 2;
+		pixel_size = rays_counter * 4;
+		total_size = pixel_size + 4;
 		while (pixel_size < total_size)
 		{
 			map->back.data[(y + (int)scene->centered_vision)

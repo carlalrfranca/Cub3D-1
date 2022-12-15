@@ -27,7 +27,7 @@
 
 # define FT_ERROR 1
 # define FT_SUCCESS 0
-# define SCREEN_WIDTH 1000
+# define SCREEN_WIDTH 1400
 # define SCREEN_HEIGHT 800
 # define SMALLER_THAN_MAP_SIZE 1
 # define TEXTURES_DONE 4
