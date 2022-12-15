@@ -6,7 +6,7 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 18:15:32 by cleticia          #+#    #+#             */
-/*   Updated: 2022/12/14 21:24:20 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/12/14 22:27:50 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,8 +144,8 @@ enum e_keycode
 	KEY_S	= 115,
 	KEY_D	= 100,
 	KEY_ESC	= 65307,
-	ROTATE_LEFT	= 123,
-	ROTATE_RIGHT	= 124,
+	ROTATE_LEFT	= 0xff51,
+	ROTATE_RIGHT	= 0xff53,
 	X_EVENT_KEY_EXIT	= 17,
 	X_EVENT_KEY_PRESS	= 2
 };

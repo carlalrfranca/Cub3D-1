@@ -6,7 +6,7 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 16:48:25 by cleticia          #+#    #+#             */
-/*   Updated: 2022/12/14 20:56:23 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/12/14 22:23:06 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,9 +82,9 @@ int	event_key(int keycode, t_map *map)
 		write (1, "You typed the ESC key. Game closed!\n", 36);
 		end_program(map);
 	}
-	if (keycode == KEY_A)
+	if (keycode == KEY_A || keycode == ROTATE_LEFT)
 		rotate_gamer(&map->rays, "to_left");
-	if (keycode == KEY_D)
+	if (keycode == KEY_D || keycode == ROTATE_RIGHT)
 		rotate_gamer(&map->rays, "to_right");
 	if (keycode == KEY_W)
 		move_gamer(map->map, &map->rays, "to_up");
