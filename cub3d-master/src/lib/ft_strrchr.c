@@ -12,22 +12,22 @@
 
 #include "../../inc/libft.h"
 
-char    *ft_strrchr(const char *s, int c)
+char	*ft_strrchr(const char *s, int c)
 {
-    size_t    leng;
+	size_t	leng;
 
-    leng = ft_strlen(s);
-    while (leng)
-    {
+	leng = ft_strlen(s);
+	while (leng)
+	{
 		printf("printando o charactere %c\n", s[leng]);
-        if (s[leng] == (unsigned char)c)
-            return ((char *)&s[leng]);
-        leng--;
-    }
+		if (s[leng] == (unsigned char)c)
+			return ((char *)&s[leng]);
+		leng--;
+	}
 	printf("cheguei aqui na strrchr 2\n");
-    if (s[leng] == (unsigned char)c)
-        return ((char *)&s[leng]);
-    return (NULL);
+	if (s[leng] == (unsigned char)c)
+		return ((char *)&s[leng]);
+	return (NULL);
 }
 
 /*
@@ -54,4 +54,3 @@ char	*ft_strchr(const char *s, int c)
 }
 
 */
-
