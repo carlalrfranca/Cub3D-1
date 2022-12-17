@@ -6,7 +6,7 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 16:48:25 by cleticia          #+#    #+#             */
-/*   Updated: 2022/12/17 10:13:39 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/12/17 11:26:50 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,33 +64,7 @@ void	move_gamer(char **map, t_ray *rays, char *movement)
 		// como nao da para ter um if (deltax == 0) porque o deltax é float
 		// entao antes tem que ter um if verificando se o angulo do jogador é 90 graus ou 270 graus	
 		printf("Entrou to_left\n");
-		if (rays->deltax < 0) // ir para a esquerda olhando para oeste
-		{
-			// west = negativo
-			// obs: verificar se, ao olhar para oeste, ele está no angulo reto 180 graus ou PI
-			printf("Entrou delta_x negativo: DeltaX = %.2f\n", rays->deltax);
-			if (rays->gamer_angle == (float)PI)
-			{
-				if (map[collision->pos_y_add_offset_y][collision->pos_x] == '0')
-					rays->pos_y -= rays->deltax;					
-			}
-			else if (rays->deltay < 0)
-			{
-				if (map[collision->pos_y][collision->pos_x_add_offset_x] == '0')
-					rays->pos_x += rays->deltax;
-				if (map[collision->pos_y_sub_offset_y][collision->pos_x] == '0')
-					rays->pos_y += rays->deltay;		
-			}
-			else
-			{
-				printf("Ele está olhando pro norte/quadrante inferior\n");
-				if (map[collision->pos_y][collision->pos_x_sub_offset_x] == '0')
-					rays->pos_x -= rays->deltax;
-				if (map[collision->pos_y_add_offset_y][collision->pos_x] == '0')
-					rays->pos_y += rays->deltay;					
-			}
-		} 
-		else if (rays->gamer_angle == (float)(PI/2) || rays->gamer_angle == (float)(3 * PI/2)) 
+		if (rays->gamer_angle == (float)(PI/2) || rays->gamer_angle == (float)(3 * PI/2)) 
 		{
 			// essa condicao é para quando deltax == 0
 			// porque teremos que usar o deltay pra mover em x
@@ -100,104 +74,66 @@ void	move_gamer(char **map, t_ray *rays, char *movement)
 					printf("Norte. DeltaY = %.1f | Pos_x: %.2f\n", rays->deltay, rays->pos_x);
 					rays->pos_x += rays->deltay;
 				}
-				if (rays->gamer_angle == (float)(PI/2) && (map[collision->pos_y][collision->pos_x_add_offset_x] == '0'))
+				if (rays->gamer_angle == (float)(PI/2) && (map[collision->pos_y][collision->pos_x_sub_offset_x] == '0'))
 				{
 					rays->pos_x += rays->deltay;
 				}
 				
 		}
+		else if (rays->deltax < 0) // ir para a esquerda olhando para oeste //---> south (PI) entra em deltax negativo! (-0.00) //colocar o angulo reto antes?
+		{
+			// west = negativo
+			// obs: verificar se, ao olhar para oeste, ele está no angulo reto 180 graus ou PI
+			printf("Entrou delta_x negativo: DeltaX = %.2f\n", rays->deltax);
+			if (rays->gamer_angle == (float)PI)
+			{
+				printf("Ele está olhando reto pra west. Delta Y: %.2f\n", rays->deltay);
+				if (map[collision->pos_y_sub_offset_y][collision->pos_x] == '0')
+					rays->pos_y -= rays->deltax;					
+			}
+			else if (rays->deltay < 0)
+			{
+				printf("Ele está olhando pro norte/quadrante inferior mas x tá 0.. negativo...DeltaX: %.2f\n", rays->deltax);
+				printf("DeltaY: %.2f\n", rays->deltay);
+				if (map[collision->pos_y][collision->pos_x_add_offset_x] == '0')
+					rays->pos_x += rays->deltay;
+				if (map[collision->pos_y_sub_offset_y][collision->pos_x] == '0')
+					rays->pos_y -= rays->deltax;		
+			}
+			else
+			{
+				// vai ter que inverter aqui tbm.. pq ele ta mais indo pra tras do que pra esquerda -> FEITO
+				printf("Ele está olhando pro sul/quadrante superior. Delta y: %.2f\n", rays->deltay);
+				if (map[collision->pos_y][collision->pos_x_sub_offset_x] == '0')
+					rays->pos_x += rays->deltay;  //antes era -= delta_x
+				if (map[collision->pos_y_add_offset_y][collision->pos_x] == '0')
+					rays->pos_y -= rays->deltax;	//antes era += delta_y		
+			}
+		}
 		else
-			printf("Nem negativo, nem angulo reto. DeltaX = %.2f\n", rays->deltax);
-		//else {
+		{
+			printf("Está indo pra esquerda e olhando pra east. Deltax é positivo: %.2f\n", rays->deltax);
+			//ir pra esquerda se o deltax estiver POSITIVO (east)
 			// o delta x é maior que zero (podendo ser 0.1 pode ser zero mais ainda eh decimal).
 			// east == positivo
-			
-		//}
-			// quando for positivo 0 e 360 eh quando o y
+			if (rays->gamer_angle == (float)0 || rays->gamer_angle == (float)(2*PI)) //0 pode ser (2*PI) - (2*PI)?
+			{
+				// quando for positivo 0 e 360 eh quando o y
+				
+			}
+			else if (rays->deltay < 0) {
+				// olhando pro norte/quadrante inferior
+			}
+			else
+			{
+				// olhando pro sul -> deltay é + (então tanto deltax quanto deltay é positivo)
+				
+			}
+		}
 	}
 	// else if (!ft_strncmp(movement, "to_right", ft_strlen(movement)))
 	// {
 		// 
-	// }
-
-
-
-	// else if (!ft_strncmp(movement, "to_left", ft_strlen(movement)))
-	// {
-	// 	if (rays->deltay < 0)
-	// 	{
-	// 		if (rays->gamer_angle == (float)(3 * PI / 2))
-	// 		{
-	// 			// printf("Entrou aqui e off_set_x é: %d\n", collision->pos_x_add_offset_x);
-	// 			// printf("Celula posição em x atual: %d\n", collision->pos_x);
-	// 			// printf("Pos_x: %.2f\n", rays->pos_x);
-	// 			if (map[collision->pos_y][collision->pos_x - 1] == '0')
-	// 				rays->pos_x -= ((rays->deltax + 1) * 3);
-	// 		}
-	// 		else 
-	// 		{
-	// 			// printf("E aqui, foi?\n");
-	// 			// printf("Pos_x: %.1f\n", rays->pos_x);
-	// 			// printf("Pos_y: %.2f\n", rays->pos_y);
-	// 			// printf("Celula da pos_x atual: %d\n", rays->collision.pos_x);
-	// 			// printf("Celula da pos_y atual: %d\n", rays->collision.pos_y);
-	// 			// printf("Celula ~adjacente~: %d\n", collision->pos_y);
-	// 			// printf("Celula do off_add_x: %d\n", collision->pos_x_add_offset_x);
-	// 			// rays->pos_x += rays->deltay;
-	// 			if (map[collision->pos_y][collision->pos_x - 1] == '0')
-	// 			{
-	// 				rays->pos_x += (rays->deltax);
-	// 				// printf("Pos_x: %.1f\n", rays->pos_x);
-	// 			}
-	// 			if (map[collision->pos_y - 1][collision->pos_x] == '0')
-	// 			{
-	// 				// printf("Pos_y: %.3f\n", rays->pos_y);
-	// 				// printf("Delta Y: %.3f\n", rays->deltay);
-	// 				rays->pos_y += (rays->deltay);
-	// 			}
-	// 		}
-	// 	}
-	// 	else
-	// 	{
-	// 		if (rays->gamer_angle == (float)(PI / 2))
-	// 		{
-	// 			if (map[collision->pos_y][collision->pos_x + 1] == '0')
-	// 				rays->pos_x += ((rays->deltax + 1) * 3);
-	// 		}
-	// 		else
-	// 		{
-	// 			if (map[collision->pos_y][collision->pos_x_sub_offset_x] == '0')
-	// 			{
-	// 				rays->pos_x += rays->deltax;
-	// 				if (rays->deltax == 0.0)
-	// 					rays->pos_x += 6.0;
-	// 			}
-	// 			if (map[rays->collision.pos_y_sub_offset_y][collision->pos_x] == '0')
-	// 			{
-	// 				rays->pos_y += rays->deltay;
-	// 				if (rays->deltay == 0.0)
-	// 					rays->pos_y += 6.0;	
-	// 			}
-	// 		}
-	// 	}
-	// }
-	// else if (!ft_strncmp(movement, "to_right", ft_strlen(movement)))
-	// {
-	// 	if (rays->deltay < 0)
-	// 	{
-	// 		if (rays->gamer_angle == (float)(3 * PI / 2))
-	// 		{
-	// 			printf("Entrou aqui e off_set_x é: %d\n", collision->pos_x_add_offset_x);
-	// 			printf("Celula posição em x atual: %d\n", collision->pos_x);
-	// 			printf("Pos_x: %.2f\n", rays->pos_x);
-	// 			if (map[collision->pos_y][collision->pos_x_add_offset_x] == '0')
-	// 				rays->pos_x += ((rays->deltax + 1) * 2);
-	// 		}
-	// 		// if (map[collision->pos_y][collision->pos_x_sub_offset_x] == '0')
-	// 		// {
-	// 			// 
-	// 		// }
-	// 	}
 	// }
 }
 
