@@ -6,7 +6,7 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 16:48:25 by cleticia          #+#    #+#             */
-/*   Updated: 2022/12/17 11:26:50 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/12/17 13:00:18 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,16 +118,27 @@ void	move_gamer(char **map, t_ray *rays, char *movement)
 			// east == positivo
 			if (rays->gamer_angle == (float)0 || rays->gamer_angle == (float)(2*PI)) //0 pode ser (2*PI) - (2*PI)?
 			{
-				// quando for positivo 0 e 360 eh quando o y
+				// quando for positivo 0 e 360 eh quando o y | ELE CONSEGUE ENTRAR EM 0 E EM 360
+				// printf("Está em angulo reto (0 ou 360)\n");
+				if (map[collision->pos_y_add_offset_y][collision->pos_x] == '0')
+					rays->pos_y -= rays->deltax;
 				
 			}
 			else if (rays->deltay < 0) {
 				// olhando pro norte/quadrante inferior
+				if (map[collision->pos_y][collision->pos_x_sub_offset_x] == '0')
+					rays->pos_x += rays->deltay;
+				if (map[collision->pos_y_add_offset_y][collision->pos_x] == '0')
+					rays->pos_y -= rays->deltax;
 			}
 			else
 			{
 				// olhando pro sul -> deltay é + (então tanto deltax quanto deltay é positivo)
-				
+				printf("DeltaY: %.2f | DeltaX: %.2f\n", rays->deltay, rays->deltax);
+				if (map[collision->pos_y][collision->pos_x_sub_offset_x] == '0')
+					rays->pos_x += rays->deltay;  //antes era -= delta_x
+				if (map[collision->pos_y_add_offset_y][collision->pos_x] == '0')
+					rays->pos_y -= rays->deltax;	//antes era += delta_y
 			}
 		}
 	}
