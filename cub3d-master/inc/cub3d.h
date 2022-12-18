@@ -6,7 +6,7 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 18:15:32 by cleticia          #+#    #+#             */
-/*   Updated: 2022/12/14 22:27:50 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/12/17 10:06:58 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,8 @@
 
 # define FT_ERROR 1
 # define FT_SUCCESS 0
-# define SCREEN_WIDTH 1400
-# define SCREEN_HEIGHT 800
+# define SCREEN_WIDTH 800
+# define SCREEN_HEIGHT 600
 # define SMALLER_THAN_MAP_SIZE 1
 # define TEXTURES_DONE 4
 # define RGB_DONE 2
