@@ -6,7 +6,7 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/16 16:20:52 by cleticia          #+#    #+#             */
-/*   Updated: 2022/12/14 21:25:14 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/12/18 20:17:31 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ int	get_next_line(int fd, char **line)
 	buff = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if (!buff)
 		return (-1);
-	if (fd < 0 || !line || BUFFER_SIZE < 1 || read(fd, backup, 0) < 0 )
+	if (fd < 0 || !line || BUFFER_SIZE < 1 || read(fd, backup, 0) < 0)
 	{
 		free(buff);
 		return (-1);
