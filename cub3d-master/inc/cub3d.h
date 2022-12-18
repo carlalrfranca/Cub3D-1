@@ -6,7 +6,7 @@
 /*   By: lfranca- <lfranca-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 18:15:32 by cleticia          #+#    #+#             */
-/*   Updated: 2022/12/17 10:06:58 by lfranca-         ###   ########.fr       */
+/*   Updated: 2022/12/18 19:55:46 by lfranca-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,6 +170,8 @@ int		check_vertical_hit(t_map *map, float *vx, float *vy);
 int		check_horizontal_hit(t_map *map, float *hx, float *hy);
 void	init_hit_data(t_map *map, float *rayX, float *rayY, float *ray_dist);
 void	keep_angle_limits(float *ray_angle);
+void	check_vert_right_angles(char **map, t_ray *rays, char *movement);
+void	move_gamer_to_sides(char **map, t_ray *rays, char *movement);
 void	move_gamer(char **map, t_ray *rays, char *movement);
 void	rotate_gamer(t_ray *rays, char *direction);
 void	check_collision(t_ray *rays);
